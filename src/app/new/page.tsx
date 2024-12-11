@@ -1,3 +1,5 @@
+import NewRatingForm from "./NewRatingForm";
+
 /**
  * Lets the user create a new rating.
  * The user can select an album from the search results.
@@ -8,5 +10,10 @@
  * The user can select their least favorite track. (Optional)
  */
 export default function NewRatingPage() {
-  return <div>New</div>;
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Create a New Rating</h1>
+      <NewRatingForm />
+    </div>
+  );
 }

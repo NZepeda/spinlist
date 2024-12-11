@@ -117,11 +117,11 @@ export default function Home() {
           </Button>
         </nav>
       </header>
-      <main className="flex-1">
+      <div className="flex-1 w-full">
         <HeroSection />
         <FeaturesSection />
         <JoinSection />
-      </main>
+      </div>
     </div>
   );
 }

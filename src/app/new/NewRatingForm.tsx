@@ -1,40 +1,252 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useState, FormEvent } from "react";
+import { Search, Star, StarHalf } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const formSchema = z.object({
-  albumId: z.string().min(1, "Please select an album"),
-  rating: z.number().min(0.5).max(5).step(0.5),
-  review: z.string().optional(),
-  favoriteTrack: z.string().optional(),
-  leastFavoriteTrack: z.string().optional(),
-});
+type Album = {
+  id: string;
+  title: string;
+  artist: string;
+  tracks: string[];
+};
 
-export default function NewRatingForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+type FormData = {
+  albumId: string;
+  rating: number;
+  review: string;
+  favoriteTrack: string;
+  leastFavoriteTrack: string;
+};
+
+export default function CreateRatingForm() {
+  const [searchResults, setSearchResults] = useState<Album[]>([]);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [formData, setFormData] = useState<FormData>({
+    albumId: "",
+    rating: 0,
+    review: "",
+    favoriteTrack: "",
+    leastFavoriteTrack: "",
+  });
+  const [errors] = useState<Partial<FormData>>({});
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement the API call to submit the rating
+    console.log(formData);
+    // Reset form and selected album after submission
+    setFormData({
       albumId: "",
       rating: 0,
       review: "",
       favoriteTrack: "",
       leastFavoriteTrack: "",
-    },
-  });
+    });
+    setSelectedAlbum(null);
+  };
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    // TODO: Implement the API call to submit the rating
-    console.log(values);
-    // Reset form and selected album after submission
-    form.reset();
-  }
+  const handleSearch = async (query: string) => {
+    // TODO: Implement the API call to search for albums
+    // This is a mock implementation
+    const mockResults: Album[] = [
+      {
+        id: "1",
+        title: "Album 1",
+        artist: "Artist 1",
+        tracks: ["Track 1", "Track 2", "Track 3"],
+      },
+      {
+        id: "2",
+        title: "Album 2",
+        artist: "Artist 2",
+        tracks: ["Track A", "Track B", "Track C"],
+      },
+    ];
+    setSearchResults(
+      mockResults.filter(
+        (album) =>
+          album.title.toLowerCase().includes(query.toLowerCase()) ||
+          album.artist.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+  };
+
+  const handleAlbumSelect = (albumId: string) => {
+    const album = searchResults.find((a) => a.id === albumId);
+    if (album) {
+      setSelectedAlbum(album);
+      setFormData((prev) => ({ ...prev, albumId: album.id }));
+    }
+  };
+
+  const StarRating = () => {
+    const handleStarClick = (starValue: number) => {
+      if (formData.rating === starValue) {
+        setFormData((prev) => ({ ...prev, rating: starValue - 0.5 }));
+      } else {
+        setFormData((prev) => ({ ...prev, rating: starValue }));
+      }
+    };
+
+    return (
+      <div className="flex items-center space-x-1">
+        {[1, 2, 3, 4, 5].map((starValue) => (
+          <button
+            key={starValue}
+            type="button"
+            onClick={() => handleStarClick(starValue)}
+            className="text-2xl focus:outline-none focus:ring-2 focus:ring-primary"
+            aria-label={`Rate ${starValue} stars`}
+          >
+            {formData.rating >= starValue ? (
+              <Star className="w-6 h-6 text-yellow-400 fill-current" />
+            ) : formData.rating >= starValue - 0.5 ? (
+              <StarHalf className="w-6 h-6 text-yellow-400 fill-current" />
+            ) : (
+              <Star className="w-6 h-6 text-gray-300" />
+            )}
+          </button>
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="space-y-2">
+        <label htmlFor="albumSearch" className="text-sm font-medium">
+          Search and select an album
+        </label>
+        <div className="flex gap-2">
+          <Input
+            id="albumSearch"
+            placeholder="Search for an album"
+            onChange={(e) => handleSearch(e.target.value)}
+            className="flex-grow"
+          />
+          <Button type="button" size="icon">
+            <Search className="h-4 w-4" />
+            <span className="sr-only">Search</span>
+          </Button>
+        </div>
+        {searchResults.length > 0 && (
+          <ul className="mt-2 border rounded-md divide-y">
+            {searchResults.map((album) => (
+              <li
+                key={album.id}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleAlbumSelect(album.id)}
+              >
+                {album.title} by {album.artist}
+              </li>
+            ))}
+          </ul>
+        )}
+        {selectedAlbum && (
+          <div className="mt-2 p-2 border rounded-md bg-gray-50">
+            <p className="font-semibold">{selectedAlbum.title}</p>
+            <p className="text-sm text-gray-600">{selectedAlbum.artist}</p>
+          </div>
+        )}
+        {errors.albumId && (
+          <p className="text-sm text-red-500">{errors.albumId}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Rating</label>
+        <StarRating />
+        <p className="text-sm text-gray-500">
+          Click once for a full star, twice for a half star. Click again to
+          deselect.
+        </p>
+        {errors.rating && (
+          <p className="text-sm text-red-500">{errors.rating}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="review" className="text-sm font-medium">
+          Review
+        </label>
+        <Textarea
+          id="review"
+          placeholder="Write your review here..."
+          className="resize-none"
+          value={formData.review}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, review: e.target.value }))
+          }
+        />
+        <p className="text-sm text-gray-500">
+          Share your thoughts about the album.
+        </p>
+        {errors.review && (
+          <p className="text-sm text-red-500">{errors.review}</p>
+        )}
+      </div>
+
+      {selectedAlbum && (
+        <>
+          <div className="space-y-2">
+            <label htmlFor="favoriteTrack" className="text-sm font-medium">
+              Favorite Track (Optional)
+            </label>
+            <Select
+              value={formData.favoriteTrack}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, favoriteTrack: value }))
+              }
+            >
+              <SelectTrigger id="favoriteTrack">
+                <SelectValue placeholder="Select your favorite track" />
+              </SelectTrigger>
+              <SelectContent>
+                {selectedAlbum.tracks.map((track) => (
+                  <SelectItem key={track} value={track}>
+                    {track}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="leastFavoriteTrack" className="text-sm font-medium">
+              Least Favorite Track (Optional)
+            </label>
+            <Select
+              value={formData.leastFavoriteTrack}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, leastFavoriteTrack: value }))
+              }
+            >
+              <SelectTrigger id="leastFavoriteTrack">
+                <SelectValue placeholder="Select your least favorite track" />
+              </SelectTrigger>
+              <SelectContent>
+                {selectedAlbum.tracks.map((track) => (
+                  <SelectItem key={track} value={track}>
+                    {track}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </>
+      )}
+
       <Button type="submit">Submit Rating</Button>
     </form>
   );

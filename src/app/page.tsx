@@ -1,5 +1,4 @@
-import { Button } from "@radix-ui/themes";
-import { Input } from "@/components/ui/base/Input";
+import { Button, TextField } from "@radix-ui/themes";
 import { Disc3, Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 
@@ -43,7 +42,7 @@ const JoinSection = () => {
           </div>
           <div className="w-full max-w-sm space-y-2">
             <form className="flex space-x-2">
-              <Input
+              <TextField.Root
                 className="max-w-lg flex-1"
                 placeholder="Enter your email"
                 type="email"

@@ -1,17 +1,19 @@
 import { Star, StarHalf } from "lucide-react";
 
-export const StarRating = ({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-}) => {
+interface StarRatingProps {
+  rating: number;
+  onRatingChange: (value: number) => void;
+}
+
+/**
+ * A star rating component that allows the user to select a rating from 1 to 5, allowing increments of 0.5.
+ */
+export const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
   const handleStarClick = (starValue: number) => {
-    if (value === starValue) {
-      onChange(starValue - 0.5);
+    if (rating === starValue) {
+      onRatingChange(starValue - 0.5);
     } else {
-      onChange(starValue);
+      onRatingChange(starValue);
     }
   };
 
@@ -25,9 +27,9 @@ export const StarRating = ({
           className="text-2xl focus:outline-none focus:ring-2 focus:ring-primary"
           aria-label={`Rate ${starValue} stars`}
         >
-          {value >= starValue ? (
+          {rating >= starValue ? (
             <Star className="w-6 h-6 text-yellow-400 fill-current" />
-          ) : value >= starValue - 0.5 ? (
+          ) : rating >= starValue - 0.5 ? (
             <StarHalf className="w-6 h-6 text-yellow-400 fill-current" />
           ) : (
             <Star className="w-6 h-6 text-gray-300" />

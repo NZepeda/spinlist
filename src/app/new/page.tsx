@@ -11,7 +11,7 @@ import NewRatingForm from "./NewRatingForm";
  */
 export default function NewRatingPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="flex flex-col w-full lg:w-2/3 container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Create a New Rating</h1>
       <NewRatingForm />
     </div>

@@ -1,18 +1,19 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { Search, Star, StarHalf } from "lucide-react";
+import { Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/base/Button";
+import { Input } from "@/components/ui/base/Input";
+import { Textarea } from "@/components/ui/base/TextArea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/base/Select";
+import { StarRating } from "@/components/ui/StarRating";
 
 type Album = {
   id: string;
@@ -73,6 +74,7 @@ export default function CreateRatingForm() {
         tracks: ["Track A", "Track B", "Track C"],
       },
     ];
+
     setSearchResults(
       mockResults.filter(
         (album) =>
@@ -90,36 +92,8 @@ export default function CreateRatingForm() {
     }
   };
 
-  const StarRating = () => {
-    const handleStarClick = (starValue: number) => {
-      if (formData.rating === starValue) {
-        setFormData((prev) => ({ ...prev, rating: starValue - 0.5 }));
-      } else {
-        setFormData((prev) => ({ ...prev, rating: starValue }));
-      }
-    };
-
-    return (
-      <div className="flex items-center space-x-1">
-        {[1, 2, 3, 4, 5].map((starValue) => (
-          <button
-            key={starValue}
-            type="button"
-            onClick={() => handleStarClick(starValue)}
-            className="text-2xl focus:outline-none focus:ring-2 focus:ring-primary"
-            aria-label={`Rate ${starValue} stars`}
-          >
-            {formData.rating >= starValue ? (
-              <Star className="w-6 h-6 text-yellow-400 fill-current" />
-            ) : formData.rating >= starValue - 0.5 ? (
-              <StarHalf className="w-6 h-6 text-yellow-400 fill-current" />
-            ) : (
-              <Star className="w-6 h-6 text-gray-300" />
-            )}
-          </button>
-        ))}
-      </div>
-    );
+  const handleRatingChange = (rating: number) => {
+    setFormData((prev) => ({ ...prev, rating }));
   };
 
   return (
@@ -166,7 +140,10 @@ export default function CreateRatingForm() {
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Rating</label>
-        <StarRating />
+        <StarRating
+          rating={formData.rating}
+          onRatingChange={handleRatingChange}
+        />
         <p className="text-sm text-gray-500">
           Click once for a full star, twice for a half star. Click again to
           deselect.

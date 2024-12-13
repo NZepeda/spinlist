@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@radix-ui/themes";
+import { Input } from "@/components/ui/base/Input";
 import { Disc3, Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 

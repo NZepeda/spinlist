@@ -4,9 +4,16 @@ import { useState, FormEvent } from "react";
 import { Search } from "lucide-react";
 
 import { StarRating } from "@/components/ui/StarRating";
-import { Button, TextField, TextArea } from "@radix-ui/themes";
-import * as Select from "@radix-ui/react-select";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 type Album = {
   id: string;
   title: string;
@@ -95,7 +102,7 @@ export default function CreateRatingForm() {
           Search and select an album
         </label>
         <div className="flex gap-2">
-          <TextField.Root
+          <Input
             id="albumSearch"
             placeholder="Search for an album"
             onChange={(e) => handleSearch(e.target.value)}
@@ -149,7 +156,7 @@ export default function CreateRatingForm() {
         <label htmlFor="review" className="text-sm font-medium">
           Review
         </label>
-        <TextArea
+        <Textarea
           id="review"
           placeholder="Write your review here..."
           className="resize-none"
@@ -172,47 +179,47 @@ export default function CreateRatingForm() {
             <label htmlFor="favoriteTrack" className="text-sm font-medium">
               Favorite Track (Optional)
             </label>
-            <Select.Root
+            <Select
               value={formData.favoriteTrack}
               onValueChange={(value) =>
                 setFormData((prev) => ({ ...prev, favoriteTrack: value }))
               }
             >
-              <Select.Trigger id="leastFavoriteTrack">
-                <Select.Value placeholder="Select your favorite track" />
-              </Select.Trigger>
+              <SelectTrigger id="leastFavoriteTrack">
+                <SelectValue placeholder="Select your favorite track" />
+              </SelectTrigger>
 
-              <Select.Content>
+              <SelectContent>
                 {selectedAlbum.tracks.map((track) => (
-                  <Select.Item key={track} value={track}>
+                  <SelectItem key={track} value={track}>
                     {track}
-                  </Select.Item>
+                  </SelectItem>
                 ))}
-              </Select.Content>
-            </Select.Root>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="leastFavoriteTrack" className="text-sm font-medium">
               Least Favorite Track (Optional)
             </label>
-            <Select.Root
+            <Select
               value={formData.leastFavoriteTrack}
               onValueChange={(value) =>
                 setFormData((prev) => ({ ...prev, leastFavoriteTrack: value }))
               }
             >
-              <Select.Trigger id="leastFavoriteTrack">
-                <Select.Value placeholder="Select your least favorite track" />
-              </Select.Trigger>
-              <Select.Content>
+              <SelectTrigger id="leastFavoriteTrack">
+                <SelectValue placeholder="Select your least favorite track" />
+              </SelectTrigger>
+              <SelectContent>
                 {selectedAlbum.tracks.map((track) => (
-                  <Select.Item key={track} value={track}>
+                  <SelectItem key={track} value={track}>
                     {track}
-                  </Select.Item>
+                  </SelectItem>
                 ))}
-              </Select.Content>
-            </Select.Root>
+              </SelectContent>
+            </Select>
           </div>
         </>
       )}

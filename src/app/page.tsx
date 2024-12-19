@@ -1,13 +1,13 @@
-import { Button, TextField } from "@radix-ui/themes";
 import { Disc3, Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 const HeroSection = () => {
   return (
     <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 xl:py-48">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center space-y-4 text-center">
-          <div className="space-y-2">
+          <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
               Discover, Rate, and Share Your Favorite Albums
             </h1>
@@ -15,10 +15,6 @@ const HeroSection = () => {
               Join the community of music enthusiasts. Track your listening
               journey, rate albums, and connect with like-minded fans.
             </p>
-          </div>
-          <div className="space-x-4">
-            <Button>Get Started</Button>
-            <Button variant="outline">Learn More</Button>
           </div>
         </div>
       </div>
@@ -42,7 +38,7 @@ const JoinSection = () => {
           </div>
           <div className="w-full max-w-sm space-y-2">
             <form className="flex space-x-2">
-              <TextField.Root
+              <Input
                 className="max-w-lg flex-1"
                 placeholder="Enter your email"
                 type="email"
@@ -109,7 +105,7 @@ export default function Home() {
         </Link>
         <nav className="ml-auto flex items-center gap-4 sm:gap-6">
           <Button variant="ghost" asChild>
-            <Link href="#">Log In</Link>
+            <Link href="/login">Log In</Link>
           </Button>
           <Button asChild>
             <Link href="#">Sign Up</Link>

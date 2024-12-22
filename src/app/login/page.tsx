@@ -3,8 +3,8 @@ import LoginForm from "./LoginForm";
 import { Disc3 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Login | AlbumPulse",
-  description: "Log in to your AlbumPulse account",
+  title: "Login | The Spinlist",
+  description: "Log in to your Spinlist account",
 };
 
 export default function LoginPage() {

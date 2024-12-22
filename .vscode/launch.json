@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Next.js: Debug server-side",
+        "type": "node-terminal",
+        "request": "launch",
+        "command": "nvm use 20.14.0 && pnpm run dev"
+      }
+    ]
+  }

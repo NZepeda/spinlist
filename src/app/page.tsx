@@ -1,7 +1,7 @@
 import { Disc3, Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/core/button";
+import { Input } from "@/components/core/input";
 const HeroSection = () => {
   return (
     <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 xl:py-48">

@@ -38,8 +38,6 @@ export async function signup(formData: FormData) {
 
   const { error } = result;
 
-  console.log({ data, result });
-
   if (error) {
     redirect("/error");
   }

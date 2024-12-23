@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Spin",
-  description: "Spin is a music review platform for albums.",
+  title: "Spinlist",
+  description: "Spinlist is a music review platform for albums.",
 };
 
 export default function RootLayout({

@@ -4,16 +4,16 @@ import { useState, FormEvent } from "react";
 import { Search } from "lucide-react";
 
 import { StarRating } from "@/components/ui/StarRating";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/core/button";
+import { Input } from "@/components/core/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/core/select";
+import { Textarea } from "@/components/core/textarea";
 type Album = {
   id: string;
   title: string;

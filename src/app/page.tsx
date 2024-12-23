@@ -108,7 +108,7 @@ export default function Home() {
             <Link href="/login">Log In</Link>
           </Button>
           <Button asChild>
-            <Link href="#">Sign Up</Link>
+            <Link href="/signup">Sign Up</Link>
           </Button>
         </nav>
       </header>

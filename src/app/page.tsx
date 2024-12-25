@@ -2,7 +2,8 @@ import { Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/core/button";
 import { Input } from "@/components/core/input";
-import { NavBar } from "@/components/NavBar";
+import NavBar from "@/components/NavBar";
+
 const HeroSection = () => {
   return (
     <section className="w-full flex justify-center py-12 md:py-24 lg:py-32 xl:py-48">

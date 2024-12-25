@@ -4,7 +4,6 @@ import { createServerClient } from "@/lib/auth/server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import bcrypt from "bcrypt";
 
 const SignUpSchema = z
   .object({
@@ -37,11 +36,9 @@ export async function signUp(formData: FormData) {
 
   const { email, password, username } = parsedSignUpData.data;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   const { error: authError } = await supabase.auth.signUp({
     email,
-    password: hashedPassword,
+    password,
     options: {
       data: {
         username,
@@ -50,6 +47,7 @@ export async function signUp(formData: FormData) {
   });
 
   if (authError) {
+    console.error(authError);
     throw new Error("Failed to sign up");
   }
 

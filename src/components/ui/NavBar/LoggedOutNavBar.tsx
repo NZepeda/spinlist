@@ -1,5 +1,5 @@
 import { Button } from "@/components/core/button";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 export const LoggedOutNavBar = () => {
   return (

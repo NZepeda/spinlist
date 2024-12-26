@@ -1,23 +1,9 @@
-import { Button } from "./core/button";
-
 import { Disc3 } from "lucide-react";
 
 import Link from "next/link";
 import { createServerClient } from "@/lib/auth/server";
 import { LoggedInNavBar } from "./LoggedInNavbar";
-
-const LoggedOutNavBar = () => {
-  return (
-    <nav className="ml-auto flex items-center gap-4 sm:gap-6">
-      <Button variant="ghost" asChild>
-        <Link href="/login">Log In</Link>
-      </Button>
-      <Button asChild>
-        <Link href="/signup">Sign Up</Link>
-      </Button>
-    </nav>
-  );
-};
+import { LoggedOutNavBar } from "./LoggedOutNavBar";
 
 /**
  * Displays the login and sign up buttons when the user is not logged in.

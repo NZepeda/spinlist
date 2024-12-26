@@ -2,7 +2,7 @@ import { Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/core/button";
 import { Input } from "@/components/core/input";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/ui/NavBar";
 
 const HeroSection = () => {
   return (

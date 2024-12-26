@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/core/button";
 import { login } from "./actions";
 
 export default function LoginForm() {

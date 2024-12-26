@@ -1,0 +1,5 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="var(--bg-color, #E5E7EB)"/>
+  <path d="M100 100C122.091 100 140 82.0914 140 60C140 37.9086 122.091 20 100 20C77.9086 20 60 37.9086 60 60C60 82.0914 77.9086 100 100 100Z" fill="var(--avatar-color, #9CA3AF)"/>
+  <path d="M155 180C155 146.863 130.376 120 100 120C69.6243 120 45 146.863 45 180" fill="var(--avatar-color, #9CA3AF)" stroke-width="30"/>
+</svg>

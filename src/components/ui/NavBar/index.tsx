@@ -16,12 +16,14 @@ export default async function NavBar() {
   } = await supabase.auth.getUser();
 
   return (
-    <header className="px-4 lg:px-6 h-14 flex items-center">
+    <nav className="px-4 lg:px-6 h-14 flex items-center">
       <Link className="flex items-center justify-center" href="#">
         <Disc3 className="h-[32px] w-[32px]" />
         <span className="hidden md:block ml-2 text-lg font-bold">spinlist</span>
       </Link>
-      {user ? <LoggedInNavBar /> : <LoggedOutNavBar />}
-    </header>
+      <div className="flex-grow">
+        {user ? <LoggedInNavBar /> : <LoggedOutNavBar />}
+      </div>
+    </nav>
   );
 }

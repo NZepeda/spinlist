@@ -22,6 +22,10 @@ export const SpotifySearch = () => {
 
   const { albums, error } = useAlbums(searchQueryDebounced);
 
+  if (error) {
+    console.error(error);
+  }
+
   useEffect(() => {
     if (albums.length > 0) {
       setIsOpen(true);
@@ -59,7 +63,7 @@ export const SpotifySearch = () => {
             type="search"
             value={searchQuery}
             onChange={handleSearch}
-            disabled={error !== undefined || error! !== null}
+            disabled={Boolean(error)}
             autoComplete="off"
           />
         </div>

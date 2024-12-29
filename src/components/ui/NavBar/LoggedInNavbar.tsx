@@ -22,9 +22,9 @@ export const LoggedInNavBar = () => {
   };
 
   return (
-    <>
-      <div className="flex-1 flex items-center justify-center px-2 lg:ml-6 lg:justify-end">
-        <div className="max-w-lg w-full lg:max-w-xs">
+    <div className="flex items-center justify-center">
+      <div className="flex-grow flex items-center justify-center px-2 lg:ml-6">
+        <div className="max-w-xl w-full lg:max-w-lg">
           <SpotifySearch />
         </div>
       </div>
@@ -60,6 +60,6 @@ export const LoggedInNavBar = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };

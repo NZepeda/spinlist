@@ -70,7 +70,9 @@ const MobileNavbarActions = () => {
 export const LoggedOutNavBar = () => {
   return (
     <div className="ml-auto flex justify-center items-center">
-      <SpotifySearch />
+      <div className="px-2 max-w-xl w-full lg:max-w-lg">
+        <SpotifySearch />
+      </div>
       <DesktopNavbarActions />
       <MobileNavbarActions />
     </div>

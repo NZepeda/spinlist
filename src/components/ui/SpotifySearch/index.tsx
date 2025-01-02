@@ -3,12 +3,13 @@ import { Search as SearchIcon } from "lucide-react";
 import Image from "next/image";
 import { useOnClickOutside, useDebounceCallback } from "usehooks-ts";
 import { useAlbums } from "@/lib/hooks/useAlbums";
+import { useRouter } from "next/navigation";
 
 export const SpotifySearch = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchQueryDebounced, setSearchQueryDebounced] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
+  const [didClickOutside, setDidClickOutside] = useState(false);
+  const router = useRouter();
   const debouncedSetSearchQuery = useDebounceCallback(
     setSearchQueryDebounced,
     500
@@ -17,7 +18,7 @@ export const SpotifySearch = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useOnClickOutside(containerRef, () => {
-    setIsOpen(false);
+    setDidClickOutside(true);
   });
 
   const { albums, error } = useAlbums(searchQueryDebounced);
@@ -25,14 +26,6 @@ export const SpotifySearch = () => {
   if (error) {
     console.error(error);
   }
-
-  useEffect(() => {
-    if (albums.length > 0) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [albums]);
 
   useEffect(() => {
     debouncedSetSearchQuery(searchQuery);
@@ -65,11 +58,12 @@ export const SpotifySearch = () => {
             onChange={handleSearch}
             disabled={Boolean(error)}
             autoComplete="off"
+            onFocus={() => setDidClickOutside(false)}
           />
         </div>
 
         {/* Dropdown Results - Only show when we have results and input is focused */}
-        {isOpen && (
+        {albums.length > 0 && !didClickOutside && (
           <div className="absolute mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-auto z-50">
             <ul className="py-2">
               {
@@ -80,6 +74,9 @@ export const SpotifySearch = () => {
                     <li
                       key={album.id}
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-3"
+                      onClick={() => {
+                        router.push(`/album/${album.id}`);
+                      }}
                     >
                       {image && (
                         <div className="flex-shrink-0 w-10 h-10">

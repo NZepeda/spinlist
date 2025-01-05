@@ -14,7 +14,8 @@ export const useAlbums = (query: string) => {
     queryKey: ["albums", query],
     queryFn: () => getAlbums(query, token),
     enabled: query.length > 0,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 20, // 20 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
     placeholderData: { albums: [] },
     refetchOnWindowFocus: false,
     refetchOnMount: false,

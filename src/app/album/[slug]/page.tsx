@@ -7,6 +7,9 @@ import {
 } from "@tanstack/react-query";
 import { getAlbum } from "@/lib/actions/getAlbum";
 
+/**
+ * TODO: This metadata should be dynamic.
+ */
 export const metadata: Metadata = {
   title: "Album Details | AlbumPulse",
   description: "View album details and reviews",
@@ -21,8 +24,10 @@ export default async function AlbumPage({
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["album"],
+    queryKey: ["album", albumId],
     queryFn: () => getAlbum(albumId),
+    staleTime: 1000 * 60 * 20, // 10 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
   });
 
   return (

@@ -3,8 +3,8 @@ import { Heart } from "lucide-react";
 type TrackListProps = {
   tracks: string[];
   isLoggedIn: boolean;
-  favoriteTrack: string | null;
-  onFavoriteSelect: (track: string) => void;
+  favoriteTrack?: string;
+  onFavoriteSelect?: (track: string) => void;
 };
 
 export default function TrackList({
@@ -27,7 +27,7 @@ export default function TrackList({
             </span>
             {isLoggedIn && (
               <button
-                onClick={() => onFavoriteSelect(track)}
+                onClick={() => onFavoriteSelect?.(track)}
                 className="focus:outline-none"
                 aria-label={
                   favoriteTrack === track

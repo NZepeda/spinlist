@@ -1,57 +1,19 @@
 "use client";
 
-import { getAlbum } from "@/lib/actions/getAlbum";
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { StarRating } from "@/components/ui/StarRating";
+import { useAlbum } from "@/lib/hooks/useAlbum";
 import TrackList from "./TrackList";
-// import { useState } from "react";
-// import Image from "next/image";
-// import { Star, User } from "lucide-react";
-// import ReviewForm from "./ReviewForm";
-// import TrackList from "./TrackList";
-// import { StarRating } from "@/components/ui/StarRating";
 
-// type Album = {
-//   id: string;
-//   title: string;
-//   artist: string;
-//   releaseDate: string;
-//   artwork: string;
-//   tracks: string[];
-// };
-
-// type Review = {
-//   id: string;
-//   userId: string;
-//   username: string;
-//   rating: number;
-//   content: string;
-// };
-
-// type StarRating = {
-//   [key: number]: number;
-// };
-
+/**
+ * Displays the details of an album.
+ * @returns The AlbumDetails component.
+ */
 export const AlbumDetails = () => {
   const params = useParams<{ slug: string }>();
   const albumId = params.slug;
 
-  const { data: album, isLoading } = useQuery({
-    queryKey: ["album"],
-    queryFn: () => getAlbum(albumId),
-  });
-
-  console.log("album", album);
-
-  // const handleFavoriteTrackSelect = (track: string) => {
-  //   setFavoriteTrack(track);
-  //   // In a real app, you'd send this to your API to update the user's favorite track
-  //   console.log(`Favorite track set to: ${track}`);
-  // };
-
-  //const album = await getAlbum(albumId);
+  const { data: album, isLoading } = useAlbum(albumId);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -62,17 +24,22 @@ export const AlbumDetails = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/3">
           <Image
-            src={album.images[0].url}
-            alt={`${album.title} artwork`}
+            src={album.images[1].url}
+            alt={`${album.name} artwork`}
             width={300}
             height={300}
             className="rounded-lg shadow-lg"
           />
         </div>
         <div className="w-full md:w-2/3 space-y-4">
-          <h1>{album.title}</h1>
-          <p className="text-xl">{album.artist}</p>
-          <p>{album.releaseDate}</p>
+          <h1>{album.name}</h1>
+          <p className="text-xl">
+            {album.artists
+              // @ts-expect-error The Spotify API return types are not fully typed yet.
+              .map((artist) => artist.name)
+              .join(", ")}
+          </p>
+          <p>{album.release_date}</p>
           {/* <div className="flex items-center space-x-2">
             <StarRating rating={4} />
             <span className="text-2xl font-bold">
@@ -86,12 +53,11 @@ export const AlbumDetails = () => {
         </div>
       </div>
 
-      {/* <TrackList
-        tracks={album.tracks}
-        isLoggedIn={isLoggedIn}
-        favoriteTrack={favoriteTrack}
-        onFavoriteSelect={handleFavoriteTrackSelect}
-      /> */}
+      <TrackList
+        // @ts-expect-error The Spotify API return types are not fully typed yet.
+        tracks={album.tracks.items.map((track) => track.name)}
+        isLoggedIn={false}
+      />
 
       <div className="space-y-4">
         <h2>Reviews</h2>

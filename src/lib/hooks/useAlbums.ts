@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { searchSpotifyAlbums } from "@/lib/actions/searchSpotifyAlbums";
+import { getAlbums } from "@/lib/actions/getAlbums";
 import { useSpotifyToken } from "./useSpotifyToken";
 
 /**
@@ -12,9 +12,10 @@ export const useAlbums = (query: string) => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["albums", query],
-    queryFn: () => searchSpotifyAlbums(query, token),
+    queryFn: () => getAlbums(query, token),
     enabled: query.length > 0,
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 20, // 20 minutes
+    gcTime: 1000 * 60 * 60, // 1 hour
     placeholderData: { albums: [] },
     refetchOnWindowFocus: false,
     refetchOnMount: false,

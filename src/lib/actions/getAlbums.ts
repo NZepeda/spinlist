@@ -4,7 +4,7 @@
  * @param token - The Spotify API token
  * @returns The albums
  */
-export const searchSpotifyAlbums = async (query: string, token: string) => {
+export const getAlbums = async (query: string, token: string) => {
   if (!query) {
     return { albums: { items: [] } };
   }

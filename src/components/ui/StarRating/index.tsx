@@ -2,7 +2,7 @@ import { Star, StarHalf } from "lucide-react";
 
 interface StarRatingProps {
   rating: number;
-  onRatingChange: (value: number) => void;
+  onRatingChange?: (value: number) => void;
 }
 
 /**
@@ -11,9 +11,9 @@ interface StarRatingProps {
 export const StarRating = ({ rating, onRatingChange }: StarRatingProps) => {
   const handleStarClick = (starValue: number) => {
     if (rating === starValue) {
-      onRatingChange(starValue - 0.5);
+      onRatingChange?.(starValue - 0.5);
     } else {
-      onRatingChange(starValue);
+      onRatingChange?.(starValue);
     }
   };
 

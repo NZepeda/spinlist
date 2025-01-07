@@ -59,10 +59,10 @@ export const AlbumDetails = () => {
         isLoggedIn={false}
       />
 
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h2>Reviews</h2>
         <div className="grid grid-cols-2 gap-4">
-          {/* {Object.entries(starRatings).map(([star, count]) => (
+          {Object.entries(starRatings).map(([star, count]) => (
             <div key={star} className="flex items-center space-x-2">
               <span>
                 {star} star{parseInt(star) !== 1 ? "s" : ""}
@@ -75,9 +75,9 @@ export const AlbumDetails = () => {
               </div>
               <span>{count}</span>
             </div>
-          ))} */}
+          ))}
         </div>
-      </div>
+      </div> */}
 
       {/* {isLoggedIn && (
         <ReviewForm

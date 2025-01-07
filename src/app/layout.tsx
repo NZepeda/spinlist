@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { instrumentSerif } from "./fonts";
+import NavBar from "@/components/ui/NavBar";
 
 export const metadata: Metadata = {
   title: "Spinlist",
@@ -20,8 +21,11 @@ export default function RootLayout({
       <body
         className={`${instrumentSerif.className} antialiased flex min-w-screen min-h-screen flex flex-col justify-center`}
       >
-        <main className="grow">
-          <QueryProvider>{children}</QueryProvider>
+        <main className="grow flex flex-col min-h-screen">
+          <QueryProvider>
+            <NavBar />
+            {children}
+          </QueryProvider>
         </main>
         <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
           <p className="text-xs text-gray-500 dark:text-gray-400">

@@ -2,7 +2,6 @@ import { Star, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/core/button";
 import { Input } from "@/components/core/input";
-import NavBar from "@/components/ui/NavBar";
 
 const HeroSection = () => {
   return (
@@ -100,7 +99,6 @@ const FeaturesSection = () => {
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar />
       <div className="flex-1 w-full">
         <HeroSection />
         <FeaturesSection />

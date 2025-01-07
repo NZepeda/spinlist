@@ -76,6 +76,8 @@ export const SpotifySearch = () => {
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-3"
                       onClick={() => {
                         router.push(`/album/${album.id}`);
+                        setSearchQuery("");
+                        setDidClickOutside(true);
                       }}
                     >
                       {image && (

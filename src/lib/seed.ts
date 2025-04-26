@@ -22,14 +22,14 @@ console.log(
   process.env.NEXT_PUBLIC_SUPABASE_URL
 );
 console.log(
-  "process.env.SUPABASE_SERVICE_ROLE_KEY",
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  "process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY",
+  process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
 );
 
 // Initialize Supabase client with service_role key to bypass RLS
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // Use service_role key instead of anon key
+  process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!, // Use service_role key instead of anon key
   {
     auth: {
       autoRefreshToken: false,
@@ -193,7 +193,7 @@ const fetchAndStoreAlbums = async () => {
         `https://api.spotify.com/v1/albums/${spotifyId}`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
+            Authorization: `Bearer BQBL7RAQXkHF5LVGxDWiTV5WUNQLRsrAr0HaeGCYvRGuA6CJQ8Fc9gFJ5ROfF8e6SHj-5pM8D-AWToHcj5Q7-eIeFdc0RuFJYUxsLK_okFW7VKlGhnK8Z3U_nTEPkpVkwLg1CkEYSKs`,
           },
         }
       );

@@ -1,5 +1,3 @@
-import { createServerClient } from "@supabase/ssr";
-
 /**
  * Gets an album from Spotify.
  * @param albumId The ID of the album to get.
@@ -14,12 +12,14 @@ export const getAlbum = async (albumId: string, token?: string) => {
     spotifyToken = data.token;
   }
 
-  // const supabase = createServerClient();
+  // const supabase = await createServerClient();
 
   // const { data, error } = await supabase
   //   .from("albums")
   //   .select("*")
   //   .eq("id", albumId);
+
+  // console.log("data", data);
 
   // if (error) {
   //   throw new Error(error.message);

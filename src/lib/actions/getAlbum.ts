@@ -1,3 +1,6 @@
+import { getAlbumFromDatabase } from "./getAlbumFromDatabase";
+import { getAlbumFromSpotify } from "./getAlbumFromSpotify";
+
 /**
  * Gets an album from Spotify.
  * @param albumId The ID of the album to get.
@@ -5,31 +8,17 @@
  * @returns The album.
  */
 export const getAlbum = async (albumId: string, token?: string) => {
-  let spotifyToken = token;
+  const albumFromDatabase = await getAlbumFromDatabase(albumId);
 
-  if (!spotifyToken) {
-    const data = await fetch("/api/spotify/token").then((res) => res.json());
-    spotifyToken = data.token;
+  if (albumFromDatabase) {
+    return albumFromDatabase;
   }
 
-  // const supabase = await createServerClient();
+  const albumFromSpotify = await getAlbumFromSpotify(albumId, token);
 
-  // const { data, error } = await supabase
-  //   .from("albums")
-  //   .select("*")
-  //   .eq("id", albumId);
+  if (albumFromSpotify) {
+    return albumFromSpotify;
+  }
 
-  // console.log("data", data);
-
-  // if (error) {
-  //   throw new Error(error.message);
-  // }
-
-  const response = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
-    headers: {
-      Authorization: `Bearer ${spotifyToken}`,
-    },
-  });
-
-  return response.json();
+  return null;
 };

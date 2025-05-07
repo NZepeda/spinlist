@@ -22,6 +22,5 @@ export async function GET() {
     );
   }
   const { token, expiresIn } = tokenData;
-  console.log("Token fetched: ", Date.now() / 1000);
   return Response.json({ token, expiresIn }, { status: 200 });
 }

@@ -33,7 +33,7 @@ export const AlbumDetails = ({ album }: { album: DatabaseAlbum }) => {
       </div>
 
       <TrackList
-        tracks={tracks.map((track) => track.name)}
+        tracks={(tracks! as { name: string }[]).map(({ name }) => name)}
         isLoggedIn={false}
       />
     </div>

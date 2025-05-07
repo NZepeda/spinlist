@@ -1,5 +1,4 @@
 import { createServerClient } from "@/lib/auth/server";
-import { PostgrestError } from "@supabase/supabase-js";
 import { Database } from "../types/supabase.types";
 
 type DatabaseAlbum = Database["public"]["Tables"]["albums"]["Row"];
@@ -22,10 +21,7 @@ export async function getAlbumFromDatabase(
     .eq("spotify_id", albumId)
     .single<DatabaseAlbum>();
 
-  if (error) {
-    if ((error as PostgrestError).code === NO_DATA_ERROR_CODE) {
-      return null;
-    }
+  if (error && error.code !== NO_DATA_ERROR_CODE) {
     throw new Error(error.message);
   }
 

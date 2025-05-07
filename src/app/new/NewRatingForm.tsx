@@ -18,7 +18,7 @@ type Album = {
   id: string;
   title: string;
   artist: string;
-  tracks: string[];
+  tracks: { title: string; length: number }[];
 };
 
 type FormData = {
@@ -64,13 +64,21 @@ export default function CreateRatingForm() {
         id: "1",
         title: "Album 1",
         artist: "Artist 1",
-        tracks: ["Track 1", "Track 2", "Track 3"],
+        tracks: [
+          { title: "Track 1", length: 3.5 },
+          { title: "Track 2", length: 4.2 },
+          { title: "Track 3", length: 3.8 },
+        ],
       },
       {
         id: "2",
         title: "Album 2",
         artist: "Artist 2",
-        tracks: ["Track A", "Track B", "Track C"],
+        tracks: [
+          { title: "Track A", length: 4.0 },
+          { title: "Track B", length: 3.9 },
+          { title: "Track C", length: 4.1 },
+        ],
       },
     ];
 
@@ -191,8 +199,8 @@ export default function CreateRatingForm() {
 
               <SelectContent>
                 {selectedAlbum.tracks.map((track) => (
-                  <SelectItem key={track} value={track}>
-                    {track}
+                  <SelectItem key={track.title} value={track.title}>
+                    {track.title}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -214,8 +222,8 @@ export default function CreateRatingForm() {
               </SelectTrigger>
               <SelectContent>
                 {selectedAlbum.tracks.map((track) => (
-                  <SelectItem key={track} value={track}>
-                    {track}
+                  <SelectItem key={track.title} value={track.title}>
+                    {track.title}
                   </SelectItem>
                 ))}
               </SelectContent>

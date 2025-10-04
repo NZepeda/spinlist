@@ -6,30 +6,84 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Root component for a modal dialog. Controls the open/closed state of the dialog.
+ * Uses Radix UI Dialog primitive for accessibility and keyboard interactions.
+ *
+ * @example
+ * ```tsx
+ * <Dialog open={isOpen} onOpenChange={setIsOpen}>
+ *   <DialogTrigger>Open Dialog</DialogTrigger>
+ *   <DialogContent>
+ *     <DialogHeader>
+ *       <DialogTitle>Title</DialogTitle>
+ *     </DialogHeader>
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ */
 function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
+/**
+ * Button or element that triggers the dialog to open when clicked.
+ *
+ * @example
+ * ```tsx
+ * <Dialog>
+ *   <DialogTrigger asChild>
+ *     <Button>Open Settings</Button>
+ *   </DialogTrigger>
+ *   <DialogContent>...</DialogContent>
+ * </Dialog>
+ * ```
+ */
 function DialogTrigger({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
+/**
+ * Portal component that renders dialog content in a different part of the DOM.
+ * Typically used internally by DialogContent.
+ */
 function DialogPortal({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
+/**
+ * Button component that closes the dialog when clicked.
+ *
+ * @example
+ * ```tsx
+ * <DialogContent>
+ *   <DialogHeader>
+ *     <DialogTitle>Confirmation</DialogTitle>
+ *   </DialogHeader>
+ *   <DialogFooter>
+ *     <DialogClose asChild>
+ *       <Button variant="outline">Cancel</Button>
+ *     </DialogClose>
+ *   </DialogFooter>
+ * </DialogContent>
+ * ```
+ */
 function DialogClose({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Close>) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
+/**
+ * Semi-transparent overlay that appears behind the dialog content.
+ * Clicking it will close the dialog by default.
+ */
 function DialogOverlay({
   className,
   ...props
@@ -46,6 +100,25 @@ function DialogOverlay({
   )
 }
 
+/**
+ * Main container for dialog content. Centers the dialog and includes animations,
+ * overlay, and an optional close button (X icon).
+ *
+ * @param showCloseButton - Whether to display the close button in top-right corner (defaults to true)
+ *
+ * @example
+ * ```tsx
+ * <Dialog>
+ *   <DialogTrigger>Open</DialogTrigger>
+ *   <DialogContent showCloseButton={false}>
+ *     <DialogHeader>
+ *       <DialogTitle>Custom Dialog</DialogTitle>
+ *       <DialogDescription>No close button</DialogDescription>
+ *     </DialogHeader>
+ *   </DialogContent>
+ * </Dialog>
+ * ```
+ */
 function DialogContent({
   className,
   children,
@@ -80,6 +153,22 @@ function DialogContent({
   )
 }
 
+/**
+ * Header section for the dialog, typically contains DialogTitle and DialogDescription.
+ * Provides consistent spacing and layout.
+ *
+ * @example
+ * ```tsx
+ * <DialogContent>
+ *   <DialogHeader>
+ *     <DialogTitle>Delete Account</DialogTitle>
+ *     <DialogDescription>
+ *       This action cannot be undone.
+ *     </DialogDescription>
+ *   </DialogHeader>
+ * </DialogContent>
+ * ```
+ */
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -90,6 +179,25 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * Footer section for the dialog, typically contains action buttons.
+ * Responsive layout that stacks vertically on mobile and horizontally on desktop.
+ *
+ * @example
+ * ```tsx
+ * <DialogContent>
+ *   <DialogHeader>
+ *     <DialogTitle>Confirm Action</DialogTitle>
+ *   </DialogHeader>
+ *   <DialogFooter>
+ *     <DialogClose asChild>
+ *       <Button variant="outline">Cancel</Button>
+ *     </DialogClose>
+ *     <Button>Confirm</Button>
+ *   </DialogFooter>
+ * </DialogContent>
+ * ```
+ */
 function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -103,6 +211,18 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+/**
+ * Title component for the dialog. Automatically linked to the dialog for accessibility.
+ * Should be placed within DialogHeader.
+ *
+ * @example
+ * ```tsx
+ * <DialogHeader>
+ *   <DialogTitle>Account Settings</DialogTitle>
+ *   <DialogDescription>Manage your account preferences</DialogDescription>
+ * </DialogHeader>
+ * ```
+ */
 function DialogTitle({
   className,
   ...props
@@ -116,6 +236,20 @@ function DialogTitle({
   )
 }
 
+/**
+ * Description component for the dialog. Provides additional context below the title.
+ * Automatically linked to the dialog for screen reader accessibility.
+ *
+ * @example
+ * ```tsx
+ * <DialogHeader>
+ *   <DialogTitle>Delete File</DialogTitle>
+ *   <DialogDescription>
+ *     Are you sure you want to delete this file? This action cannot be undone.
+ *   </DialogDescription>
+ * </DialogHeader>
+ * ```
+ */
 function DialogDescription({
   className,
   ...props

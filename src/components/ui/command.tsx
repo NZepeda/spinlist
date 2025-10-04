@@ -13,6 +13,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+/**
+ * Command component that provides a base container for building command palettes,
+ * autocomplete search interfaces, and filterable lists. Built on top of cmdk.
+ *
+ * @example
+ * ```tsx
+ * <Command>
+ *   <CommandInput placeholder="Search..." />
+ *   <CommandList>
+ *     <CommandGroup heading="Suggestions">
+ *       <CommandItem>Item 1</CommandItem>
+ *     </CommandGroup>
+ *   </CommandList>
+ * </Command>
+ * ```
+ */
 function Command({
   className,
   ...props
@@ -29,6 +45,27 @@ function Command({
   )
 }
 
+/**
+ * A modal dialog wrapper for the Command component. Displays the command palette
+ * in a centered dialog with an overlay, perfect for global search features activated
+ * by keyboard shortcuts.
+ *
+ * @param title - Screen reader title for the dialog (defaults to "Command Palette")
+ * @param description - Screen reader description (defaults to "Search for a command to run...")
+ * @param showCloseButton - Whether to show the close button (defaults to true)
+ *
+ * @example
+ * ```tsx
+ * <CommandDialog open={open} onOpenChange={setOpen}>
+ *   <CommandInput placeholder="Type a command..." />
+ *   <CommandList>
+ *     <CommandGroup heading="Actions">
+ *       <CommandItem>New File</CommandItem>
+ *     </CommandGroup>
+ *   </CommandList>
+ * </CommandDialog>
+ * ```
+ */
 function CommandDialog({
   title = "Command Palette",
   description = "Search for a command to run...",
@@ -60,6 +97,17 @@ function CommandDialog({
   )
 }
 
+/**
+ * Input field for the Command component with an integrated search icon.
+ * Automatically filters CommandItem children based on the input value.
+ *
+ * @example
+ * ```tsx
+ * <Command>
+ *   <CommandInput placeholder="Search files..." />
+ * </Command>
+ * ```
+ */
 function CommandInput({
   className,
   ...props
@@ -82,6 +130,21 @@ function CommandInput({
   )
 }
 
+/**
+ * Scrollable container for CommandGroup and CommandItem components.
+ * Automatically handles keyboard navigation and manages the visible area
+ * with a max height of 300px.
+ *
+ * @example
+ * ```tsx
+ * <Command>
+ *   <CommandInput />
+ *   <CommandList>
+ *     <CommandGroup>...</CommandGroup>
+ *   </CommandList>
+ * </Command>
+ * ```
+ */
 function CommandList({
   className,
   ...props
@@ -98,6 +161,18 @@ function CommandList({
   )
 }
 
+/**
+ * Displayed when no CommandItem components match the current search query.
+ * Centered text that provides feedback when the filter yields no results.
+ *
+ * @example
+ * ```tsx
+ * <CommandList>
+ *   <CommandEmpty>No results found.</CommandEmpty>
+ *   <CommandGroup>...</CommandGroup>
+ * </CommandList>
+ * ```
+ */
 function CommandEmpty({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
@@ -110,6 +185,23 @@ function CommandEmpty({
   )
 }
 
+/**
+ * Groups related CommandItem components together under an optional heading.
+ * Useful for categorizing search results or command options.
+ *
+ * @example
+ * ```tsx
+ * <CommandList>
+ *   <CommandGroup heading="Files">
+ *     <CommandItem>index.tsx</CommandItem>
+ *     <CommandItem>App.tsx</CommandItem>
+ *   </CommandGroup>
+ *   <CommandGroup heading="Actions">
+ *     <CommandItem>New File</CommandItem>
+ *   </CommandGroup>
+ * </CommandList>
+ * ```
+ */
 function CommandGroup({
   className,
   ...props
@@ -126,6 +218,19 @@ function CommandGroup({
   )
 }
 
+/**
+ * Visual separator to divide sections within a Command component.
+ * Renders as a horizontal line with subtle styling.
+ *
+ * @example
+ * ```tsx
+ * <CommandList>
+ *   <CommandGroup heading="Recent">...</CommandGroup>
+ *   <CommandSeparator />
+ *   <CommandGroup heading="All Files">...</CommandGroup>
+ * </CommandList>
+ * ```
+ */
 function CommandSeparator({
   className,
   ...props
@@ -139,6 +244,23 @@ function CommandSeparator({
   )
 }
 
+/**
+ * Individual selectable item within a Command component. Supports keyboard navigation,
+ * selection states, and can be disabled. Use the `onSelect` prop to handle item selection.
+ *
+ * @example
+ * ```tsx
+ * <CommandGroup>
+ *   <CommandItem onSelect={() => openFile('index.tsx')}>
+ *     <FileIcon />
+ *     index.tsx
+ *   </CommandItem>
+ *   <CommandItem disabled>
+ *     Locked File
+ *   </CommandItem>
+ * </CommandGroup>
+ * ```
+ */
 function CommandItem({
   className,
   ...props
@@ -155,6 +277,22 @@ function CommandItem({
   )
 }
 
+/**
+ * Displays keyboard shortcuts aligned to the right of a CommandItem.
+ * Useful for showing keyboard hints or hotkeys for commands.
+ *
+ * @example
+ * ```tsx
+ * <CommandItem>
+ *   New File
+ *   <CommandShortcut>⌘N</CommandShortcut>
+ * </CommandItem>
+ * <CommandItem>
+ *   Copy
+ *   <CommandShortcut>⌘C</CommandShortcut>
+ * </CommandItem>
+ * ```
+ */
 function CommandShortcut({
   className,
   ...props

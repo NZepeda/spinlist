@@ -2,6 +2,28 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Styled text input component with focus states, validation styling, and file upload support.
+ * Includes built-in accessibility features and responsive text sizing.
+ *
+ * @param type - HTML input type (text, email, password, file, etc.)
+ * @param className - Additional CSS classes to apply
+ *
+ * @example
+ * ```tsx
+ * // Basic text input
+ * <Input type="text" placeholder="Enter your name" />
+ *
+ * // Email input with validation
+ * <Input type="email" aria-invalid={!!errors.email} />
+ *
+ * // Password field
+ * <Input type="password" placeholder="Password" />
+ *
+ * // File upload
+ * <Input type="file" accept="image/*" />
+ * ```
+ */
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input

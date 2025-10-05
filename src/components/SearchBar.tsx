@@ -23,14 +23,14 @@ async function searchSpotify(query: string): Promise<SearchResponse> {
 }
 
 interface SearchResultProps {
-  data: SearchResponse;
+  data?: SearchResponse;
   isLoading: boolean;
   error: Error | null;
-  onOpenChange: (open: boolean) => void;
+  onSelect: () => void;
 }
 
 const SearchResult = (props: SearchResultProps) => {
-  const { data, isLoading, error, onOpenChange } = props;
+  const { data, isLoading, error, onSelect } = props;
   if (isLoading) {
     return <CommandEmpty>Searching...</CommandEmpty>;
   }
@@ -54,10 +54,7 @@ const SearchResult = (props: SearchResultProps) => {
             <CommandItem
               key={artist.id}
               className="flex items-center gap-3 p-3"
-              onSelect={() => {
-                console.log("Selected artist:", artist);
-                onOpenChange(false);
-              }}
+              onSelect={onSelect}
             >
               {artist.image ? (
                 <img
@@ -86,10 +83,7 @@ const SearchResult = (props: SearchResultProps) => {
             <CommandItem
               key={album.id}
               className="flex items-center gap-3 p-3"
-              onSelect={() => {
-                console.log("Selected album:", album);
-                onOpenChange(false);
-              }}
+              onSelect={onSelect}
             >
               {album.image ? (
                 <img
@@ -129,7 +123,7 @@ export function SearchBar() {
 
   return (
     <div className="relative flex-1 max-w-md">
-      <Command className="rounded-lg border shadow-md">
+      <Command shouldFilter={false} className="rounded-lg border shadow-md">
         <div className="flex items-center border-b px-3 w-full h-10 gap-2">
           <Search className="h-4 w-4 text-muted-foreground" />
           <CommandInput
@@ -144,10 +138,12 @@ export function SearchBar() {
         {open && searchValue && (
           <CommandList className="absolute top-full left-0 right-0 max-h-[300px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
             <SearchResult
-              data={data!}
+              data={data}
               isLoading={isLoading}
               error={error}
-              onOpenChange={setOpen}
+              onSelect={() => {
+                setOpen(false);
+              }}
             />
           </CommandList>
         )}

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Token cache
 let cachedToken: string | null = null;
 let tokenExpiresAt: number = 0;
 
@@ -36,6 +35,27 @@ async function getSpotifyToken(): Promise<string> {
   }
 
   return cachedToken;
+}
+
+/**
+ * Returns the URL of the smallest image from an array of images.
+ */
+function getSmallestImageUrl(
+  images: { url: string; height: number; width: number }[]
+): string | null {
+  if (!images || images.length === 0) {
+    return null;
+  }
+
+  let smallest = images[0];
+
+  for (const img of images) {
+    if (img.height < smallest.height) {
+      smallest = img;
+    }
+  }
+
+  return smallest.url;
 }
 
 export async function GET(request: NextRequest) {
@@ -75,7 +95,7 @@ export async function GET(request: NextRequest) {
       artists: searchData.artists.items.map((artist: any) => ({
         id: artist.id,
         name: artist.name,
-        image: artist.images[0]?.url || null,
+        image: getSmallestImageUrl(artist.images),
         followers: artist.followers.total,
         type: "artist" as const,
       })),
@@ -83,7 +103,7 @@ export async function GET(request: NextRequest) {
         id: album.id,
         name: album.name,
         artist: album.artists[0]?.name || "Unknown Artist",
-        image: album.images[0]?.url || null,
+        image: getSmallestImageUrl(album.images),
         release_date: album.release_date,
         type: "album" as const,
       })),

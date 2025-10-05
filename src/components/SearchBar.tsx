@@ -136,7 +136,7 @@ export function SearchBar() {
           />
         </div>
         {open && searchValue && (
-          <CommandList className="absolute top-full left-0 right-0 max-h-[300px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
+          <CommandList className="absolute top-full left-0 right-0 max-h-[400px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
             <SearchResult
               data={data}
               isLoading={isLoading}

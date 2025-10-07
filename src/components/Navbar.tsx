@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { SearchBar } from "@/components/SearchBar";
 
 /**
@@ -24,8 +31,8 @@ export function Navbar() {
           <SearchBar />
         </div>
 
-        {/* Auth Buttons */}
-        <div className="flex items-center space-x-2">
+        {/* Desktop Auth Buttons */}
+        <div className="hidden md:flex items-center space-x-2">
           <Button
             variant="ghost"
             size="sm"
@@ -37,6 +44,24 @@ export function Navbar() {
             Sign up
           </Button>
         </div>
+
+        {/* Mobile Menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => console.log("Login clicked")}>
+              Log in
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => console.log("Sign up clicked")}>
+              Sign up
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </nav>
   );

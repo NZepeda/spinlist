@@ -1,41 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-let cachedToken: string | null = null;
-let tokenExpiresAt: number = 0;
-
-async function getSpotifyToken(): Promise<string> {
-  // Return cached token if still valid (with 5 minute buffer)
-  if (cachedToken && Date.now() < tokenExpiresAt - 5 * 60 * 1000) {
-    return cachedToken;
-  }
-
-  // Fetch new token
-  const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(
-        `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-      ).toString("base64")}`,
-    },
-    body: "grant_type=client_credentials",
-  });
-
-  if (!tokenResponse.ok) {
-    throw new Error("Failed to get Spotify access token");
-  }
-
-  // TODO: Add proper typing for token response
-  const tokenData = await tokenResponse.json();
-  cachedToken = tokenData.access_token;
-  tokenExpiresAt = Date.now() + tokenData.expires_in * 1000;
-
-  if (!cachedToken) {
-    throw new Error("Failed to retrieve access token");
-  }
-
-  return cachedToken;
-}
+import { getSpotifyToken } from "@/lib/getSpotifyToken";
 
 /**
  * Returns the URL of the smallest image from an array of images.

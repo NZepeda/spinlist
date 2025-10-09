@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import {
@@ -12,7 +13,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useDebounce } from "@/hooks/useDebounce";
-import { SearchResponse } from "@/lib/types";
+import { SearchResponse } from "@/lib/types/search";
 
 async function searchSpotify(query: string): Promise<SearchResponse> {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -26,7 +27,7 @@ interface SearchResultProps {
   data?: SearchResponse;
   isLoading: boolean;
   error: Error | null;
-  onSelect: () => void;
+  onSelect: (albumId: string) => void;
 }
 
 const SearchResult = (props: SearchResultProps) => {
@@ -83,7 +84,7 @@ const SearchResult = (props: SearchResultProps) => {
             <CommandItem
               key={album.id}
               className="flex items-center gap-3 p-3"
-              onSelect={onSelect}
+              onSelect={() => onSelect(album.id)}
             >
               {album.image ? (
                 <img
@@ -111,6 +112,7 @@ const SearchResult = (props: SearchResultProps) => {
 };
 
 export function SearchBar() {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(searchValue, 300);
@@ -120,6 +122,10 @@ export function SearchBar() {
     queryFn: () => searchSpotify(debouncedQuery),
     enabled: debouncedQuery.length > 0,
   });
+
+  const handleAlbumSelect = (id: string) => {
+    router.push(`/album/${id}`);
+  };
 
   return (
     <div className="relative flex-1 max-w-md">
@@ -141,8 +147,9 @@ export function SearchBar() {
               data={data}
               isLoading={isLoading}
               error={error}
-              onSelect={() => {
+              onSelect={(id: string) => {
                 setOpen(false);
+                handleAlbumSelect(id);
               }}
             />
           </CommandList>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { QueryClientProvider } from "@/components/QueryClientProvider";
 import { Navbar } from "@/components/Navbar";
@@ -25,15 +26,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <QueryClientProvider>
-          <Navbar />
-          {children}
-        </QueryClientProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <QueryClientProvider>
+            <Navbar />
+            {children}
+          </QueryClientProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -115,7 +115,7 @@ export default async function AlbumPage({
       </div>
 
       {/* Tracklist */}
-      <div className="max-w-4xl">
+      <div className="max-w-4xl pb-8">
         <h2 className="text-2xl font-bold mb-4">Tracklist</h2>
         <div className="space-y-2">
           {album.tracks.map((track) => (

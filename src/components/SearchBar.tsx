@@ -124,6 +124,7 @@ export function SearchBar() {
   });
 
   const handleAlbumSelect = (id: string) => {
+    setSearchValue("");
     router.push(`/album/${id}`);
   };
 

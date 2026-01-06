@@ -49,35 +49,6 @@ const SearchResult = (props: SearchResultProps) => {
 
   return (
     <Fragment>
-      {data.artists && data.artists.length > 0 && (
-        <CommandGroup heading="Artists">
-          {data.artists.map((artist) => (
-            <CommandItem
-              key={artist.id}
-              className="flex items-center gap-3 p-3"
-              onSelect={onSelect}
-            >
-              {artist.image ? (
-                <img
-                  src={artist.image}
-                  alt={artist.name}
-                  className="h-10 w-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                  <Search className="h-4 w-4 text-muted-foreground" />
-                </div>
-              )}
-              <div className="flex-1">
-                <p className="font-medium">{artist.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {artist.followers.toLocaleString()} followers
-                </p>
-              </div>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      )}
       {data.albums && data.albums.length > 0 && (
         <CommandGroup heading="Albums">
           {data.albums.map((album) => (
@@ -101,6 +72,35 @@ const SearchResult = (props: SearchResultProps) => {
                 <p className="font-medium">{album.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {album.artist} • {new Date(album.release_date).getFullYear()}
+                </p>
+              </div>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      )}
+      {data.artists && data.artists.length > 0 && (
+        <CommandGroup heading="Artists">
+          {data.artists.map((artist) => (
+            <CommandItem
+              key={artist.id}
+              className="flex items-center gap-3 p-3"
+              onSelect={onSelect}
+            >
+              {artist.image ? (
+                <img
+                  src={artist.image}
+                  alt={artist.name}
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                  <Search className="h-4 w-4 text-muted-foreground" />
+                </div>
+              )}
+              <div className="flex-1">
+                <p className="font-medium">{artist.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {artist.followers.toLocaleString()} followers
                 </p>
               </div>
             </CommandItem>

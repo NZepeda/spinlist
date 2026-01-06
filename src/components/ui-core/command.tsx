@@ -10,7 +10,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui-core/dialog";
 
 /**
  * Command component that provides a base container for building command palettes,

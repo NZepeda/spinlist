@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui-core/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui-core/dropdown-menu";
 import { SearchBar } from "@/components/SearchBar";
 
 /**

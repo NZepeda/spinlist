@@ -11,7 +11,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@/components/ui-core/command";
 import { useDebounce } from "@/hooks/useDebounce";
 import { SearchResponse } from "@/lib/types/search";
 

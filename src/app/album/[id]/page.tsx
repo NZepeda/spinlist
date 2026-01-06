@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Album } from "@/lib/types/album";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui-core/button";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
 
 function getLargestImageUrl(

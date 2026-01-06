@@ -5,7 +5,7 @@ import { updateSession } from "@/lib/supabase/middleware";
  * Next.js middleware that automatically refreshes Supabase auth sessions.
  * This ensures users stay authenticated across page navigation and refreshes.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return await updateSession(request);
 }
 

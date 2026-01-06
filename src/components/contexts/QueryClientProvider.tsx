@@ -4,12 +4,13 @@ import {
   QueryClient,
   QueryClientProvider as TanstackQueryProvider,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 
 /**
- * Provides React Query context to its children with some default configurations.
- * It also includes the React Query Devtools for easier debugging.
+ * Provides React Query context to its children with the default configuration.
+ * Default configuration:
+ * - staleTime: 1 minute
+ * - gcTime: 10 minutes
  */
 export function QueryClientProvider({
   children,
@@ -31,7 +32,6 @@ export function QueryClientProvider({
   return (
     <TanstackQueryProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
     </TanstackQueryProvider>
   );
 }

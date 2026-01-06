@@ -33,15 +33,11 @@ export function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => console.log("Login clicked")}
-          >
-            Log in
+          <Button variant="ghost" size="sm">
+            <Link href={"/login"}>Log in</Link>
           </Button>
           <Button size="sm" onClick={() => console.log("Sign up clicked")}>
-            Sign up
+            <Link href={"/signup"}>Sign up</Link>
           </Button>
         </div>
 
@@ -55,10 +51,10 @@ export function Navbar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => console.log("Login clicked")}>
-              Log in
+              <Link href={"/login"}>Log in</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => console.log("Sign up clicked")}>
-              Sign up
+              <Link href={"/signup"}>Sign up</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

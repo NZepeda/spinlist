@@ -4,21 +4,33 @@ This project uses **declarative schemas** for database management. Instead of wr
 
 ## Configuration
 
-The source of truth is `supabase/schemas/schema.sql`, configured in `config.toml`:
+The database schema is split into atomic files for better organization. These files are configured in `config.toml`:
 
 ```toml
 [db.migrations]
-schema_paths = ["./schemas/schema.sql"]
+schema_paths = [
+  "./schemas/extensions.sql",   # Database extensions
+  "./schemas/functions.sql",    # All functions
+  "./schemas/profiles.sql",     # Profiles table (parent)
+  "./schemas/albums.sql",       # Albums table (parent)
+  "./schemas/reviews.sql",      # Reviews table (child, depends on profiles & albums)
+  "./schemas/policies.sql",     # All RLS policies
+  "./schemas/triggers.sql",     # All triggers
+  "./schemas/grants.sql",       # All permissions
+]
 ```
+
+**Order matters:** Extensions must be first, functions before triggers, and parent tables before child tables (due to foreign key dependencies).
 
 ## Making Schema Changes
 
-### 1. Edit the Schema File
+### 1. Edit the Appropriate Schema File
 
-Modify `supabase/schemas/schema.sql` to reflect your desired database state.
+Modify the relevant schema file in `supabase/schemas/` to reflect your desired database state.
 
-Example - adding a column:
+Example - adding a column to albums:
 ```sql
+-- Edit supabase/schemas/albums.sql
 CREATE TABLE IF NOT EXISTS "public"."albums" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "spotify_id" "text" NOT NULL,
@@ -26,6 +38,13 @@ CREATE TABLE IF NOT EXISTS "public"."albums" (
     "genre" "text",  -- ← Add new columns directly
     -- ... rest of definition
 );
+```
+
+Example - modifying a function:
+```sql
+-- Edit supabase/schemas/functions.sql
+-- Just update the function body in place
+CREATE OR REPLACE FUNCTION "public"."handle_new_user"() ...
 ```
 
 ### 2. Generate Migration
@@ -53,9 +72,14 @@ The diff tool can't handle everything. Use `pnpx supabase migration new name` fo
 - RLS policy changes
 - Materialized views
 
-After manual migrations, update the schema file:
+After manual migrations, regenerate all schema files:
 ```bash
+# Dump the current schema
+pnpx supabase db dump --local -f supabase/schemas/temp.sql
+
+# Then manually split it back into the organized files, or just run:
 pnpx supabase db dump --local -f supabase/schemas/schema.sql
+# And split it yourself
 ```
 
 ## Quick Reference

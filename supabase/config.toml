@@ -53,7 +53,17 @@ max_client_conn = 100
 enabled = true
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
-schema_paths = ["./schemas/schema.sql"]
+# ORDER MATTERS: Extensions → Functions → Tables (parent before child) → Policies → Triggers → Grants
+schema_paths = [
+  "./schemas/extensions.sql",
+  "./schemas/functions.sql",
+  "./schemas/profiles.sql",
+  "./schemas/albums.sql",
+  "./schemas/reviews.sql",
+  "./schemas/policies.sql",
+  "./schemas/triggers.sql",
+  "./schemas/grants.sql",
+]
 
 [db.seed]
 # If enabled, seeds the database after migrations during a db reset.

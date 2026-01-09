@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui-core/button";
 import { Input } from "@/components/ui-core/input";
 import { useSignUp } from "@/hooks/useSignUp";
+import { PasswordInput } from "@/components/PasswordInput";
 
 /**
  * Sign-up page component for user registration.
@@ -34,9 +35,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Create an account</h1>
-          <p className="text-muted-foreground mt-2">
-            Sign up to get started
-          </p>
+          <p className="text-muted-foreground mt-2">Sign up to get started</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -94,53 +93,25 @@ export default function SignUpPage() {
           </div>
 
           {/* Password field */}
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              aria-invalid={!!errors.password}
-              disabled={isLoading}
-              required
-              minLength={8}
-            />
-            {errors.password && (
-              <p className="text-destructive text-sm">{errors.password}</p>
-            )}
-          </div>
+          <PasswordInput
+            password={password}
+            onPasswordChange={setPassword}
+            isLoading={isLoading}
+            error={errors.password}
+            label={"Password"}
+            className="space-y-2"
+          />
 
           {/* Confirm password field */}
-          <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm Password
-            </label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              aria-invalid={!!errors.confirmPassword}
-              disabled={isLoading}
-              required
-              minLength={8}
-            />
-            {errors.confirmPassword && (
-              <p className="text-destructive text-sm">{errors.confirmPassword}</p>
-            )}
-          </div>
-
+          <PasswordInput
+            password={confirmPassword}
+            onPasswordChange={setPassword}
+            isLoading={isLoading}
+            label={"Confirm Password"}
+            error={errors.confirmPassword}
+          />
           {/* Submit button */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Creating account..." : "Sign up"}
           </Button>
 

@@ -90,10 +90,13 @@ export function useSignUp() {
 
   const setEmail = (email: string) =>
     dispatch({ type: "SET_EMAIL", payload: email });
+
   const setUsername = (username: string) =>
     dispatch({ type: "SET_USERNAME", payload: username });
+
   const setPassword = (password: string) =>
     dispatch({ type: "SET_PASSWORD", payload: password });
+
   const setConfirmPassword = (confirmPassword: string) =>
     dispatch({ type: "SET_CONFIRM_PASSWORD", payload: confirmPassword });
 

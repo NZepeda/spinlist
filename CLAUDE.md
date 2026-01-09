@@ -5,3 +5,5 @@
 - Always attempt to separate the view logic from the business logic. Use hooks for business logic.
 
 - Check package.json to determine what versions of packages/libraries are being used.
+
+- When attempting to use any "supabase" command, run it with "pnpx supabase"

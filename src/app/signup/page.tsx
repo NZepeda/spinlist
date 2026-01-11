@@ -105,7 +105,7 @@ export default function SignUpPage() {
           {/* Confirm password field */}
           <PasswordInput
             password={confirmPassword}
-            onPasswordChange={setPassword}
+            onPasswordChange={setConfirmPassword}
             isLoading={isLoading}
             label={"Confirm Password"}
             error={errors.confirmPassword}

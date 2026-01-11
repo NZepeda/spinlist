@@ -7,3 +7,7 @@
 - Check package.json to determine what versions of packages/libraries are being used.
 
 - When attempting to use any "supabase" command, run it with "pnpx supabase"
+
+- Never use the double negation operator (!!). Always go for Boolean() instead.
+
+- Never inline if statement like if(condition) return something. Always use the block form with {}.

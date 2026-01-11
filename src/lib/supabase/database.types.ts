@@ -7,33 +7,161 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  pgbouncer: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      get_auth: {
+        Args: { p_usename: string }
+        Returns: {
+          password: string
+          username: string
+        }[]
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
   public: {
     Tables: {
+      albums: {
+        Row: {
+          artist: string
+          avg_rating: number | null
+          cover_url: string | null
+          created_at: string
+          id: string
+          last_synced_at: string
+          release_date: string | null
+          review_count: number | null
+          spotify_id: string
+          title: string
+        }
+        Insert: {
+          artist: string
+          avg_rating?: number | null
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          release_date?: string | null
+          review_count?: number | null
+          spotify_id: string
+          title: string
+        }
+        Update: {
+          artist?: string
+          avg_rating?: number | null
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          release_date?: string | null
+          review_count?: number | null
+          spotify_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
-          created_at: string | null
+          avatar_url: string | null
+          created_at: string
           id: string
-          updated_at: string | null
+          updated_at: string
           username: string
         }
         Insert: {
-          created_at?: string | null
+          avatar_url?: string | null
+          created_at?: string
           id: string
-          updated_at?: string | null
+          updated_at?: string
           username: string
         }
         Update: {
-          created_at?: string | null
+          avatar_url?: string | null
+          created_at?: string
           id?: string
-          updated_at?: string | null
+          updated_at?: string
           username?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          album_id: string
+          created_at: string
+          id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          album_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          album_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_album_id_fkey"
+            columns: ["album_id"]
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -44,6 +172,23 @@ export type Database = {
     }
     Enums: {
       [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  storage: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      buckettype: "STANDARD" | "ANALYTICS" | "VECTOR"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -167,9 +312,3 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const

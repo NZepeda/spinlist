@@ -11,3 +11,5 @@
 - Never use the double negation operator (!!). Always go for Boolean() instead.
 
 - Never inline if statement like if(condition) return something. Always use the block form with {}.
+
+- If clarification is needed about the requirements, ask before proceeding.

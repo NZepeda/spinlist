@@ -17,7 +17,6 @@ export function Navbar() {
           <Logo />
         </Link>
 
-        {/* Search Bar */}
         <div className="flex-1 mx-8 max-w-md">
           <SearchBar />
         </div>

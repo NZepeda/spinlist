@@ -13,6 +13,57 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 
 /**
+ * Mobile nav menu content for authenticated users.
+ * Shows username and logout option.
+ */
+function LoggedInMobileNavMenu({
+  username,
+  onLogout,
+}: {
+  username: string;
+  onLogout: () => Promise<void>;
+}) {
+  const handleLogout = async () => {
+    try {
+      await onLogout();
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
+
+  return (
+    <>
+      <DropdownMenuItem disabled>
+        <User className="mr-2 h-4 w-4" />
+        {username}
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem onClick={handleLogout}>
+        <LogOut className="mr-2 h-4 w-4" />
+        Log out
+      </DropdownMenuItem>
+    </>
+  );
+}
+
+/**
+ * Mobile nav menu content for unauthenticated users.
+ * Shows login and signup options.
+ */
+function LoggedOutMobileNavMenu() {
+  return (
+    <>
+      <DropdownMenuItem>
+        <Link href={"/login"}>Log in</Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem>
+        <Link href={"/signup"}>Sign up</Link>
+      </DropdownMenuItem>
+    </>
+  );
+}
+
+/**
  * Displays a hamburger menu for mobile viewports.
  * Provides a dropdown menu that is only visible on small screens.
  * Shows login/signup options when not authenticated,
@@ -20,14 +71,6 @@ import { useAuth } from "@/hooks/useAuth";
  */
 export function MobileNavMenu() {
   const { user, profile, logout } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Failed to logout:", error);
-    }
-  };
 
   return (
     <DropdownMenu>
@@ -39,26 +82,9 @@ export function MobileNavMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {user && profile ? (
-          <>
-            <DropdownMenuItem disabled>
-              <User className="mr-2 h-4 w-4" />
-              {profile.username}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
-          </>
+          <LoggedInMobileNavMenu username={profile.username} onLogout={logout} />
         ) : (
-          <>
-            <DropdownMenuItem>
-              <Link href={"/login"}>Log in</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link href={"/signup"}>Sign up</Link>
-            </DropdownMenuItem>
-          </>
+          <LoggedOutMobileNavMenu />
         )}
       </DropdownMenuContent>
     </DropdownMenu>

@@ -2,11 +2,6 @@ import { useReducer } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-/**
- * Hook for managing login form state and logic.
- * Handles user authentication with email and password.
- */
-
 interface LoginState {
   email: string;
   password: string;
@@ -62,6 +57,11 @@ function loginReducer(state: LoginState, action: LoginAction): LoginState {
       return state;
   }
 }
+
+/**
+ * Hook for managing login form state and logic.
+ * Handles user authentication with email and password.
+ */
 
 export function useLogin() {
   const [state, dispatch] = useReducer(loginReducer, initialState);
@@ -122,7 +122,6 @@ export function useLogin() {
       });
 
       if (authError) {
-        // Handle specific auth errors
         if (authError.message.includes("Invalid login credentials")) {
           dispatch({
             type: "SET_ERROR",
@@ -139,7 +138,6 @@ export function useLogin() {
         return;
       }
 
-      // Redirect to home page
       router.push("/");
     } catch (error) {
       dispatch({

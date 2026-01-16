@@ -12,4 +12,6 @@
 
 - Never inline if statement like if(condition) return something. Always use the block form with {}.
 
+- Always split functions into their own files.
+
 - If clarification is needed about the requirements, ask before proceeding.

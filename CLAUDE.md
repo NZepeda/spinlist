@@ -14,4 +14,6 @@
 
 - Always split functions into their own files.
 
+- Always prefer declarative code over imperative code.
+
 - If clarification is needed about the requirements, ask before proceeding.

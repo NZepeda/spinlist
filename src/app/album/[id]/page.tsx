@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Album } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getLargestImageUrl } from "@/lib/spotify/getLargestImageUrl";
+import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { ReviewSection } from "@/components/review/ReviewSection";
 
 async function getAlbum(id: string): Promise<Album> {
@@ -15,7 +15,7 @@ async function getAlbum(id: string): Promise<Album> {
           Authorization: `Bearer ${accessToken}`,
         },
         cache: "no-store",
-      }
+      },
     );
 
     if (!albumResponse.ok) {
@@ -31,7 +31,7 @@ async function getAlbum(id: string): Promise<Album> {
       id: albumData.id,
       name: albumData.name,
       artist: albumData.artists[0]?.name || "Unknown Artist",
-      image: getLargestImageUrl(albumData.images),
+      image: getImageUrl(albumData.images),
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
       tracks: albumData.tracks.items.map((track: any) => ({

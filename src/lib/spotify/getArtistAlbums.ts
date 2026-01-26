@@ -1,14 +1,13 @@
 import { Album } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getLargestImageUrl } from "./getLargestImageUrl";
+import { getImageUrl } from "./getImageUrl";
 
 /**
  * Fetches all albums for a given artist from the Spotify API.
  * Note: The albums endpoint does not include track details, so tracks will be undefined.
  *
- * @param artistId - The Spotify artist ID
- * @returns A promise that resolves to an array of Album objects
- * @throws Error if the API request fails
+ * @returns A list of albums by the artist where the album type is "album".
+ * Does not include singles or compilations.
  */
 export async function getArtistAlbums(artistId: string): Promise<Album[]> {
   const accessToken = await getSpotifyToken();
@@ -20,7 +19,7 @@ export async function getArtistAlbums(artistId: string): Promise<Album[]> {
         Authorization: `Bearer ${accessToken}`,
       },
       cache: "no-store",
-    }
+    },
   );
 
   if (!response.ok) {
@@ -28,13 +27,16 @@ export async function getArtistAlbums(artistId: string): Promise<Album[]> {
   }
 
   const data = await response.json();
+  console.log({ images: data.items.map((album: any) => album.images) });
 
-  return data.items.map((album: any) => ({
-    id: album.id,
-    name: album.name,
-    artist: album.artists[0]?.name || "Unknown Artist",
-    image: getLargestImageUrl(album.images),
-    release_date: album.release_date,
-    total_tracks: album.total_tracks,
-  }));
+  return data.items
+    .filter((album: any) => album.album_type === "album")
+    .map((album: any) => ({
+      id: album.id,
+      name: album.name,
+      artist: album.artists[0]?.name || "Unknown Artist",
+      image: getImageUrl(album.images, "medium"),
+      release_date: album.release_date,
+      total_tracks: album.total_tracks,
+    }));
 }

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Artist } from "@/lib/types/artist";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getLargestImageUrl } from "./getLargestImageUrl";
+import { getImageUrl } from "./getImageUrl";
 
 /**
  * Fetches an artist's details from the Spotify API.
@@ -32,7 +32,7 @@ export async function getArtist(id: string): Promise<Artist> {
   return {
     id: data.id,
     name: data.name,
-    image: getLargestImageUrl(data.images),
+    image: getImageUrl(data.images, "medium"),
     external_url: data.external_urls?.spotify || "",
   };
 }

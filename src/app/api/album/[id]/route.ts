@@ -1,37 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-
-/**
- * Returns the URL of the largest image from an array of images.
- */
-function getLargestImageUrl(
-  images: { url: string; height: number; width: number }[]
-): string | null {
-  if (!images || images.length === 0) {
-    return null;
-  }
-
-  let largest = images[0];
-
-  for (const img of images) {
-    if (img.height > largest.height) {
-      largest = img;
-    }
-  }
-
-  return largest.url;
-}
+import { getImageUrl } from "@/lib/spotify/getImageUrl";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
 
   if (!id) {
     return NextResponse.json(
       { error: "Missing album ID parameter" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -44,7 +24,7 @@ export async function GET(
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
 
     if (!albumResponse.ok) {
@@ -60,7 +40,7 @@ export async function GET(
       id: albumData.id,
       name: albumData.name,
       artist: albumData.artists[0]?.name || "Unknown Artist",
-      image: getLargestImageUrl(albumData.images),
+      image: getImageUrl(albumData.images),
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
       tracks: albumData.tracks.items.map((track: any) => ({
@@ -74,7 +54,7 @@ export async function GET(
     console.error("Album API error:", error);
     return NextResponse.json(
       { error: "Failed to fetch album" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

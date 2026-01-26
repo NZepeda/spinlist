@@ -18,5 +18,5 @@ export interface Album {
   image: string | null;
   release_date: string;
   total_tracks: number;
-  tracks: Track[];
+  tracks?: Track[];
 }

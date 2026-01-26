@@ -124,6 +124,7 @@ export type Database = {
         Row: {
           album_id: string
           created_at: string
+          favorite_track_id: string | null
           id: string
           rating: number
           review_text: string | null
@@ -133,6 +134,7 @@ export type Database = {
         Insert: {
           album_id: string
           created_at?: string
+          favorite_track_id?: string | null
           id?: string
           rating: number
           review_text?: string | null
@@ -142,6 +144,7 @@ export type Database = {
         Update: {
           album_id?: string
           created_at?: string
+          favorite_track_id?: string | null
           id?: string
           rating?: number
           review_text?: string | null

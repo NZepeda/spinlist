@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Album } from "@/lib/types/album";
-import { Button } from "@/components/ui-core/button";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
+import { ReviewSection } from "@/components/review/ReviewSection";
 
 function getLargestImageUrl(
   images: { url: string; height: number; width: number }[]
@@ -103,14 +103,7 @@ export default async function AlbumPage({
             <p className="text-xl text-muted-foreground">{album.artist}</p>
           </div>
 
-          {/* Login/Sign up Card */}
-          <div className="border rounded-lg p-8 bg-card text-center space-y-4">
-            <p className="text-lg font-medium">Login or Sign up to review</p>
-            <div className="flex gap-3 justify-center">
-              <Button variant="outline">Log in</Button>
-              <Button>Sign up</Button>
-            </div>
-          </div>
+          <ReviewSection album={album} />
         </div>
       </div>
 

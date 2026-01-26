@@ -27,7 +27,6 @@ export async function getArtistAlbums(artistId: string): Promise<Album[]> {
   }
 
   const data = await response.json();
-  console.log({ images: data.items.map((album: any) => album.images) });
 
   return data.items
     .filter((album: any) => album.album_type === "album")

@@ -47,8 +47,6 @@ const SearchResult = (props: SearchResultProps) => {
     return <CommandEmpty>No results found.</CommandEmpty>;
   }
 
-  console.log({ data });
-
   return (
     <Fragment>
       {data.albums && data.albums.length > 0 && (

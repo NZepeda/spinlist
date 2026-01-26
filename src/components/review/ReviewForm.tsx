@@ -87,7 +87,7 @@ function InnerReviewForm({
             className="w-full"
           >
             <SelectOption value="">None</SelectOption>
-            {album.tracks.map((track) => (
+            {(album.tracks || []).map((track) => (
               <SelectOption key={track.id} value={track.id}>
                 {track.track_number}. {track.name}
               </SelectOption>

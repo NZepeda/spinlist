@@ -17,3 +17,5 @@
 - Always prefer declarative code over imperative code.
 
 - If clarification is needed about the requirements, ask before proceeding.
+
+- NEVER use `any` type in TypeScript. Always define proper types or interfaces.

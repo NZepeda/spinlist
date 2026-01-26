@@ -27,7 +27,7 @@ interface SearchResultProps {
   data?: SearchResponse;
   isLoading: boolean;
   error: Error | null;
-  onSelect: (albumId: string) => void;
+  onSelect: (id: string, type: "artist" | "album") => void;
 }
 
 const SearchResult = (props: SearchResultProps) => {
@@ -55,7 +55,7 @@ const SearchResult = (props: SearchResultProps) => {
             <CommandItem
               key={album.id}
               className="flex items-center gap-3 p-3"
-              onSelect={() => onSelect(album.id)}
+              onSelect={() => onSelect(album.id, "album")}
             >
               {album.image ? (
                 <img
@@ -84,7 +84,7 @@ const SearchResult = (props: SearchResultProps) => {
             <CommandItem
               key={artist.id}
               className="flex items-center gap-3 p-3"
-              onSelect={onSelect}
+              onSelect={() => onSelect(artist.id, "artist")}
             >
               {artist.image ? (
                 <img
@@ -123,9 +123,10 @@ export function SearchBar() {
     enabled: debouncedQuery.length > 0,
   });
 
-  const handleAlbumSelect = (id: string) => {
+  const handleSelect = (id: string, type: "artist" | "album") => {
     setSearchValue("");
-    router.push(`/album/${id}`);
+    setOpen(false);
+    router.push(`/${type}/${id}`);
   };
 
   return (
@@ -148,10 +149,7 @@ export function SearchBar() {
               data={data}
               isLoading={isLoading}
               error={error}
-              onSelect={(id: string) => {
-                setOpen(false);
-                handleAlbumSelect(id);
-              }}
+              onSelect={handleSelect}
             />
           </CommandList>
         )}

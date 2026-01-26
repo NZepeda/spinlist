@@ -14,7 +14,7 @@ export function LoginPromptCard() {
           <Link href="/login">Log in</Link>
         </Button>
         <Button asChild>
-          <Link href="/signup">Sign up</Link>Å
+          <Link href="/signup">Sign up</Link>
         </Button>
       </div>
     </div>

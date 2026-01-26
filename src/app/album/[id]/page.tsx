@@ -1,25 +1,8 @@
 import { notFound } from "next/navigation";
 import { Album } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
+import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { ReviewSection } from "@/components/review/ReviewSection";
-
-function getLargestImageUrl(
-  images: { url: string; height: number; width: number }[]
-): string | null {
-  if (!images || images.length === 0) {
-    return null;
-  }
-
-  let largest = images[0];
-
-  for (const img of images) {
-    if (img.height > largest.height) {
-      largest = img;
-    }
-  }
-
-  return largest.url;
-}
 
 async function getAlbum(id: string): Promise<Album> {
   try {
@@ -32,7 +15,7 @@ async function getAlbum(id: string): Promise<Album> {
           Authorization: `Bearer ${accessToken}`,
         },
         cache: "no-store",
-      }
+      },
     );
 
     if (!albumResponse.ok) {
@@ -48,7 +31,7 @@ async function getAlbum(id: string): Promise<Album> {
       id: albumData.id,
       name: albumData.name,
       artist: albumData.artists[0]?.name || "Unknown Artist",
-      image: getLargestImageUrl(albumData.images),
+      image: getImageUrl(albumData.images),
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
       tracks: albumData.tracks.items.map((track: any) => ({
@@ -108,25 +91,27 @@ export default async function AlbumPage({
       </div>
 
       {/* Tracklist */}
-      <div className="max-w-4xl pb-8">
-        <h2 className="text-2xl font-bold mb-4">Tracklist</h2>
-        <div className="space-y-2">
-          {album.tracks.map((track) => (
-            <div
-              key={track.id}
-              className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent transition-colors"
-            >
-              <span className="text-muted-foreground font-medium w-8">
-                {track.track_number}.
-              </span>
-              <span className="flex-1 font-medium">{track.name}</span>
-              <span className="text-muted-foreground text-sm">
-                {formatDuration(track.duration_ms)}
-              </span>
-            </div>
-          ))}
+      {album.tracks && album.tracks.length > 0 && (
+        <div className="max-w-4xl pb-8">
+          <h2 className="text-2xl font-bold mb-4">Tracklist</h2>
+          <div className="space-y-2">
+            {album.tracks.map((track) => (
+              <div
+                key={track.id}
+                className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent transition-colors"
+              >
+                <span className="text-muted-foreground font-medium w-8">
+                  {track.track_number}.
+                </span>
+                <span className="flex-1 font-medium">{track.name}</span>
+                <span className="text-muted-foreground text-sm">
+                  {formatDuration(track.duration_ms)}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

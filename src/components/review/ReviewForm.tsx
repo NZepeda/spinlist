@@ -74,26 +74,6 @@ function InnerReviewForm({
           )}
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="review-text" className="text-sm font-medium">
-            Review (optional)
-          </label>
-          <Textarea
-            id="review-text"
-            placeholder="Share your thoughts about this album..."
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-            maxLength={2000}
-            aria-invalid={Boolean(errors.reviewText)}
-            disabled={isLoading}
-            className="min-h-24"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{errors.reviewText || ""}</span>
-            <span>{reviewText.length}/2000</span>
-          </div>
-        </div>
-
         {/* Favorite Track */}
         <div className="space-y-2">
           <label htmlFor="favorite-track" className="text-sm font-medium">
@@ -113,6 +93,26 @@ function InnerReviewForm({
               </SelectOption>
             ))}
           </Select>
+        </div>
+
+        <div className="space-y-2">
+          <label htmlFor="review-text" className="text-sm font-medium">
+            Review (optional)
+          </label>
+          <Textarea
+            id="review-text"
+            placeholder="Share your thoughts about this album..."
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+            maxLength={2000}
+            aria-invalid={Boolean(errors.reviewText)}
+            disabled={isLoading}
+            className="min-h-24"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{errors.reviewText || ""}</span>
+            <span>{reviewText.length}/2000</span>
+          </div>
         </div>
 
         {/* General Error */}

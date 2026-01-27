@@ -5,7 +5,7 @@ import { Album } from "@/lib/types/album";
 interface SubmitReviewParams {
   supabase: SupabaseClient<Database>;
   userId: string;
-  album: Pick<Album, "id" | "name" | "artist" | "image" | "release_date">;
+  album: Album;
   rating: number;
   reviewText: string | null;
   favoriteTrackId: string | null;
@@ -18,7 +18,7 @@ interface SubmitReviewParams {
  */
 async function upsertAlbum(
   supabase: SupabaseClient<Database>,
-  album: Pick<Album, "id" | "name" | "artist" | "image" | "release_date">
+  album: Album,
 ): Promise<string> {
   const { data, error } = await supabase
     .from("albums")
@@ -29,9 +29,10 @@ async function upsertAlbum(
         artist: album.artist,
         cover_url: album.image,
         release_date: album.release_date,
+        tracks: album.tracks,
         last_synced_at: new Date().toISOString(),
       },
-      { onConflict: "spotify_id" }
+      { onConflict: "spotify_id" },
     )
     .select("id")
     .single();

@@ -6,6 +6,7 @@ export interface Track {
   name: string;
   track_number: number;
   duration_ms: number;
+  [key: string]: string | number;
 }
 
 /**

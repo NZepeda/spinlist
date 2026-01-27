@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS "public"."reviews" (
     "review_text" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "favorite_track_id" text,
     CONSTRAINT "reviews_rating_check" CHECK ((("rating" >= 1.0) AND ("rating" <= 5.0)))
 );
 

@@ -8,7 +8,8 @@ ALTER TABLE "public"."album_slugs" ENABLE ROW LEVEL SECURITY;
 
 -- Albums policies
 CREATE POLICY "Albums are viewable by everyone" ON "public"."albums" FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can create albums" ON "public"."albums" FOR INSERT WITH CHECK (("auth"."role"() = 'authenticated'::"text"));
+CREATE POLICY "Anyone can create albums" ON "public"."albums" FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update albums" ON "public"."albums" FOR UPDATE USING (true);
 
 -- Profiles policies
 CREATE POLICY "Profiles are viewable by everyone" ON "public"."profiles" FOR SELECT USING (true);
@@ -22,13 +23,15 @@ CREATE POLICY "Users can update their own reviews" ON "public"."reviews" FOR UPD
 
 -- Artists policies
 CREATE POLICY "Artists are viewable by everyone" ON "public"."artists" FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can create artists" ON "public"."artists" FOR INSERT WITH CHECK (("auth"."role"() = 'authenticated'::"text"));
-CREATE POLICY "Authenticated users can update artists" ON "public"."artists" FOR UPDATE USING (("auth"."role"() = 'authenticated'::"text"));
+CREATE POLICY "Anyone can create artists" ON "public"."artists" FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update artists" ON "public"."artists" FOR UPDATE USING (true);
 
 -- Artist slugs policies
 CREATE POLICY "Artist slugs are viewable by everyone" ON "public"."artist_slugs" FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can create artist slugs" ON "public"."artist_slugs" FOR INSERT WITH CHECK (("auth"."role"() = 'authenticated'::"text"));
+CREATE POLICY "Anyone can create artist slugs" ON "public"."artist_slugs" FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update artist slugs" ON "public"."artist_slugs" FOR UPDATE USING (true);
 
 -- Album slugs policies
 CREATE POLICY "Album slugs are viewable by everyone" ON "public"."album_slugs" FOR SELECT USING (true);
-CREATE POLICY "Authenticated users can create album slugs" ON "public"."album_slugs" FOR INSERT WITH CHECK (("auth"."role"() = 'authenticated'::"text"));
+CREATE POLICY "Anyone can create album slugs" ON "public"."album_slugs" FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update album slugs" ON "public"."album_slugs" FOR UPDATE USING (true);

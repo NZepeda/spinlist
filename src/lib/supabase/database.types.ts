@@ -32,31 +32,33 @@ export type Database = {
       [_ in never]: never
     }
   }
-  pgbouncer: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      get_auth: {
-        Args: { p_usename: string }
-        Returns: {
-          password: string
-          username: string
-        }[]
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
+      album_slugs: {
+        Row: {
+          album_id: string
+          slug: string
+          spotify_id: string
+        }
+        Insert: {
+          album_id: string
+          slug: string
+          spotify_id: string
+        }
+        Update: {
+          album_id?: string
+          slug?: string
+          spotify_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "album_slugs_album_id_fkey"
+            columns: ["album_id"]
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       albums: {
         Row: {
           artist: string
@@ -96,6 +98,58 @@ export type Database = {
           spotify_id?: string
           title?: string
           tracks?: Json | null
+        }
+        Relationships: []
+      }
+      artist_slugs: {
+        Row: {
+          artist_id: string
+          slug: string
+          spotify_id: string
+        }
+        Insert: {
+          artist_id: string
+          slug: string
+          spotify_id: string
+        }
+        Update: {
+          artist_id?: string
+          slug?: string
+          spotify_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_slugs_artist_id_fkey"
+            columns: ["artist_id"]
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artists: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          last_synced_at: string
+          name: string
+          spotify_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          last_synced_at?: string
+          name: string
+          spotify_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          last_synced_at?: string
+          name?: string
+          spotify_id?: string
         }
         Relationships: []
       }
@@ -178,23 +232,6 @@ export type Database = {
     }
     Enums: {
       [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-  storage: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      buckettype: "STANDARD" | "ANALYTICS" | "VECTOR"
     }
     CompositeTypes: {
       [_ in never]: never

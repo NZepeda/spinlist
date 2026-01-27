@@ -13,7 +13,10 @@ import {
   CommandList,
 } from "@/components/ui-core/command";
 import { useDebounce } from "@/hooks/useDebounce";
-import { SearchResponse } from "@/lib/types/search";
+import { SearchResponse, SearchAlbum, SearchArtist } from "@/lib/types/search";
+import { createClient } from "@/lib/supabase/client";
+import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
+import { getOrCreateArtistSlug } from "@/lib/slugs/getOrCreateArtistSlug";
 
 async function searchSpotify(query: string): Promise<SearchResponse> {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -27,7 +30,10 @@ interface SearchResultProps {
   data?: SearchResponse;
   isLoading: boolean;
   error: Error | null;
-  onSelect: (id: string, type: "artist" | "album") => void;
+  onSelect: (
+    item: SearchArtist | SearchAlbum,
+    type: "artist" | "album",
+  ) => void;
 }
 
 const SearchResults = (props: SearchResultProps) => {
@@ -55,7 +61,7 @@ const SearchResults = (props: SearchResultProps) => {
             <CommandItem
               key={album.id}
               className="flex items-center gap-3 p-3"
-              onSelect={() => onSelect(album.id, "album")}
+              onSelect={() => onSelect(album, "album")}
             >
               {album.image ? (
                 <img
@@ -84,7 +90,7 @@ const SearchResults = (props: SearchResultProps) => {
             <CommandItem
               key={artist.id}
               className="flex items-center gap-3 p-3"
-              onSelect={() => onSelect(artist.id, "artist")}
+              onSelect={() => onSelect(artist, "artist")}
             >
               {artist.image ? (
                 <img
@@ -114,17 +120,41 @@ export function SearchBar() {
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(searchValue, 300);
 
-  console.log({ debouncedQuery });
   const { data, isLoading, error } = useQuery({
     queryKey: ["search", debouncedQuery],
     queryFn: () => searchSpotify(debouncedQuery),
     enabled: debouncedQuery.length > 0,
   });
 
-  const handleSelect = (id: string, type: "artist" | "album") => {
+  /**
+   * Accepts a selected search item and navigates to its page.
+   * From the selected item, it retrieves the appropriate slug.
+   */
+  const handleSelect = async (
+    item: SearchArtist | SearchAlbum,
+    type: "artist" | "album",
+  ) => {
     setSearchValue("");
     setOpen(false);
-    router.push(`/${type}/${id}`);
+
+    const supabase = await createClient();
+
+    let slug: string;
+    if (type === "artist") {
+      slug = await getOrCreateArtistSlug(supabase, {
+        spotify_id: item.id,
+        name: (item as SearchArtist).name,
+      });
+    } else {
+      const albumItem = item as SearchAlbum;
+      slug = await getOrCreateAlbumSlug(supabase, {
+        spotify_id: albumItem.id,
+        title: albumItem.name,
+        artist: albumItem.artist,
+      });
+    }
+
+    router.push(`/${type}/${slug}`);
   };
 
   return (

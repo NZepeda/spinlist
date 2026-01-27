@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SpinList - Rate & Discover Music",
+  title: "Spinlist - Rate & Discover Music",
   description: "A community-driven platform for rating and discovering albums",
 };
 

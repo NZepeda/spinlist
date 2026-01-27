@@ -15,7 +15,7 @@ import { submitReview } from "@/lib/mutations/submitReview";
 import { deleteReview } from "@/lib/mutations/deleteReview";
 
 interface UseReviewFormOptions {
-  album: Pick<Album, "id" | "name" | "artist" | "image" | "release_date">;
+  album: Album;
   existingReview?: Review | null;
 }
 

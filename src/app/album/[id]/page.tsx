@@ -3,6 +3,8 @@ import { Album } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { ReviewSection } from "@/components/review/ReviewSection";
+import { createClient } from "@/lib/supabase/server";
+import { getSpotifyIdFromSlug } from "@/lib/spotify/getSpotifyIdFromSlug";
 
 async function getAlbum(id: string): Promise<Album> {
   try {
@@ -59,7 +61,18 @@ export default async function AlbumPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const album = await getAlbum(id);
+
+  const supabaseClient = await createClient();
+  const spotifyId = await getSpotifyIdFromSlug(id, {
+    supabaseClient,
+    itemType: "album",
+  });
+
+  if (!spotifyId) {
+    notFound();
+  }
+
+  const album = await getAlbum(spotifyId);
 
   return (
     <main className="container mx-auto px-4 py-8">

@@ -1,17 +1,41 @@
+"use client";
+
+import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
+import { createClient } from "@/lib/supabase/client";
 import { Album } from "@/lib/types/album";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 /**
  * Displays the given `albums` in a responsive grid layout.
  */
-export const AlbumGrid = ({ albums }: { albums: Album[] }) => {
+export const AlbumGrid = ({
+  artist,
+  albums,
+}: {
+  artist: string;
+  albums: Album[];
+}) => {
+  const router = useRouter();
+  const handleAlbumClick = async (album: Album) => {
+    // Get the slug for the album and navigate to its page
+    // This logic can be implemented here if needed
+    const supabase = await createClient();
+    const slug = await getOrCreateAlbumSlug(supabase, {
+      spotify_id: album.id,
+      title: album.name,
+      artist,
+    });
+
+    router.push(`/album/${slug}`);
+  };
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
       {albums.map((album) => (
-        <Link
-          key={album.id}
-          href={`/album/${album.id}`}
+        <div
           className="group block"
+          onClick={() => handleAlbumClick(album)}
+          key={album.id}
         >
           <div className="aspect-square mb-3 overflow-hidden rounded-lg">
             {album.image ? (
@@ -32,7 +56,7 @@ export const AlbumGrid = ({ albums }: { albums: Album[] }) => {
           <p className="text-sm text-muted-foreground">
             {album.release_date.slice(0, 4)}
           </p>
-        </Link>
+        </div>
       ))}
     </div>
   );

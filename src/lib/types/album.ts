@@ -14,6 +14,7 @@ export interface Track {
  */
 export interface Album {
   id: string;
+  slug?: string;
   name: string;
   artist: string;
   image: string | null;

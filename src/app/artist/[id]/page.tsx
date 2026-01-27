@@ -1,7 +1,9 @@
-import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getArtist } from "@/lib/spotify/getArtist";
 import { getArtistAlbums } from "@/lib/spotify/getArtistAlbums";
 import { AlbumGrid } from "@/app/album/[id]/AlbumGrid";
+import { createClient } from "@/lib/supabase/server";
+import { getSpotifyIdFromSlug } from "@/lib/spotify/getSpotifyIdFromSlug";
 
 /**
  * Displays the artist page containing:
@@ -14,8 +16,19 @@ export default async function ArtistPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const artist = await getArtist(id);
-  const albums = await getArtistAlbums(id);
+
+  const supabaseClient = await createClient();
+  const spotifyId = await getSpotifyIdFromSlug(id, {
+    supabaseClient,
+    itemType: "artist",
+  });
+
+  if (!spotifyId) {
+    notFound();
+  }
+
+  const artist = await getArtist(spotifyId);
+  const albums = await getArtistAlbums(spotifyId);
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -42,7 +55,7 @@ export default async function ArtistPage({
 
       <section>
         <h2 className="text-2xl font-bold mb-6">Discography</h2>
-        <AlbumGrid albums={albums} />
+        <AlbumGrid albums={albums} artist={artist.name} />
       </section>
     </main>
   );

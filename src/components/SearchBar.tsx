@@ -30,7 +30,7 @@ interface SearchResultProps {
   onSelect: (id: string, type: "artist" | "album") => void;
 }
 
-const SearchResult = (props: SearchResultProps) => {
+const SearchResults = (props: SearchResultProps) => {
   const { data, isLoading, error, onSelect } = props;
   if (isLoading) {
     return <CommandEmpty>Searching...</CommandEmpty>;
@@ -99,9 +99,6 @@ const SearchResult = (props: SearchResultProps) => {
               )}
               <div className="flex-1">
                 <p className="font-medium">{artist.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {artist.followers.toLocaleString()} followers
-                </p>
               </div>
             </CommandItem>
           ))}
@@ -117,6 +114,7 @@ export function SearchBar() {
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(searchValue, 300);
 
+  console.log({ debouncedQuery });
   const { data, isLoading, error } = useQuery({
     queryKey: ["search", debouncedQuery],
     queryFn: () => searchSpotify(debouncedQuery),
@@ -145,7 +143,7 @@ export function SearchBar() {
         </div>
         {open && searchValue && (
           <CommandList className="absolute top-full left-0 right-0 max-h-[400px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
-            <SearchResult
+            <SearchResults
               data={data}
               isLoading={isLoading}
               error={error}

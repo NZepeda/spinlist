@@ -1,26 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-
-/**
- * Returns the URL of the smallest image from an array of images.
- */
-function getSmallestImageUrl(
-  images: { url: string; height: number; width: number }[]
-): string | null {
-  if (!images || images.length === 0) {
-    return null;
-  }
-
-  let smallest = images[0];
-
-  for (const img of images) {
-    if (img.height < smallest.height) {
-      smallest = img;
-    }
-  }
-
-  return smallest.url;
-}
+import { getImageUrl } from "@/lib/spotify/getImageUrl";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -29,7 +9,7 @@ export async function GET(request: NextRequest) {
   if (!query) {
     return NextResponse.json(
       { error: "Missing query parameter" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -40,13 +20,13 @@ export async function GET(request: NextRequest) {
     // Search for both artists and albums
     const searchResponse = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-        query
+        query,
       )}&type=artist,album&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
+      },
     );
 
     if (!searchResponse.ok) {
@@ -59,15 +39,14 @@ export async function GET(request: NextRequest) {
       artists: searchData.artists.items.map((artist: any) => ({
         id: artist.id,
         name: artist.name,
-        image: getSmallestImageUrl(artist.images),
-        followers: artist.followers.total,
+        image: getImageUrl(artist.images, "small"),
         type: "artist" as const,
       })),
       albums: searchData.albums.items.map((album: any) => ({
         id: album.id,
         name: album.name,
         artist: album.artists[0]?.name || "Unknown Artist",
-        image: getSmallestImageUrl(album.images),
+        image: getImageUrl(album.images, "small"),
         release_date: album.release_date,
         type: "album" as const,
       })),

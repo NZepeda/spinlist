@@ -10,7 +10,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { Database } from "@/types/database.types";
+import { Database } from "@/lib/supabase/database.types";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 

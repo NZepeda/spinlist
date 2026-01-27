@@ -69,6 +69,7 @@ export type Database = {
           review_count: number | null
           spotify_id: string
           title: string
+          tracks: Json | null
         }
         Insert: {
           artist: string
@@ -81,6 +82,7 @@ export type Database = {
           review_count?: number | null
           spotify_id: string
           title: string
+          tracks?: Json | null
         }
         Update: {
           artist?: string
@@ -93,6 +95,7 @@ export type Database = {
           review_count?: number | null
           spotify_id?: string
           title?: string
+          tracks?: Json | null
         }
         Relationships: []
       }

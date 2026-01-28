@@ -1,8 +1,5 @@
-import { Album } from "@/lib/types/album";
+import { Album, SpotifyImage } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getImageUrl } from "./getImageUrl";
-import { createClient } from "@/lib/supabase/server";
-import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
 
 /**
  * Fetches all albums for a given artist from the Spotify API.
@@ -39,14 +36,14 @@ export async function getArtistAlbums(artistId: string): Promise<Album[]> {
         id: string;
         name: string;
         artists: Array<{ name: string }>;
-        images: Array<{ url: string; width: number; height: number }>;
+        images: SpotifyImage[];
         release_date: string;
         total_tracks: number;
       }) => ({
         id: album.id,
         name: album.name,
         artist: album.artists[0]?.name || "Unknown Artist",
-        image: getImageUrl(album.images, "medium"),
+        images: album.images,
         release_date: album.release_date,
         total_tracks: album.total_tracks,
       }),

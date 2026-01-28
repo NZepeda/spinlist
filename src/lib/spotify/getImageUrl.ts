@@ -1,3 +1,5 @@
+import { SpotifyImage } from "@/lib/types/album";
+
 /**
  * Index mapping for image sizes to their respective positions in the Spotify images array.
  *
@@ -14,7 +16,7 @@ const SIZE_IMAGE_INDEX = {
  * If the given size is not available, it returns the first available image.
  */
 export function getImageUrl(
-  images: { url: string; height: number; width: number }[],
+  images: SpotifyImage[],
   size: "large" | "medium" | "small" = "large",
 ): string | null {
   if (!images || images.length === 0) {

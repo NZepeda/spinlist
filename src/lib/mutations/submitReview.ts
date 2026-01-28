@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/lib/supabase/database.types";
-import { Album } from "@/lib/types/album";
+import { Album, imagesToJson } from "@/lib/types/album";
 
 interface SubmitReviewParams {
   supabase: SupabaseClient<Database>;
@@ -27,7 +27,7 @@ async function upsertAlbum(
         spotify_id: album.id,
         title: album.name,
         artist: album.artist,
-        cover_url: album.image,
+        images: imagesToJson(album.images),
         release_date: album.release_date,
         tracks: album.tracks,
         last_synced_at: new Date().toISOString(),

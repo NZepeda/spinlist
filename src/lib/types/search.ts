@@ -1,3 +1,5 @@
+import { SpotifyImage } from "./album";
+
 /**
  * Represents an artist in search results from Spotify.
  */
@@ -15,7 +17,7 @@ export interface SearchAlbum {
   id: string;
   name: string;
   artist: string;
-  image: string | null;
+  images: SpotifyImage[];
   release_date: string;
   type: "album";
 }

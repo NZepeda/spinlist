@@ -17,6 +17,7 @@ import { SearchResponse, SearchAlbum, SearchArtist } from "@/lib/types/search";
 import { createClient } from "@/lib/supabase/client";
 import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/lib/slugs/getOrCreateArtistSlug";
+import { getImageUrl } from "@/lib/spotify/getImageUrl";
 
 async function searchSpotify(query: string): Promise<SearchResponse> {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -57,31 +58,34 @@ const SearchResults = (props: SearchResultProps) => {
     <Fragment>
       {data.albums && data.albums.length > 0 && (
         <CommandGroup heading="Albums">
-          {data.albums.map((album) => (
-            <CommandItem
-              key={album.id}
-              className="flex items-center gap-3 p-3"
-              onSelect={() => onSelect(album, "album")}
-            >
-              {album.image ? (
-                <img
-                  src={album.image}
-                  alt={album.name}
-                  className="h-10 w-10 rounded object-cover"
-                />
-              ) : (
-                <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
-                  <Search className="h-4 w-4 text-muted-foreground" />
+          {data.albums.map((album) => {
+            const imageUrl = getImageUrl(album.images, "small");
+            return (
+              <CommandItem
+                key={album.id}
+                className="flex items-center gap-3 p-3"
+                onSelect={() => onSelect(album, "album")}
+              >
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={album.name}
+                    className="h-10 w-10 rounded object-cover"
+                  />
+                ) : (
+                  <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <p className="font-medium">{album.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {album.artist} • {new Date(album.release_date).getFullYear()}
+                  </p>
                 </div>
-              )}
-              <div className="flex-1">
-                <p className="font-medium">{album.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {album.artist} • {new Date(album.release_date).getFullYear()}
-                </p>
-              </div>
-            </CommandItem>
-          ))}
+              </CommandItem>
+            );
+          })}
         </CommandGroup>
       )}
       {data.artists && data.artists.length > 0 && (
@@ -151,6 +155,8 @@ export function SearchBar() {
         spotify_id: albumItem.id,
         title: albumItem.name,
         artist: albumItem.artist,
+        release_date: albumItem.release_date,
+        images: albumItem.images,
       });
     }
 

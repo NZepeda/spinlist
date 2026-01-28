@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
+import { SpotifyImage } from "@/lib/types/album";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -36,17 +37,17 @@ export async function GET(request: NextRequest) {
     const searchData = await searchResponse.json();
 
     return NextResponse.json({
-      artists: searchData.artists.items.map((artist: any) => ({
+      artists: searchData.artists.items.map((artist: { id: string; name: string; images: SpotifyImage[] }) => ({
         id: artist.id,
         name: artist.name,
         image: getImageUrl(artist.images, "small"),
         type: "artist" as const,
       })),
-      albums: searchData.albums.items.map((album: any) => ({
+      albums: searchData.albums.items.map((album: { id: string; name: string; artists: { name: string }[]; images: SpotifyImage[]; release_date: string }) => ({
         id: album.id,
         name: album.name,
         artist: album.artists[0]?.name || "Unknown Artist",
-        image: getImageUrl(album.images, "small"),
+        images: album.images,
         release_date: album.release_date,
         type: "album" as const,
       })),

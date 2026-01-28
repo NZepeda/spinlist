@@ -1,3 +1,22 @@
+import { Json } from "@/lib/supabase/database.types";
+
+/**
+ * Represents an image from Spotify's API.
+ * Images are typically provided in multiple sizes (large, medium, small).
+ */
+export interface SpotifyImage {
+  url: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * Type-safe cast for SpotifyImage array to Supabase Json type.
+ */
+export function imagesToJson(images: SpotifyImage[]): Json {
+  return images as unknown as Json;
+}
+
 /**
  * Represents a track within an album.
  */
@@ -17,7 +36,7 @@ export interface Album {
   slug?: string;
   name: string;
   artist: string;
-  image: string | null;
+  images: SpotifyImage[];
   release_date: string;
   total_tracks: number;
   tracks?: Track[];

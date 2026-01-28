@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Album } from "@/lib/types/album";
+import { Album, SpotifyImage } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { ReviewSection } from "@/components/review/ReviewSection";
@@ -33,10 +33,10 @@ async function getAlbum(id: string): Promise<Album> {
       id: albumData.id,
       name: albumData.name,
       artist: albumData.artists[0]?.name || "Unknown Artist",
-      image: getImageUrl(albumData.images),
+      images: albumData.images as SpotifyImage[],
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
-      tracks: albumData.tracks.items.map((track: any) => ({
+      tracks: albumData.tracks.items.map((track: { id: string; name: string; track_number: number; duration_ms: number }) => ({
         id: track.id,
         name: track.name,
         track_number: track.track_number,
@@ -74,14 +74,16 @@ export default async function AlbumPage({
 
   const album = await getAlbum(spotifyId);
 
+  const imageUrl = getImageUrl(album.images);
+
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Album Image */}
         <div className="flex justify-center lg:justify-start">
-          {album.image ? (
+          {imageUrl ? (
             <img
-              src={album.image}
+              src={imageUrl}
               alt={album.name}
               className="w-full max-w-md rounded-lg shadow-lg aspect-square object-cover"
             />

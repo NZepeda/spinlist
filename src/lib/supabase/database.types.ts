@@ -54,6 +54,7 @@ export type Database = {
           {
             foreignKeyName: "album_slugs_album_id_fkey"
             columns: ["album_id"]
+            isOneToOne: false
             referencedRelation: "albums"
             referencedColumns: ["id"]
           },
@@ -63,9 +64,9 @@ export type Database = {
         Row: {
           artist: string
           avg_rating: number | null
-          cover_url: string | null
           created_at: string
           id: string
+          images: Json | null
           last_synced_at: string
           release_date: string | null
           review_count: number | null
@@ -76,9 +77,9 @@ export type Database = {
         Insert: {
           artist: string
           avg_rating?: number | null
-          cover_url?: string | null
           created_at?: string
           id?: string
+          images?: Json | null
           last_synced_at?: string
           release_date?: string | null
           review_count?: number | null
@@ -89,9 +90,9 @@ export type Database = {
         Update: {
           artist?: string
           avg_rating?: number | null
-          cover_url?: string | null
           created_at?: string
           id?: string
+          images?: Json | null
           last_synced_at?: string
           release_date?: string | null
           review_count?: number | null
@@ -121,6 +122,7 @@ export type Database = {
           {
             foreignKeyName: "artist_slugs_artist_id_fkey"
             columns: ["artist_id"]
+            isOneToOne: false
             referencedRelation: "artists"
             referencedColumns: ["id"]
           },
@@ -212,12 +214,14 @@ export type Database = {
           {
             foreignKeyName: "reviews_album_id_fkey"
             columns: ["album_id"]
+            isOneToOne: false
             referencedRelation: "albums"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "reviews_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -355,3 +359,13 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {},
+  },
+} as const
+

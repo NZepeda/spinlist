@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getImageUrl } from "@/lib/spotify/getImageUrl";
+import { SpotifyImage } from "@/lib/types/album";
 
 export async function GET(
   request: NextRequest,
@@ -40,10 +40,10 @@ export async function GET(
       id: albumData.id,
       name: albumData.name,
       artist: albumData.artists[0]?.name || "Unknown Artist",
-      image: getImageUrl(albumData.images),
+      images: albumData.images as SpotifyImage[],
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
-      tracks: albumData.tracks.items.map((track: any) => ({
+      tracks: albumData.tracks.items.map((track: { id: string; name: string; track_number: number; duration_ms: number }) => ({
         id: track.id,
         name: track.name,
         track_number: track.track_number,

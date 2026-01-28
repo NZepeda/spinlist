@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "public"."albums" (
     "title" "text" NOT NULL,
     "artist" "text" NOT NULL,
     "release_date" "date",
-    "cover_url" "text",
+    "images" jsonb DEFAULT '[]'::jsonb,
     "avg_rating" numeric(3,2) DEFAULT 0,
     "review_count" integer DEFAULT 0,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,

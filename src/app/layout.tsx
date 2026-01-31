@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryClientProvider } from "@/components/contexts/QueryClientProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Navbar } from "@/components/Navbar";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
           </AuthProvider>
         </QueryClientProvider>
       </body>
+      <Analytics />
     </html>
   );
 }

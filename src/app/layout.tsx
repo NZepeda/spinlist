@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Spinlist - Rate & Discover Music",
-  description: "A community-driven platform for rating and discovering albums",
+  description: "A community-driven platform for rating and discovering music",
 };
 
 export default function RootLayout({
@@ -38,7 +38,7 @@ export default function RootLayout({
           </AuthProvider>
         </QueryClientProvider>
       </body>
-      <Analytics />
+      {process.env.NODE_ENV === "production" && <Analytics />}
     </html>
   );
 }

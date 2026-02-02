@@ -3,6 +3,7 @@ import { Database, TablesInsert } from "@/lib/types/database.types";
 import { generateSlug } from "./generateSlug";
 import { findAvailableSlug } from "./findAvailableSlug";
 import { getArtist } from "../spotify/getArtist";
+import { syncAlbums } from "../syncAlbums";
 
 /**
  * Gets an existing slug or creates a new one for an artist.
@@ -10,27 +11,27 @@ import { getArtist } from "../spotify/getArtist";
  */
 export async function getOrCreateArtistSlug(
   supabase: SupabaseClient<Database>,
-  spotifyId: string,
+  artistSpotifyId: string,
 ): Promise<string> {
   // Check if slug already exists for this spotify_id
   const { data: slugRecord } = await supabase
     .from("artist_slugs")
     .select("slug")
-    .eq("spotify_id", spotifyId)
+    .eq("spotify_id", artistSpotifyId)
     .single();
 
   if (slugRecord) {
     return slugRecord.slug;
   }
 
-  const artist = await getArtist(spotifyId);
+  // The artist doesn't exist in the database yet.
+  const artist = await getArtist(artistSpotifyId);
 
-  // The record doesn't exist yet - upsert artist first
   const { data: artistRecord, error: artistError } = await supabase
     .from("artists")
     .upsert(
       {
-        spotify_id: spotifyId,
+        spotify_id: artistSpotifyId,
         name: artist.name,
         last_synced_at: new Date().toISOString(),
         image_url: artist.image,
@@ -50,13 +51,16 @@ export async function getOrCreateArtistSlug(
 
   const { error: insertError } = await supabase.from("artist_slugs").insert({
     slug,
-    spotify_id: spotifyId,
+    spotify_id: artistSpotifyId,
     artist_id: artistRecord.id,
   });
 
   if (insertError) {
     throw insertError;
   }
+
+  // Fire-and-forget: sync the artist's albums in the background
+  syncAlbums(supabase, artistSpotifyId);
 
   return slug;
 }

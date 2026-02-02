@@ -7,17 +7,15 @@ import { SpotifyAlbumSimplified } from "@/lib/types/spotify.types";
 /**
  * Displays the given `albums` in a responsive grid layout.
  */
-export const AlbumGrid = ({
-  albums,
-}: {
-  artist: string;
-  albums: SpotifyAlbumSimplified[];
-}) => {
+export const AlbumGrid = ({ albums }: { albums: SpotifyAlbumSimplified[] }) => {
   const router = useRouter();
-  const handleAlbumClick = async (albumId: string) => {
-    const slug = await fetch(`/api/slug/spotifyId=${albumId}&type=album`);
 
-    router.push(`/album/${slug}`);
+  const handleAlbumClick = async (albumId: string) => {
+    const response = await fetch(`/api/slug?spotifyId=${albumId}&type=album`);
+
+    const data = await response.json();
+
+    router.push(`/album/${data.slug}`);
   };
 
   return (
@@ -49,7 +47,7 @@ export const AlbumGrid = ({
               {album.name}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {album.release_date.slice(0, 4)}
+              {new Date(album.release_date).getFullYear()}
             </p>
           </div>
         );

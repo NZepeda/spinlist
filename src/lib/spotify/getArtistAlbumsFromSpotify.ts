@@ -9,11 +9,11 @@ import { SpotifyAlbumSimplified, SpotifyImage } from "../types/spotify.types";
  *
  * TODO: The albums should be fetched from the database instead of Spotify API directly.
  */
-export async function getArtistAlbums(artistId: string) {
+export async function getArtistAlbumsFromSpotify(artistId: string) {
   const accessToken = await getSpotifyToken();
 
   const response = await fetch(
-    `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&limit=50`,
+    `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album&limit=50`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

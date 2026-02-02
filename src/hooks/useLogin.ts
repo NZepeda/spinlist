@@ -1,62 +1,7 @@
 import { useReducer } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-
-interface LoginState {
-  email: string;
-  password: string;
-  errors: {
-    email?: string;
-    password?: string;
-    general?: string;
-  };
-  isLoading: boolean;
-}
-
-type LoginAction =
-  | { type: "SET_EMAIL"; payload: string }
-  | { type: "SET_PASSWORD"; payload: string }
-  | { type: "SET_ERROR"; field: keyof LoginState["errors"]; message: string }
-  | { type: "CLEAR_ERRORS" }
-  | { type: "SET_LOADING"; payload: boolean }
-  | { type: "RESET" };
-
-const initialState: LoginState = {
-  email: "",
-  password: "",
-  errors: {},
-  isLoading: false,
-};
-
-function loginReducer(state: LoginState, action: LoginAction): LoginState {
-  switch (action.type) {
-    case "SET_EMAIL":
-      return {
-        ...state,
-        email: action.payload,
-        errors: { ...state.errors, email: undefined },
-      };
-    case "SET_PASSWORD":
-      return {
-        ...state,
-        password: action.payload,
-        errors: { ...state.errors, password: undefined },
-      };
-    case "SET_ERROR":
-      return {
-        ...state,
-        errors: { ...state.errors, [action.field]: action.message },
-      };
-    case "CLEAR_ERRORS":
-      return { ...state, errors: {} };
-    case "SET_LOADING":
-      return { ...state, isLoading: action.payload };
-    case "RESET":
-      return initialState;
-    default:
-      return state;
-  }
-}
+import { loginReducer, loginInitialState } from "./loginReducer";
 
 /**
  * Hook for managing login form state and logic.
@@ -64,7 +9,7 @@ function loginReducer(state: LoginState, action: LoginAction): LoginState {
  */
 
 export function useLogin() {
-  const [state, dispatch] = useReducer(loginReducer, initialState);
+  const [state, dispatch] = useReducer(loginReducer, loginInitialState);
   const router = useRouter();
   const supabase = createClient();
 

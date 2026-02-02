@@ -1,7 +1,11 @@
+/**
+ * Indeed, searching for albums and artists could be done directly from the client, but having a server route allows us to:
+ * - securely handle the Spotify API token without exposing it to the client
+ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { getImageUrl } from "@/lib/spotify/getImageUrl";
-import { SpotifyImage } from "@/lib/types/album";
+import { SpotifySearchResponse } from "@/lib/types/spotify.types";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -34,26 +38,15 @@ export async function GET(request: NextRequest) {
       throw new Error("Failed to search Spotify API");
     }
 
-    const searchData = await searchResponse.json();
+    const searchData = (await searchResponse.json()) as SpotifySearchResponse;
 
     return NextResponse.json({
-      artists: searchData.artists.items.map((artist: { id: string; name: string; images: SpotifyImage[] }) => ({
-        id: artist.id,
-        name: artist.name,
-        image: getImageUrl(artist.images, "small"),
-        type: "artist" as const,
-      })),
-      albums: searchData.albums.items.map((album: { id: string; name: string; artists: { name: string }[]; images: SpotifyImage[]; release_date: string }) => ({
-        id: album.id,
-        name: album.name,
-        artist: album.artists[0]?.name || "Unknown Artist",
-        images: album.images,
-        release_date: album.release_date,
-        type: "album" as const,
-      })),
+      artists: searchData.artists.items,
+      albums: searchData.albums.items.filter(
+        (album) => album.album_type !== "single",
+      ),
     });
   } catch (error) {
-    console.error("Search API error:", error);
     return NextResponse.json({ error: "Failed to search" }, { status: 500 });
   }
 }

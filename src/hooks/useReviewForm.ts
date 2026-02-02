@@ -2,9 +2,7 @@
 
 import { useReducer, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Album } from "@/lib/types/album";
 import { Review } from "@/lib/types/review";
 import {
   reviewFormInitialState,
@@ -13,6 +11,19 @@ import {
 } from "./reviewFormReducer";
 import { submitReview } from "@/lib/mutations/submitReview";
 import { deleteReview } from "@/lib/mutations/deleteReview";
+import { Database } from "@/lib/types/database.types";
+
+type Album = Omit<
+  Database["public"]["Tables"]["albums"]["Row"],
+  "created_at" | "last_synced_at" | "tracks"
+> & {
+  tracks: {
+    id: string;
+    name: string;
+    track_number: number;
+    duration_ms: number;
+  }[];
+};
 
 interface UseReviewFormOptions {
   album: Album;
@@ -56,7 +67,6 @@ export function useReviewForm({ album, existingReview }: UseReviewFormOptions) {
 
   const [state, dispatch] = useReducer(reviewFormReducer, initialState);
   const { user } = useAuth();
-  const supabase = createClient();
   const queryClient = useQueryClient();
 
   const isEditMode = Boolean(existingReview);
@@ -75,12 +85,11 @@ export function useReviewForm({ album, existingReview }: UseReviewFormOptions) {
       }
 
       await submitReview({
-        supabase,
         userId: user.id,
-        album,
+        albumId: album.id,
         rating: state.rating,
-        reviewText: state.reviewText || null,
-        favoriteTrackId: state.favoriteTrackId || null,
+        reviewText: state.reviewText,
+        favoriteTrackId: state.favoriteTrackId,
         existingReviewId: existingReview?.id,
       });
     },
@@ -109,7 +118,6 @@ export function useReviewForm({ album, existingReview }: UseReviewFormOptions) {
       }
 
       await deleteReview({
-        supabase,
         reviewId: existingReview.id,
       });
     },

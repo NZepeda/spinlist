@@ -1,6 +1,5 @@
-import { Album, SpotifyImage } from "@/lib/types/album";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-
+import { SpotifyAlbumSimplified, SpotifyImage } from "../types/spotify.types";
 /**
  * Fetches all albums for a given artist from the Spotify API.
  * Note: The albums endpoint does not include track details, so tracks will be undefined.
@@ -10,7 +9,7 @@ import { getSpotifyToken } from "@/lib/getSpotifyToken";
  *
  * TODO: The albums should be fetched from the database instead of Spotify API directly.
  */
-export async function getArtistAlbums(artistId: string): Promise<Album[]> {
+export async function getArtistAlbums(artistId: string) {
   const accessToken = await getSpotifyToken();
 
   const response = await fetch(
@@ -29,7 +28,7 @@ export async function getArtistAlbums(artistId: string): Promise<Album[]> {
 
   const data = await response.json();
 
-  const albums: Album[] = data.items
+  const albums: SpotifyAlbumSimplified[] = data.items
     .filter((album: { album_type: string }) => album.album_type === "album")
     .map(
       (album: {

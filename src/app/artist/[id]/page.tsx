@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getArtist } from "@/lib/spotify/getArtist";
 import { getArtistAlbums } from "@/lib/spotify/getArtistAlbums";
-import { AlbumGrid } from "@/app/album/[id]/AlbumGrid";
+import { AlbumGrid } from "@/app/album/[slug]/AlbumGrid";
 import { createClient } from "@/lib/supabase/server";
 import { getSpotifyIdFromSlug } from "@/lib/spotify/getSpotifyIdFromSlug";
 
@@ -17,9 +17,9 @@ export default async function ArtistPage({
 }) {
   const { id } = await params;
 
-  const supabaseClient = await createClient();
+  const supabase = await createClient();
   const spotifyId = await getSpotifyIdFromSlug(id, {
-    supabaseClient,
+    supabase,
     itemType: "artist",
   });
 

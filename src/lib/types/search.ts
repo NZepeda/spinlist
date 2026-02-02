@@ -1,4 +1,8 @@
-import { SpotifyImage } from "./album";
+import {
+  SpotifyAlbumSimplified,
+  SpotifyArtistFull,
+  SpotifyImage,
+} from "./spotify.types";
 
 /**
  * Represents an artist in search results from Spotify.
@@ -6,7 +10,7 @@ import { SpotifyImage } from "./album";
 export interface SearchArtist {
   id: string;
   name: string;
-  image: string | null;
+  images: string | null;
   type: "artist";
 }
 
@@ -31,6 +35,6 @@ export type SearchResult = SearchArtist | SearchAlbum;
  * The response structure from the Spotify search API.
  */
 export interface SearchResponse {
-  artists: SearchArtist[];
-  albums: SearchAlbum[];
+  artists: SpotifyArtistFull[];
+  albums: SpotifyAlbumSimplified[];
 }

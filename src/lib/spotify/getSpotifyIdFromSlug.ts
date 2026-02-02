@@ -9,9 +9,9 @@ import { resolveAlbumSlug } from "../slugs/resolveAlbumSlug";
 export const getSpotifyIdFromSlug = async (
   slug: string,
   {
-    supabaseClient,
+    supabase,
     itemType,
-  }: { supabaseClient: SupabaseClient; itemType: "artist" | "album" },
+  }: { supabase: SupabaseClient; itemType: "artist" | "album" },
 ): Promise<string | null> => {
   if (isId(slug)) {
     return slug;
@@ -19,7 +19,7 @@ export const getSpotifyIdFromSlug = async (
 
   const resolveSlug =
     itemType === "artist" ? resolveArtistSlug : resolveAlbumSlug;
-  const result = await resolveSlug(supabaseClient, slug);
+  const result = await resolveSlug(supabase, slug);
 
   return result?.spotify_id ?? null;
 };

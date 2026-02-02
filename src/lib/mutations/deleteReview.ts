@@ -1,8 +1,6 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/supabase/database.types";
+import { createClient } from "../supabase/client";
 
 interface DeleteReviewParams {
-  supabase: SupabaseClient<Database>;
   reviewId: string;
 }
 
@@ -12,9 +10,10 @@ interface DeleteReviewParams {
  * @throws Error if the database operation fails
  */
 export async function deleteReview({
-  supabase,
   reviewId,
 }: DeleteReviewParams): Promise<void> {
+  const supabase = createClient();
+
   const { error } = await supabase.from("reviews").delete().eq("id", reviewId);
 
   if (error) {

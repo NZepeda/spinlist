@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Tables } from "@/lib/supabase/database.types";
+import { Database, Tables } from "@/lib/types/database.types";
 
 /**
  * Resolves an artist slug to a Spotify ID.

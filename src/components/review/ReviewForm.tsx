@@ -2,14 +2,26 @@
 
 import { useReviewForm } from "@/hooks/useReviewForm";
 import { useUserReview } from "@/hooks/useUserReview";
-import { Album } from "@/lib/types/album";
 import { Review } from "@/lib/types/review";
 import { useState } from "react";
 import { StarRating } from "../StarRating";
 import { Textarea } from "../ui-core/textarea";
 import { Select, SelectOption } from "../ui-core/select";
 import { Button } from "../ui-core/button";
+import { Database } from "@/lib/types/database.types";
 
+// TODO: Extract this to its own file.
+type Album = Omit<
+  Database["public"]["Tables"]["albums"]["Row"],
+  "created_at" | "last_synced_at" | "tracks"
+> & {
+  tracks: {
+    id: string;
+    name: string;
+    track_number: number;
+    duration_ms: number;
+  }[];
+};
 interface ReviewFormProps {
   album: Album;
 }

@@ -18,6 +18,10 @@ import { createClient } from "@/lib/supabase/client";
 import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/lib/slugs/getOrCreateArtistSlug";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
+import {
+  SpotifyAlbumSimplified,
+  SpotifyArtistFull,
+} from "@/lib/types/spotify.types";
 
 async function searchSpotify(query: string): Promise<SearchResponse> {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
@@ -28,17 +32,17 @@ async function searchSpotify(query: string): Promise<SearchResponse> {
 }
 
 interface SearchResultProps {
-  data?: SearchResponse;
+  results?: SearchResponse;
   isLoading: boolean;
   error: Error | null;
   onSelect: (
-    item: SearchArtist | SearchAlbum,
+    item: SpotifyArtistFull | SpotifyAlbumSimplified,
     type: "artist" | "album",
   ) => void;
 }
 
 const SearchResults = (props: SearchResultProps) => {
-  const { data, isLoading, error, onSelect } = props;
+  const { results, isLoading, error, onSelect } = props;
   if (isLoading) {
     return <CommandEmpty>Searching...</CommandEmpty>;
   }
@@ -47,8 +51,9 @@ const SearchResults = (props: SearchResultProps) => {
     return <CommandEmpty>Something went wrong. Please try again.</CommandEmpty>;
   }
 
-  const hasResults =
-    data && (data.artists.length > 0 || data.albums.length > 0);
+  const { artists = [], albums = [] } = results || {};
+
+  const hasResults = artists.length > 0 || albums.length > 0;
 
   if (!hasResults) {
     return <CommandEmpty>No results found.</CommandEmpty>;
@@ -56,10 +61,13 @@ const SearchResults = (props: SearchResultProps) => {
 
   return (
     <Fragment>
-      {data.albums && data.albums.length > 0 && (
+      {albums.length > 0 && (
         <CommandGroup heading="Albums">
-          {data.albums.map((album) => {
+          {albums.map((album) => {
             const imageUrl = getImageUrl(album.images, "small");
+            const albumArtist = album.artists
+              .map((artist) => artist.name)
+              .join(", ");
             return (
               <CommandItem
                 key={album.id}
@@ -80,7 +88,7 @@ const SearchResults = (props: SearchResultProps) => {
                 <div className="flex-1">
                   <p className="font-medium">{album.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {album.artist} • {new Date(album.release_date).getFullYear()}
+                    {albumArtist} • {new Date(album.release_date).getFullYear()}
                   </p>
                 </div>
               </CommandItem>
@@ -88,30 +96,33 @@ const SearchResults = (props: SearchResultProps) => {
           })}
         </CommandGroup>
       )}
-      {data.artists && data.artists.length > 0 && (
+      {artists.length > 0 && (
         <CommandGroup heading="Artists">
-          {data.artists.map((artist) => (
-            <CommandItem
-              key={artist.id}
-              className="flex items-center gap-3 p-3"
-              onSelect={() => onSelect(artist, "artist")}
-            >
-              {artist.image ? (
-                <img
-                  src={artist.image}
-                  alt={artist.name}
-                  className="h-10 w-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                  <Search className="h-4 w-4 text-muted-foreground" />
+          {artists.map((artist) => {
+            const artistImageUrl = getImageUrl(artist.images, "small");
+            return (
+              <CommandItem
+                key={artist.id}
+                className="flex items-center gap-3 p-3"
+                onSelect={() => onSelect(artist, "artist")}
+              >
+                {artistImageUrl ? (
+                  <img
+                    src={artistImageUrl}
+                    alt={artist.name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <p className="font-medium">{artist.name}</p>
                 </div>
-              )}
-              <div className="flex-1">
-                <p className="font-medium">{artist.name}</p>
-              </div>
-            </CommandItem>
-          ))}
+              </CommandItem>
+            );
+          })}
         </CommandGroup>
       )}
     </Fragment>
@@ -124,7 +135,11 @@ export function SearchBar() {
   const [open, setOpen] = useState(false);
   const debouncedQuery = useDebounce(searchValue, 300);
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data: searchResults,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["search", debouncedQuery],
     queryFn: () => searchSpotify(debouncedQuery),
     enabled: debouncedQuery.length > 0,
@@ -135,32 +150,20 @@ export function SearchBar() {
    * From the selected item, it retrieves the appropriate slug.
    */
   const handleSelect = async (
-    item: SearchArtist | SearchAlbum,
-    type: "artist" | "album",
+    item: SpotifyArtistFull | SpotifyAlbumSimplified,
   ) => {
     setSearchValue("");
     setOpen(false);
 
-    const supabase = await createClient();
+    const response = await fetch(
+      `/api/slug?spotifyId=${item.id}&type=${item.type}`,
+    );
 
-    let slug: string;
-    if (type === "artist") {
-      slug = await getOrCreateArtistSlug(supabase, {
-        spotify_id: item.id,
-        name: (item as SearchArtist).name,
-      });
-    } else {
-      const albumItem = item as SearchAlbum;
-      slug = await getOrCreateAlbumSlug(supabase, {
-        spotify_id: albumItem.id,
-        title: albumItem.name,
-        artist: albumItem.artist,
-        release_date: albumItem.release_date,
-        images: albumItem.images,
-      });
-    }
+    const data = await response.json();
 
-    router.push(`/${type}/${slug}`);
+    const { slug } = data;
+
+    router.push(`/${item.type}/${slug}`);
   };
 
   return (
@@ -180,7 +183,7 @@ export function SearchBar() {
         {open && searchValue && (
           <CommandList className="absolute top-full left-0 right-0 max-h-[400px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
             <SearchResults
-              data={data}
+              results={searchResults}
               isLoading={isLoading}
               error={error}
               onSelect={handleSelect}

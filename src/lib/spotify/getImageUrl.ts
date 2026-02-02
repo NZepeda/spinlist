@@ -1,4 +1,4 @@
-import { SpotifyImage } from "@/lib/types/album";
+import { SpotifyImage } from "@/lib/types/spotify.types";
 
 /**
  * Index mapping for image sizes to their respective positions in the Spotify images array.

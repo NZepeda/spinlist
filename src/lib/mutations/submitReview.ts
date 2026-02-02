@@ -1,47 +1,15 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/supabase/database.types";
-import { Album, imagesToJson } from "@/lib/types/album";
+import { Database } from "@/lib/types/database.types";
+import { imagesToJson } from "../spotify/imagesToJson";
+import { createClient } from "../supabase/client";
 
 interface SubmitReviewParams {
-  supabase: SupabaseClient<Database>;
   userId: string;
-  album: Album;
+  albumId: string;
   rating: number;
-  reviewText: string | null;
-  favoriteTrackId: string | null;
+  reviewText?: string;
+  favoriteTrackId?: string;
   existingReviewId?: string;
-}
-
-/**
- * Upserts an album record and returns the database ID.
- * Creates the album if it doesn't exist, or returns the existing ID.
- */
-async function upsertAlbum(
-  supabase: SupabaseClient<Database>,
-  album: Album,
-): Promise<string> {
-  const { data, error } = await supabase
-    .from("albums")
-    .upsert(
-      {
-        spotify_id: album.id,
-        title: album.name,
-        artist: album.artist,
-        images: imagesToJson(album.images),
-        release_date: album.release_date,
-        tracks: album.tracks,
-        last_synced_at: new Date().toISOString(),
-      },
-      { onConflict: "spotify_id" },
-    )
-    .select("id")
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data.id;
 }
 
 /**
@@ -52,14 +20,15 @@ async function upsertAlbum(
  * @throws Error if the database operation fails
  */
 export async function submitReview({
-  supabase,
-  userId,
-  album,
+  albumId,
   rating,
   reviewText,
   favoriteTrackId,
   existingReviewId,
+  userId,
 }: SubmitReviewParams): Promise<void> {
+  const supabase = createClient();
+
   if (existingReviewId) {
     const { error } = await supabase
       .from("reviews")
@@ -75,9 +44,6 @@ export async function submitReview({
       throw error;
     }
   } else {
-    // Upsert album to get the database ID
-    const albumId = await upsertAlbum(supabase, album);
-
     const { error } = await supabase.from("reviews").insert({
       user_id: userId,
       album_id: albumId,

@@ -1,4 +1,4 @@
-import { Database } from "@/lib/supabase/database.types";
+import { Database } from "@/lib/types/database.types";
 
 /**
  * Represents a complete review record from the database.

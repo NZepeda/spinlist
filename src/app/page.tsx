@@ -1,4 +1,6 @@
-export default function Home() {
+import { LandingPage } from "./landing-page";
+
+function DevHome() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="text-center py-16">
@@ -6,8 +8,8 @@ export default function Home() {
           Rate & Discover Music
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Like Letterboxd, but for albums. Search, rate, and review your favorite music. 
-          Discover new albums through community recommendations.
+          Like Letterboxd, but for albums. Search, rate, and review your
+          favorite music. Discover new albums through community recommendations.
         </p>
       </div>
 
@@ -21,7 +23,7 @@ export default function Home() {
             Find any album using our Spotify-powered search
           </p>
         </div>
-        
+
         <div className="text-center p-6">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="text-primary font-bold">⭐</span>
@@ -31,7 +33,7 @@ export default function Home() {
             Share your thoughts and rate albums on a 5-star scale
           </p>
         </div>
-        
+
         <div className="text-center p-6">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <span className="text-primary font-bold">👥</span>
@@ -44,4 +46,13 @@ export default function Home() {
       </div>
     </main>
   );
+}
+
+/**
+ * Displays the landing page or dev home based on the environment.
+ */
+export default function Home() {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return isProduction ? <LandingPage /> : <DevHome />;
 }

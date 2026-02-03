@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryClientProvider } from "@/components/contexts/QueryClientProvider";
 import { AuthProvider } from "@/hooks/useAuth";
-import { Navbar } from "@/components/Navbar";
 import { Analytics } from "@vercel/analytics/next";
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +26,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isProduction = process.env.NODE_ENV === "production";
   return (
     <html lang="en">
       <body
@@ -33,12 +34,12 @@ export default function RootLayout({
       >
         <QueryClientProvider>
           <AuthProvider>
-            <Navbar />
+            {isProduction && <Navbar />}
             {children}
           </AuthProvider>
         </QueryClientProvider>
       </body>
-      {process.env.NODE_ENV === "production" && <Analytics />}
+      {isProduction && <Analytics />}
     </html>
   );
 }

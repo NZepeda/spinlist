@@ -63,6 +63,7 @@ schema_paths = [
   "./schemas/reviews.sql",
   "./schemas/album_slugs.sql",
   "./schemas/artist_slugs.sql",
+  "./schemas/waitlist.sql",
   "./schemas/policies.sql",
   "./schemas/triggers.sql",
   "./schemas/grants.sql",

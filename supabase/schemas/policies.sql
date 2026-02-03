@@ -5,6 +5,7 @@ ALTER TABLE "public"."reviews" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."artists" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."artist_slugs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."album_slugs" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."waitlist" ENABLE ROW LEVEL SECURITY;
 
 -- Albums policies
 CREATE POLICY "Albums are viewable by everyone" ON "public"."albums" FOR SELECT USING (true);
@@ -35,3 +36,6 @@ CREATE POLICY "Anyone can update artist slugs" ON "public"."artist_slugs" FOR UP
 CREATE POLICY "Album slugs are viewable by everyone" ON "public"."album_slugs" FOR SELECT USING (true);
 CREATE POLICY "Anyone can create album slugs" ON "public"."album_slugs" FOR INSERT WITH CHECK (true);
 CREATE POLICY "Anyone can update album slugs" ON "public"."album_slugs" FOR UPDATE USING (true);
+
+-- Waitlist policies
+CREATE POLICY "Anyone can join waitlist" ON "public"."waitlist" FOR INSERT WITH CHECK (true);

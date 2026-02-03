@@ -34,7 +34,7 @@ export default function RootLayout({
       >
         <QueryClientProvider>
           <AuthProvider>
-            {isProduction && <Navbar />}
+            {isProduction ? null : <Navbar />}
             {children}
           </AuthProvider>
         </QueryClientProvider>

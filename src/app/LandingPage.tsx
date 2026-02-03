@@ -68,7 +68,7 @@ export const LandingPage = () => {
               <p className="text-sm uppercase tracking-[0.3em] text-[#5A5247]">
                 Your music, remembered
               </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#0A0A0A] sm:text-6xl">
+              <h1 className="mt-4 text-4xl font-black tracking-tight text-[#0A0A0A] sm:text-6xl">
                 <span className="text-[#D96A20]">Spinlist</span> is the home for
                 obsessive listeners and intentional reviews.
               </h1>
@@ -162,7 +162,7 @@ export const LandingPage = () => {
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0A0A0A]/15 bg-[#F5F1E6] text-lg">
                   {feature.icon}
                 </span>
-                <h3 className="text-xl font-semibold">{feature.title}</h3>
+                <h2 className="text-xl font-black">{feature.title}</h2>
               </div>
               <p className="mt-3 text-sm text-[#5A5247]">{feature.copy}</p>
             </div>
@@ -174,7 +174,7 @@ export const LandingPage = () => {
             <p className="text-sm uppercase tracking-[0.2em] text-[#5A5247]">
               How it works
             </p>
-            <h2 className="mt-4 text-3xl font-semibold">
+            <h2 className="mt-4 text-3xl font-black">
               Build a music journal that does the remembering.
             </h2>
             <p className="mt-4 text-[#5A5247]">
@@ -205,7 +205,7 @@ export const LandingPage = () => {
           <div className="rounded-3xl border border-[#0A0A0A]/20 bg-gradient-to-br from-[#D96A20]/20 via-white/80 to-[#F5F1E6] p-10 text-[#0A0A0A]">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-3xl font-semibold">
+                <h2 className="text-3xl font-black">
                   Be the first to shape the community.
                 </h2>
                 <p className="mt-3 text-sm text-[#5A5247]">

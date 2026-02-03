@@ -5,7 +5,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://thespinlist.com";
 const name = "Spinlist";
 const title = "Spinlist - Rate & Discover Music";
 const description =
-  "Your music journal for obsessive listeners. Track your favorites, see what's spinning, and build a taste profile that does the remembering.";
+  "The music journal for obsessive listeners. Track your favorites, see what others are spinning, and build and share your taste profile.";
 
 /**
  * Root metadata configuration for the application.

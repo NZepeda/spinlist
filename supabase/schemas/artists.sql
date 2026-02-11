@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "public"."artists" (
     "spotify_id" "text" NOT NULL,
     "name" "text" NOT NULL,
     "image_url" "text",
+    "slug" "text" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "last_synced_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
@@ -19,3 +20,4 @@ ALTER TABLE ONLY "public"."artists"
 
 -- Indexes for performance
 CREATE INDEX "idx_artists_spotify_id" ON "public"."artists" USING "btree" ("spotify_id");
+CREATE UNIQUE INDEX "idx_artists_slug" ON "public"."artists" ("slug");

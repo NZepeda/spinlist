@@ -34,32 +34,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      album_slugs: {
-        Row: {
-          album_id: string
-          slug: string
-          spotify_id: string
-        }
-        Insert: {
-          album_id: string
-          slug: string
-          spotify_id: string
-        }
-        Update: {
-          album_id?: string
-          slug?: string
-          spotify_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "album_slugs_album_id_fkey"
-            columns: ["album_id"]
-            isOneToOne: false
-            referencedRelation: "albums"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       albums: {
         Row: {
           artist: string
@@ -70,6 +44,7 @@ export type Database = {
           last_synced_at: string
           release_date: string | null
           review_count: number | null
+          slug: string
           spotify_id: string
           title: string
           tracks: Json | null
@@ -83,6 +58,7 @@ export type Database = {
           last_synced_at?: string
           release_date?: string | null
           review_count?: number | null
+          slug: string
           spotify_id: string
           title: string
           tracks?: Json | null
@@ -96,37 +72,12 @@ export type Database = {
           last_synced_at?: string
           release_date?: string | null
           review_count?: number | null
+          slug?: string
           spotify_id?: string
           title?: string
           tracks?: Json | null
         }
         Relationships: []
-      }
-      artist_slugs: {
-        Row: {
-          artist_id: string
-          slug: string
-          spotify_id: string
-        }
-        Insert: {
-          artist_id: string
-          slug: string
-          spotify_id: string
-        }
-        Update: {
-          artist_id?: string
-          slug?: string
-          spotify_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "artist_slugs_artist_id_fkey"
-            columns: ["artist_id"]
-            isOneToOne: false
-            referencedRelation: "artists"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       artists: {
         Row: {
@@ -135,6 +86,7 @@ export type Database = {
           image_url: string | null
           last_synced_at: string
           name: string
+          slug: string
           spotify_id: string
         }
         Insert: {
@@ -143,6 +95,7 @@ export type Database = {
           image_url?: string | null
           last_synced_at?: string
           name: string
+          slug: string
           spotify_id: string
         }
         Update: {
@@ -151,6 +104,7 @@ export type Database = {
           image_url?: string | null
           last_synced_at?: string
           name?: string
+          slug?: string
           spotify_id?: string
         }
         Relationships: []

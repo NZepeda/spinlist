@@ -2,6 +2,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "@/lib/types/database.types";
 import { getArtistAlbumsFromSpotify } from "@/lib/spotify/getArtistAlbumsFromSpotify";
 import { imagesToJson } from "@/lib/spotify/imagesToJson";
+import { generateSlug } from "@/lib/slugs/generateSlug";
+import { findAvailableSlug } from "@/lib/slugs/findAvailableSlug";
 
 /**
  * Syncs an artist's albums from Spotify into the database.
@@ -21,16 +23,24 @@ export async function syncAlbums(
       return;
     }
 
-    const rows = albums.map((album) => ({
-      spotify_id: album.id,
-      title: album.name,
-      // TODO: Fix this
-      // @ts-expect-error
-      artist: album.artist,
-      release_date: album.release_date,
-      images: imagesToJson(album.images),
-      last_synced_at: new Date().toISOString(),
-    }));
+    // Generate unique slugs for each album
+    const rows = [];
+    for (const album of albums) {
+      // @ts-expect-error artist property exists on the album object from Spotify
+      const baseSlug = generateSlug(`${album.artist}-${album.name}`);
+      const slug = await findAvailableSlug(supabase, "albums", baseSlug);
+
+      rows.push({
+        spotify_id: album.id,
+        title: album.name,
+        // @ts-expect-error artist property exists on the album object from Spotify
+        artist: album.artist,
+        release_date: album.release_date,
+        images: imagesToJson(album.images),
+        last_synced_at: new Date().toISOString(),
+        slug,
+      });
+    }
 
     const { error } = await supabase
       .from("albums")

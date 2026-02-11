@@ -34,14 +34,6 @@ GRANT ALL ON TABLE "public"."artists" TO "anon";
 GRANT ALL ON TABLE "public"."artists" TO "authenticated";
 GRANT ALL ON TABLE "public"."artists" TO "service_role";
 
-GRANT ALL ON TABLE "public"."artist_slugs" TO "anon";
-GRANT ALL ON TABLE "public"."artist_slugs" TO "authenticated";
-GRANT ALL ON TABLE "public"."artist_slugs" TO "service_role";
-
-GRANT ALL ON TABLE "public"."album_slugs" TO "anon";
-GRANT ALL ON TABLE "public"."album_slugs" TO "authenticated";
-GRANT ALL ON TABLE "public"."album_slugs" TO "service_role";
-
 -- Default privileges
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "anon";

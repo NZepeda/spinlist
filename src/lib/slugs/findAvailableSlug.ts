@@ -6,18 +6,18 @@ import { Database } from "@/lib/types/database.types";
  * If "turnstile" is taken, tries "turnstile-2", "turnstile-3", etc.
  *
  * @param supabase - The Supabase client instance
- * @param table - The slug table to check ("artist_slugs" or "album_slugs")
+ * @param table - The table to check ("artists" or "albums")
  * @param baseSlug - The initial slug to check
  * @returns An available slug string
  *
  * @example
  * // If "turnstile" exists but "turnstile-2" doesn't:
- * const slug = await findAvailableSlug(supabase, "artist_slugs", "turnstile");
+ * const slug = await findAvailableSlug(supabase, "artists", "turnstile");
  * // Returns "turnstile-2"
  */
 export async function findAvailableSlug(
   supabase: SupabaseClient<Database>,
-  table: "artist_slugs" | "album_slugs",
+  table: "artists" | "albums",
   baseSlug: string,
 ): Promise<string> {
   // Get all slugs that start with this base slug

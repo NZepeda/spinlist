@@ -2,23 +2,23 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, Tables } from "@/lib/types/database.types";
 
 /**
- * Resolves an album slug to a Spotify ID.
+ * Resolves an album slug to the full album record.
  * Returns null if the slug doesn't exist in the database.
  *
  * @param supabase - The Supabase client instance
  * @param slug - The album slug to resolve
- * @returns The Spotify ID and slug, or null if not found
+ * @returns The full album record, or null if not found
  *
  * @example
- * const result = await resolveAlbumSlug(supabase, "turnstile-glow-on");
- * // Returns { spotify_id: "6dVIqQ8qmQ5GBnJ9shOYGE", slug: "turnstile-glow-on" }
+ * const album = await resolveAlbumSlug(supabase, "turnstile-glow-on");
+ * // Returns the full album record including id, spotify_id, title, etc.
  */
 export async function resolveAlbumSlug(
   supabase: SupabaseClient<Database>,
   slug: string,
-): Promise<Tables<"album_slugs"> | null> {
+): Promise<Tables<"albums"> | null> {
   const { data, error } = await supabase
-    .from("album_slugs")
+    .from("albums")
     .select("*")
     .eq("slug", slug)
     .single();

@@ -2,7 +2,7 @@ interface LogoProps {
   /**
    * The visual variant of the logo.
    * - `"default"` uses the app's primary theme colors
-   * - `"landing"` uses hardcoded landing page colors (orange #D96A20 with cream text)
+   * - `"landing"` uses brand design tokens (brand orange with background text)
    * @default "default"
    */
   variant?: "default" | "landing";
@@ -37,10 +37,10 @@ export const Logo = ({
   const isLanding = variant === "landing";
 
   const iconClasses = isLanding
-    ? "bg-[#D96A20] text-[#F5F1E6]"
+    ? "bg-brand text-background"
     : "bg-primary text-primary-foreground";
 
-  const textClasses = isLanding ? "text-[#0A0A0A]" : "";
+  const textClasses = isLanding ? "text-foreground" : "";
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>

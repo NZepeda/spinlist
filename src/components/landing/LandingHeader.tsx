@@ -22,7 +22,7 @@ export const LandingHeader = ({ onCtaClick }: LandingHeaderProps) => {
           size="sm"
           type="button"
           onClick={onCtaClick}
-          className="rounded-full bg-[#0A0A0A] text-[#F5F1E6] hover:bg-[#0A0A0A]/90"
+          className="rounded-full bg-foreground text-background hover:bg-foreground/90"
         >
           Join waitlist
         </Button>

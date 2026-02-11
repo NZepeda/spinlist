@@ -20,6 +20,8 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        brand:
+          "bg-brand text-brand-foreground shadow-[0_12px_30px_oklch(0.62_0.175_47/25%)] hover:bg-brand-hover",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -39,7 +41,7 @@ const buttonVariants = cva(
  * Button component with multiple variants and sizes.
  * Supports rendering as a different element using the `asChild` prop via Radix UI Slot.
  *
- * @param variant - Visual style: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+ * @param variant - Visual style: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "brand"
  * @param size - Button size: "default" | "sm" | "lg" | "icon"
  * @param asChild - If true, renders the child element as the button instead of a `<button>` tag
  *
@@ -50,6 +52,9 @@ const buttonVariants = cva(
  *
  * // Destructive action
  * <Button variant="destructive">Delete</Button>
+ *
+ * // Brand CTA with orange glow
+ * <Button variant="brand" size="lg">Join the waitlist</Button>
  *
  * // Render as a link
  * <Button asChild>

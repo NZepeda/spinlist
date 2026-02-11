@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${satoshi.variable} ${geistMono.variable} antialiased`}>
         <QueryClientProvider>
           <AuthProvider>
-            {/* {isProduction ? null : <Navbar />} */}
+            {isProduction ? null : <Navbar />}
             {children}
           </AuthProvider>
         </QueryClientProvider>

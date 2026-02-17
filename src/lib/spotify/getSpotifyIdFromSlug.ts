@@ -2,6 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { isId } from "../slugs/isId";
 import { resolveArtistSlug } from "../slugs/resolveArtistSlug";
 import { resolveAlbumSlug } from "../slugs/resolveAlbumSlug";
+import { Database } from "../types/database.types";
 
 /**
  * Returns the items's Spotify ID from the given slug.
@@ -11,7 +12,7 @@ export const getSpotifyIdFromSlug = async (
   {
     supabase,
     itemType,
-  }: { supabase: SupabaseClient; itemType: "artist" | "album" },
+  }: { supabase: SupabaseClient<Database>; itemType: "artist" | "album" },
 ): Promise<string | null> => {
   if (isId(slug)) {
     return slug;

@@ -39,7 +39,7 @@ function LoggedInDesktopNavMenu({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={handleLogout}>
+          <DropdownMenuItem onClick={void handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Log out
           </DropdownMenuItem>

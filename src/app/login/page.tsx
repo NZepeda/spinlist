@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleLogin();
+    void handleLogin();
   };
 
   return (
@@ -31,9 +31,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Welcome back</h1>
-          <p className="text-muted-foreground mt-2">
-            Sign in to your account
-          </p>
+          <p className="text-muted-foreground mt-2">Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

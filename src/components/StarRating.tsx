@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, KeyboardEvent } from "react";
+import { useCallback } from "react";
 import { Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 
 const SIZE_CLASSES = {
   sm: "h-4 w-4",

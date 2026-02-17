@@ -20,7 +20,7 @@ export async function getSpotifyToken(): Promise<string> {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `Basic ${Buffer.from(
-        `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+        `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`,
       ).toString("base64")}`,
     },
     body: "grant_type=client_credentials",
@@ -30,8 +30,15 @@ export async function getSpotifyToken(): Promise<string> {
     throw new Error("Failed to get Spotify access token");
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const tokenData = await tokenResponse.json();
+
+  // TODO Fix this
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   cachedToken = tokenData.access_token;
+
+  // TODO Fix this
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   tokenExpiresAt = Date.now() + tokenData.expires_in * 1000;
 
   if (!cachedToken) {

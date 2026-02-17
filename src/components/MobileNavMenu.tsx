@@ -38,7 +38,7 @@ function LoggedInMobileNavMenu({
         {username}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem onClick={handleLogout}>
+      <DropdownMenuItem onClick={void handleLogout}>
         <LogOut className="mr-2 h-4 w-4" />
         Log out
       </DropdownMenuItem>
@@ -82,7 +82,10 @@ export function MobileNavMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {user && profile ? (
-          <LoggedInMobileNavMenu username={profile.username} onLogout={logout} />
+          <LoggedInMobileNavMenu
+            username={profile.username}
+            onLogout={logout}
+          />
         ) : (
           <LoggedOutMobileNavMenu />
         )}

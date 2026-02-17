@@ -85,6 +85,7 @@ export function useLogin() {
 
       router.push("/");
     } catch (error) {
+      console.log({ error });
       dispatch({
         type: "SET_ERROR",
         field: "general",

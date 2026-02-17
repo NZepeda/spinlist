@@ -103,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    initializeAuth();
+    void initializeAuth();
 
     const {
       data: { subscription },

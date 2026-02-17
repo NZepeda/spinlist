@@ -13,10 +13,7 @@ import {
   CommandList,
 } from "@/components/ui-core/command";
 import { useDebounce } from "@/hooks/useDebounce";
-import { SearchResponse, SearchAlbum, SearchArtist } from "@/lib/types/search";
-import { createClient } from "@/lib/supabase/client";
-import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
-import { getOrCreateArtistSlug } from "@/lib/slugs/getOrCreateArtistSlug";
+import { SearchResponse } from "@/lib/types/search";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import {
   SpotifyAlbumSimplified,
@@ -28,7 +25,7 @@ async function searchSpotify(query: string): Promise<SearchResponse> {
   if (!response.ok) {
     throw new Error("Failed to search");
   }
-  return response.json();
+  return (await response.json()) as SearchResponse;
 }
 
 interface SearchResultProps {
@@ -159,7 +156,7 @@ export function SearchBar() {
       `/api/slug?spotifyId=${item.id}&type=${item.type}`,
     );
 
-    const data = await response.json();
+    const data = (await response.json()) as { slug: string };
 
     const { slug } = data;
 
@@ -186,7 +183,7 @@ export function SearchBar() {
               results={searchResults}
               isLoading={isLoading}
               error={error}
-              onSelect={handleSelect}
+              onSelect={() => void handleSelect}
             />
           </CommandList>
         )}

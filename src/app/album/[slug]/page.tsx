@@ -32,12 +32,12 @@ export default async function AlbumPage({
   const images = Array.isArray(album.images) ? album.images : [];
 
   // TODO Fix this type error.
-  // @ts-expect-error
+  // @ts-expect-error - images is an array of ImageObject and not null
   const imageUrl = getImageUrl(images, "large");
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-12">
         {/* Album Image */}
         <div className="flex justify-center lg:justify-start">
           {imageUrl ? (
@@ -57,7 +57,15 @@ export default async function AlbumPage({
         <div className="space-y-6">
           <div>
             <h1 className="text-4xl font-bold mb-2">{album.title}</h1>
-            <p className="text-xl text-muted-foreground">{album.artist}</p>
+            <p className="text-xl text-muted-foreground">
+              {album.artist},{" "}
+              {album.release_date
+                ? new Date(album.release_date).getFullYear()
+                : null}
+            </p>
+            <p className="text-base text-muted-foreground">
+              {album.label ? album.label : "Unknown Label"}
+            </p>
           </div>
 
           <ReviewSection album={album} />
@@ -71,15 +79,15 @@ export default async function AlbumPage({
           <div className="space-y-2">
             {album.tracks.map((track, index) => (
               <div
-                key={track!.id}
+                key={track.id}
                 className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent transition-colors"
               >
                 <span className="text-muted-foreground font-medium w-8">
                   {index + 1}.
                 </span>
-                <span className="flex-1 font-medium">{track!.name}</span>
+                <span className="flex-1 font-medium">{track.name}</span>
                 <span className="text-muted-foreground text-sm">
-                  {formatDuration(track!.duration_ms)}
+                  {formatDuration(track.duration_ms)}
                 </span>
               </div>
             ))}

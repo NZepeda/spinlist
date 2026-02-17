@@ -47,6 +47,7 @@ export async function GET(request: NextRequest) {
       ),
     });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: "Failed to search" }, { status: 500 });
   }
 }

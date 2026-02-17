@@ -2,18 +2,29 @@
 
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { useRouter } from "next/navigation";
-import { SpotifyAlbumSimplified } from "@/lib/types/spotify.types";
+import { SpotifyImage } from "@/lib/types/spotify.types";
 
 /**
  * Displays the given `albums` in a responsive grid layout.
  */
-export const AlbumGrid = ({ albums }: { albums: SpotifyAlbumSimplified[] }) => {
+export const AlbumGrid = ({
+  albums,
+}: {
+  albums: {
+    id: string;
+    name: string;
+    artist: string;
+    images: SpotifyImage[];
+    release_date: string;
+    label: string;
+  }[];
+}) => {
   const router = useRouter();
 
   const handleAlbumClick = async (albumId: string) => {
     const response = await fetch(`/api/slug?spotifyId=${albumId}&type=album`);
 
-    const data = await response.json();
+    const data = (await response.json()) as { slug: string };
 
     router.push(`/album/${data.slug}`);
   };
@@ -25,7 +36,7 @@ export const AlbumGrid = ({ albums }: { albums: SpotifyAlbumSimplified[] }) => {
         return (
           <div
             className="group block"
-            onClick={() => handleAlbumClick(album.id)}
+            onClick={() => void handleAlbumClick(album.id)}
             key={album.id}
           >
             <div className="aspect-square mb-3 overflow-hidden rounded-lg">

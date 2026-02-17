@@ -54,6 +54,13 @@ export async function getOrCreateAlbumSlug(
   // Generate slug with artist name for uniqueness (e.g., "radiohead-ok-computer")
   const baseSlug = generateSlug(`${artist}-${spotifyAlbum.name}`);
   const slug = await findAvailableSlug(supabase, "albums", baseSlug);
+  const releaseDate =
+    spotifyAlbum.release_date_precision === "year"
+      ? // "en-CA" uses the YYYY-MM-DD format
+        new Date(Number(spotifyAlbum.release_date), 1, 1).toLocaleDateString(
+          "en-CA",
+        )
+      : spotifyAlbum.release_date;
 
   // Upsert album record with slug included
   const { error: albumError } = await supabase.from("albums").upsert(
@@ -61,11 +68,12 @@ export async function getOrCreateAlbumSlug(
       spotify_id: spotifyAlbum.id,
       title: spotifyAlbum.name,
       artist,
-      release_date: spotifyAlbum.release_date,
+      release_date: releaseDate,
       images: albumImages,
       last_synced_at: new Date().toISOString(),
       tracks,
       slug,
+      label: spotifyAlbum.label,
     },
     { onConflict: "spotify_id" },
   );

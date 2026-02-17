@@ -1,6 +1,3 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/types/database.types";
-import { imagesToJson } from "../spotify/imagesToJson";
 import { createClient } from "../supabase/client";
 
 interface SubmitReviewParams {

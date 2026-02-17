@@ -48,7 +48,7 @@ export async function getOrCreateArtistSlug(
   }
 
   // Fire-and-forget: sync the artist's albums in the background
-  syncAlbums(supabase, artistSpotifyId);
+  void syncAlbums(supabase, artistSpotifyId);
 
   return slug;
 }

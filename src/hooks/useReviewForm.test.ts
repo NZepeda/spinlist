@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { act } from "@testing-library/react";
-import { renderHook } from "@/test/test-utils";
+import { renderHook } from "@/test/utils/renderHook";
 import { useReviewForm } from "./useReviewForm";
 
 vi.mock("@/hooks/useAuth", () => ({
@@ -21,6 +21,7 @@ vi.mock("@/lib/mutations/deleteReview", () => ({
 }));
 
 const mockAlbum = {
+  label: "very-good-label",
   id: "album-1",
   spotify_id: "spotify-album-1",
   title: "OK Computer",

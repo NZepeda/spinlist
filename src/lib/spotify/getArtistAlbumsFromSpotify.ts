@@ -1,15 +1,21 @@
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { SpotifyAlbumSimplified, SpotifyImage } from "../types/spotify.types";
+import { SpotifyAlbumFull, SpotifyImage } from "../types/spotify.types";
+
 /**
  * Fetches all albums for a given artist from the Spotify API.
- * Note: The albums endpoint does not include track details, so tracks will be undefined.
- *
- * @returns A list of albums by the artist where the album type is "album".
- * Does not include singles or compilations.
- *
  * TODO: The albums should be fetched from the database instead of Spotify API directly.
  */
-export async function getArtistAlbumsFromSpotify(artistId: string) {
+export async function getArtistAlbumsFromSpotify(artistId: string): Promise<
+  {
+    id: string;
+    name: string;
+    artist: string;
+    images: SpotifyImage[];
+    release_date: string;
+    total_tracks: number;
+    label: string;
+  }[]
+> {
   const accessToken = await getSpotifyToken();
 
   const response = await fetch(
@@ -26,9 +32,9 @@ export async function getArtistAlbumsFromSpotify(artistId: string) {
     throw new Error("Failed to fetch artist albums from Spotify API");
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as { items: SpotifyAlbumFull[] };
 
-  const albums: SpotifyAlbumSimplified[] = data.items
+  const albums = data.items
     .filter((album: { album_type: string }) => album.album_type === "album")
     .map(
       (album: {
@@ -38,6 +44,7 @@ export async function getArtistAlbumsFromSpotify(artistId: string) {
         images: SpotifyImage[];
         release_date: string;
         total_tracks: number;
+        label: string;
       }) => ({
         id: album.id,
         name: album.name,
@@ -45,6 +52,7 @@ export async function getArtistAlbumsFromSpotify(artistId: string) {
         images: album.images,
         release_date: album.release_date,
         total_tracks: album.total_tracks,
+        label: album.label,
       }),
     );
 

@@ -26,19 +26,18 @@ export async function syncAlbums(
     // Generate unique slugs for each album
     const rows = [];
     for (const album of albums) {
-      // @ts-expect-error artist property exists on the album object from Spotify
       const baseSlug = generateSlug(`${album.artist}-${album.name}`);
       const slug = await findAvailableSlug(supabase, "albums", baseSlug);
 
       rows.push({
         spotify_id: album.id,
         title: album.name,
-        // @ts-expect-error artist property exists on the album object from Spotify
         artist: album.artist,
         release_date: album.release_date,
         images: imagesToJson(album.images),
         last_synced_at: new Date().toISOString(),
         slug,
+        label: album.label,
       });
     }
 

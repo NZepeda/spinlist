@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS "public"."albums" (
     "last_synced_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "tracks" jsonb DEFAULT '[]'::jsonb,
     "slug" "text" NOT NULL,
+    "label" "text" NOT NULL,
     CONSTRAINT "albums_avg_rating_check" CHECK ((("avg_rating" >= (0)::numeric) AND ("avg_rating" <= (5)::numeric))),
     CONSTRAINT "albums_review_count_check" CHECK (("review_count" >= 0))
 );

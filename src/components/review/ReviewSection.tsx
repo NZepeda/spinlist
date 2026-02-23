@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { LoginPromptCard } from "./LoginPromptCard";
-import { ReviewForm } from "./ReviewForm";
+import { QuickReview } from "./ReviewForm";
 import { ReviewFormSkeleton } from "./ReviewFormSkeleton";
 import { Database } from "@/lib/types/database.types";
 
@@ -55,7 +55,7 @@ export function ReviewSection({ album }: ReviewSectionProps) {
 
   return (
     <Suspense fallback={<ReviewFormSkeleton />}>
-      <ReviewForm album={album} />
+      <QuickReview album={album} />
     </Suspense>
   );
 }

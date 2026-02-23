@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/cn";
 
@@ -18,6 +18,12 @@ interface StarRatingProps {
 }
 
 type StarFillState = "empty" | "half" | "full";
+type StarColorVariant = "selected" | "hover";
+
+const COLOR_CLASSES: Record<StarColorVariant, string> = {
+  selected: "text-brand fill-brand",
+  hover: "text-brand fill-brand opacity-50",
+};
 
 /**
  * Determines the fill state of a star based on the current display value.
@@ -36,16 +42,20 @@ function getStarFillState(
 }
 
 /**
- * Renders a star icon with the appropriate fill state.
+ * Renders a star icon with the appropriate fill state and color variant.
  * Uses CSS clip-path for half-star rendering.
  */
 function StarIcon({
   fillState,
   sizeClass,
+  colorVariant = "selected",
 }: {
   fillState: StarFillState;
   sizeClass: string;
+  colorVariant?: StarColorVariant;
 }) {
+  const colorClass = COLOR_CLASSES[colorVariant];
+
   if (fillState === "empty") {
     return (
       <Star
@@ -54,9 +64,7 @@ function StarIcon({
     );
   }
   if (fillState === "full") {
-    return (
-      <Star className={cn(sizeClass, "text-yellow-400 fill-yellow-400")} />
-    );
+    return <Star className={cn(sizeClass, colorClass)} />;
   }
   // Half: overlay a clipped filled star on top of empty star
   return (
@@ -65,10 +73,7 @@ function StarIcon({
         className={cn(sizeClass, "text-muted-foreground fill-muted-foreground")}
       />
       <Star
-        className={cn(
-          sizeClass,
-          "absolute left-0 top-0 text-yellow-400 fill-yellow-400",
-        )}
+        className={cn(sizeClass, "absolute left-0 top-0", colorClass)}
         style={{ clipPath: "inset(0 50% 0 0)" }}
       />
     </span>
@@ -88,6 +93,7 @@ export function StarRating({
   size = "md",
 }: StarRatingProps) {
   const isInteractive = Boolean(onChange) && !readonly;
+  const [hoveredValue, setHoveredValue] = useState<number | null>(null);
 
   const handleClick = useCallback(
     (starValue: number) => {
@@ -95,28 +101,52 @@ export function StarRating({
         return;
       }
 
+      // When hovering, commit the exact hovered value (half or full)
+      if (hoveredValue !== null) {
+        onChange(hoveredValue);
+        return;
+      }
+
       const currentStarValue = Math.ceil(value);
 
       if (starValue === currentStarValue) {
-        // Same star clicked - toggle between full and half
         const isCurrentlyHalf = value === starValue - 0.5;
         onChange(isCurrentlyHalf ? starValue : starValue - 0.5);
       } else {
-        // Different star clicked - set to full
         onChange(starValue);
       }
+
+      setHoveredValue(null);
     },
-    [isInteractive, onChange, value],
+    [isInteractive, onChange, value, hoveredValue],
   );
+
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>, starValue: number) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const relativeX = (event.clientX - rect.left) / rect.width;
+      setHoveredValue(relativeX < 0.5 ? starValue - 0.5 : starValue);
+    },
+    [],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setHoveredValue(null);
+  }, []);
+
+  const displayValue = hoveredValue ?? value;
+  const colorVariant: StarColorVariant =
+    hoveredValue !== null ? "hover" : "selected";
 
   return (
     <div
       className={cn("flex gap-1", !isInteractive && "pointer-events-none")}
       role="group"
       aria-label="Star rating"
+      onMouseLeave={isInteractive ? handleMouseLeave : undefined}
     >
       {[1, 2, 3, 4, 5].map((starValue) => {
-        const fillState = getStarFillState(starValue, value);
+        const fillState = getStarFillState(starValue, displayValue);
 
         if (isInteractive) {
           return (
@@ -124,11 +154,16 @@ export function StarRating({
               key={starValue}
               type="button"
               onClick={() => handleClick(starValue)}
-              className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm"
+              onMouseMove={(e) => handleMouseMove(e, starValue)}
+              className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm max-h-[32px]"
               aria-label={`Rate ${starValue} star${starValue !== 1 ? "s" : ""}`}
               aria-pressed={starValue <= value}
             >
-              <StarIcon fillState={fillState} sizeClass={SIZE_CLASSES[size]} />
+              <StarIcon
+                fillState={fillState}
+                sizeClass={SIZE_CLASSES[size]}
+                colorVariant={colorVariant}
+              />
             </button>
           );
         }

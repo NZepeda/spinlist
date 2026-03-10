@@ -15,6 +15,10 @@
 - Always prefer declarative code over imperative code.
 - If clarification is needed about the requirements, ask before proceeding.
 - NEVER use `any` type in TypeScript. Always define proper types or interfaces.
+- Only one function per file with the function name being the file name.
+  - If a function is only used in one place, put it in the same file as the component or function that uses it.
+  - If a function is used in multiple places, put it in a separate file.
+- All functions and components should be documented with JSDoc comments.
 
 ## Supabase Database Workflow
 

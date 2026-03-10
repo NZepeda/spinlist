@@ -28,12 +28,7 @@ export default async function AlbumPage({
     notFound();
   }
 
-  // Ensure album.images is an array of ImageObject and not null
-  const images = Array.isArray(album.images) ? album.images : [];
-
-  // TODO Fix this type error.
-  // @ts-expect-error - images is an array of ImageObject and not null
-  const imageUrl = getImageUrl(images, "large");
+  const imageUrl = getImageUrl(album.images, "large");
 
   return (
     <main className="container mx-auto px-4 py-8">

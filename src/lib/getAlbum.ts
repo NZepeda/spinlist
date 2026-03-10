@@ -1,18 +1,7 @@
 import { resolveAlbumSlug } from "./slugs/resolveAlbumSlug";
 import { createClient } from "./supabase/server";
-import { Database } from "./types/database.types";
-
-type Album = Omit<
-  Database["public"]["Tables"]["albums"]["Row"],
-  "created_at" | "last_synced_at" | "tracks"
-> & {
-  tracks: {
-    id: string;
-    name: string;
-    track_number: number;
-    duration_ms: number;
-  }[];
-};
+import type { Album } from "@/lib/types";
+import { mapAlbumRowToAlbum } from "@/lib/mappers/db/mapAlbumRowToAlbum";
 
 /**
  * Returns the database entry for the album of the given slug.
@@ -31,7 +20,5 @@ export async function getAlbum(slug: string): Promise<Album | undefined> {
     return undefined;
   }
 
-  // TODO Fix this type casting
-  // @ts-expect-error tracks type mismatch with Json
-  return album;
+  return mapAlbumRowToAlbum(album);
 }

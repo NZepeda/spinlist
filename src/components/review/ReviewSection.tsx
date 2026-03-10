@@ -5,19 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { LoginPromptCard } from "./LoginPromptCard";
 import { QuickReview } from "./ReviewForm";
 import { ReviewFormSkeleton } from "./ReviewFormSkeleton";
-import { Database } from "@/lib/types/database.types";
-
-type Album = Omit<
-  Database["public"]["Tables"]["albums"]["Row"],
-  "created_at" | "last_synced_at" | "tracks"
-> & {
-  tracks: {
-    id: string;
-    name: string;
-    track_number: number;
-    duration_ms: number;
-  }[];
-};
+import type { Album } from "@/lib/types";
 interface ReviewSectionProps {
   album: Album;
 }

@@ -1,24 +1,12 @@
 "use client";
 
-import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { useRouter } from "next/navigation";
-import { SpotifyImage } from "@/lib/types/spotify.types";
+import type { AlbumSummaryDTO } from "@/lib/types";
 
 /**
  * Displays the given `albums` in a responsive grid layout.
  */
-export const AlbumGrid = ({
-  albums,
-}: {
-  albums: {
-    id: string;
-    name: string;
-    artist: string;
-    images: SpotifyImage[];
-    release_date: string;
-    label: string;
-  }[];
-}) => {
+export const AlbumGrid = ({ albums }: { albums: AlbumSummaryDTO[] }) => {
   const router = useRouter();
 
   const handleAlbumClick = async (albumId: string) => {
@@ -32,7 +20,6 @@ export const AlbumGrid = ({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
       {albums.map((album) => {
-        const imageUrl = getImageUrl(album.images, "medium");
         return (
           <div
             className="group block"
@@ -40,9 +27,9 @@ export const AlbumGrid = ({
             key={album.id}
           >
             <div className="aspect-square mb-3 overflow-hidden rounded-lg">
-              {imageUrl ? (
+              {album.imageUrl ? (
                 <img
-                  src={imageUrl}
+                  src={album.imageUrl}
                   alt={album.name}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
@@ -58,7 +45,7 @@ export const AlbumGrid = ({
               {album.name}
             </h3>
             <p className="text-sm text-muted-foreground">
-              {new Date(album.release_date).getFullYear()}
+              {new Date(album.releaseDate).getFullYear()}
             </p>
           </div>
         );

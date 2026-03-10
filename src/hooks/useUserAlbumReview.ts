@@ -3,7 +3,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Review } from "@/lib/types/review";
+import type { Review } from "@/lib/types";
 
 /**
  * Hook to fetch the current user's review for a specific album.

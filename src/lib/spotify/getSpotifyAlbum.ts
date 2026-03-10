@@ -1,5 +1,5 @@
 import { getSpotifyToken } from "../getSpotifyToken";
-import { SpotifyAlbumFull } from "../types/spotify.types";
+import type { SpotifyAlbumFull } from "@/lib/types/api/spotify";
 
 /**
  * Gets an album from Spotify

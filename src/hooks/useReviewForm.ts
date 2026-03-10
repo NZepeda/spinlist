@@ -3,7 +3,7 @@
 import { useReducer, useMemo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { Review } from "@/lib/types/review";
+import type { Album, Review } from "@/lib/types";
 import {
   reviewFormInitialState,
   reviewFormReducer,
@@ -11,19 +11,6 @@ import {
 } from "./reviewFormReducer";
 import { submitReview } from "@/lib/mutations/submitReview";
 import { deleteReview } from "@/lib/mutations/deleteReview";
-import { Database } from "@/lib/types/database.types";
-
-type Album = Omit<
-  Database["public"]["Tables"]["albums"]["Row"],
-  "created_at" | "last_synced_at" | "tracks"
-> & {
-  tracks: {
-    id: string;
-    name: string;
-    track_number: number;
-    duration_ms: number;
-  }[];
-};
 
 interface UseReviewFormOptions {
   album: Album;

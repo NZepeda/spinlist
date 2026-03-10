@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Tables } from "@/lib/types/database.types";
+import type { Database, Tables } from "@/lib/types/db";
 
 /**
  * Resolves an album slug to the full album record.

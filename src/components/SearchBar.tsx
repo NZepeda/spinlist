@@ -13,29 +13,25 @@ import {
   CommandList,
 } from "@/components/ui-core/command";
 import { useDebounce } from "@/hooks/useDebounce";
-import { SearchResponse } from "@/lib/types/search";
-import { getImageUrl } from "@/lib/spotify/getImageUrl";
-import {
-  SpotifyAlbumSimplified,
-  SpotifyArtistFull,
-} from "@/lib/types/spotify.types";
+import type {
+  SearchAlbumDTO,
+  SearchArtistDTO,
+  SearchResponseDTO,
+} from "@/lib/types";
 
-async function searchSpotify(query: string): Promise<SearchResponse> {
+async function searchSpotify(query: string): Promise<SearchResponseDTO> {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
   if (!response.ok) {
     throw new Error("Failed to search");
   }
-  return (await response.json()) as SearchResponse;
+  return (await response.json()) as SearchResponseDTO;
 }
 
 interface SearchResultProps {
-  results?: SearchResponse;
+  results?: SearchResponseDTO;
   isLoading: boolean;
   error: Error | null;
-  onSelect: (
-    item: SpotifyArtistFull | SpotifyAlbumSimplified,
-    type: "artist" | "album",
-  ) => void;
+  onSelect: (item: SearchArtistDTO | SearchAlbumDTO) => void;
 }
 
 const SearchResults = (props: SearchResultProps) => {
@@ -61,19 +57,15 @@ const SearchResults = (props: SearchResultProps) => {
       {albums.length > 0 && (
         <CommandGroup heading="Albums">
           {albums.map((album) => {
-            const imageUrl = getImageUrl(album.images, "small");
-            const albumArtist = album.artists
-              .map((artist) => artist.name)
-              .join(", ");
             return (
               <CommandItem
                 key={album.id}
                 className="flex items-center gap-3 p-3"
-                onSelect={() => onSelect(album, "album")}
+                onSelect={() => onSelect(album)}
               >
-                {imageUrl ? (
+                {album.imageUrl ? (
                   <img
-                    src={imageUrl}
+                    src={album.imageUrl}
                     alt={album.name}
                     className="h-10 w-10 rounded object-cover"
                   />
@@ -85,7 +77,8 @@ const SearchResults = (props: SearchResultProps) => {
                 <div className="flex-1">
                   <p className="font-medium">{album.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    {albumArtist} • {new Date(album.release_date).getFullYear()}
+                    {album.artistName} •{" "}
+                    {new Date(album.releaseDate).getFullYear()}
                   </p>
                 </div>
               </CommandItem>
@@ -96,16 +89,15 @@ const SearchResults = (props: SearchResultProps) => {
       {artists.length > 0 && (
         <CommandGroup heading="Artists">
           {artists.map((artist) => {
-            const artistImageUrl = getImageUrl(artist.images, "small");
             return (
               <CommandItem
                 key={artist.id}
                 className="flex items-center gap-3 p-3"
-                onSelect={() => onSelect(artist, "artist")}
+                onSelect={() => onSelect(artist)}
               >
-                {artistImageUrl ? (
+                {artist.imageUrl ? (
                   <img
-                    src={artistImageUrl}
+                    src={artist.imageUrl}
                     alt={artist.name}
                     className="h-10 w-10 rounded-full object-cover"
                   />
@@ -146,9 +138,7 @@ export function SearchBar() {
    * Accepts a selected search item and navigates to its page.
    * From the selected item, it retrieves the appropriate slug.
    */
-  const handleSelect = async (
-    item: SpotifyArtistFull | SpotifyAlbumSimplified,
-  ) => {
+  const handleSelect = async (item: SearchArtistDTO | SearchAlbumDTO) => {
     setSearchValue("");
     setOpen(false);
 
@@ -183,7 +173,7 @@ export function SearchBar() {
               results={searchResults}
               isLoading={isLoading}
               error={error}
-              onSelect={() => void handleSelect}
+              onSelect={(item) => void handleSelect(item)}
             />
           </CommandList>
         )}

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Artist } from "@/lib/types/artist";
+import type { Artist } from "@/lib/types";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
 import { getImageUrl } from "./getImageUrl";
 
@@ -39,6 +39,6 @@ export async function getArtist(id: string): Promise<Artist> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     image: getImageUrl(data.images, "medium"),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    external_url: data.external_urls?.spotify || "",
+    externalUrl: data.external_urls?.spotify || "",
   };
 }

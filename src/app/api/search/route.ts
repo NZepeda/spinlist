@@ -5,7 +5,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import { SpotifySearchResponse } from "@/lib/types/spotify.types";
+import type { SpotifySearchResponse } from "@/lib/types/api/spotify";
+import { mapSpotifySearchResponseToSearchResponseDTO } from "@/lib/mappers/spotify/mapSpotifySearchResponseToSearchResponseDto";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -39,13 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     const searchData = (await searchResponse.json()) as SpotifySearchResponse;
+    const responseDTO = mapSpotifySearchResponseToSearchResponseDTO(searchData);
 
-    return NextResponse.json({
-      artists: searchData.artists.items,
-      albums: searchData.albums.items.filter(
-        (album) => album.album_type !== "single",
-      ),
-    });
+    return NextResponse.json(responseDTO);
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to search" }, { status: 500 });

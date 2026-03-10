@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/types/database.types";
+import type { Database } from "@/lib/types/db";
 import { getArtistAlbumsFromSpotify } from "@/lib/spotify/getArtistAlbumsFromSpotify";
 import { imagesToJson } from "@/lib/spotify/imagesToJson";
 import { generateSlug } from "@/lib/slugs/generateSlug";
@@ -26,14 +26,14 @@ export async function syncAlbums(
     // Generate unique slugs for each album
     const rows = [];
     for (const album of albums) {
-      const baseSlug = generateSlug(`${album.artist}-${album.name}`);
+      const baseSlug = generateSlug(`${album.artistName}-${album.name}`);
       const slug = await findAvailableSlug(supabase, "albums", baseSlug);
 
       rows.push({
         spotify_id: album.id,
         title: album.name,
-        artist: album.artist,
-        release_date: album.release_date,
+        artist: album.artistName,
+        release_date: album.releaseDate,
         images: imagesToJson(album.images),
         last_synced_at: new Date().toISOString(),
         slug,

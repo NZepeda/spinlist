@@ -10,9 +10,8 @@ import {
 import { User } from "@supabase/supabase-js";
 import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
-import { Database } from "@/lib/types/database.types";
-
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+import type { Profile } from "@/lib/types";
+import { mapProfileRowToProfile } from "@/lib/mappers/db/mapProfileRowToProfile";
 
 interface AuthState {
   user: User | null;
@@ -57,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const supabase = createClient();
 
-  const profileQuery = useQuery({
+  const profileQuery = useQuery<Profile | null>({
     queryKey: ["profile", state.user?.id],
     queryFn: async () => {
       if (!state.user?.id) {
@@ -73,7 +72,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) {
         throw error;
       }
-      return data;
+      if (!data) {
+        return null;
+      }
+
+      return mapProfileRowToProfile(data);
     },
     enabled: Boolean(state.user),
     staleTime: 15 * 60 * 1000, // 15 minutes

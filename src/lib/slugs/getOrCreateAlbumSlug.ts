@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database, Json } from "@/lib/types/database.types";
+import type { Database, Json } from "@/lib/types/db";
 import { generateSlug } from "./generateSlug";
 import { findAvailableSlug } from "./findAvailableSlug";
 import { getSpotifyAlbum } from "../spotify/getSpotifyAlbum";

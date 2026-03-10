@@ -1,9 +1,9 @@
-import { Json } from "../types/database.types";
-import { SpotifyImage } from "../types/spotify.types";
+import type { Json } from "@/lib/types/db";
+import type { Image } from "@/lib/types";
 
 /**
- * Type-safe cast for SpotifyImage array to Supabase Json type.
+ * Type-safe cast for image arrays to Supabase Json type.
  */
-export function imagesToJson(images: SpotifyImage[]): Json {
+export function imagesToJson(images: Image[]): Json {
   return images as unknown as Json;
 }

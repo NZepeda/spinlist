@@ -1,5 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "@/lib/types/database.types";
+import type { Database } from "@/lib/types/db";
 
 /**
  * Finds an available slug by checking for collisions and appending numbers.

@@ -2,7 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { isId } from "../slugs/isId";
 import { resolveArtistSlug } from "../slugs/resolveArtistSlug";
 import { resolveAlbumSlug } from "../slugs/resolveAlbumSlug";
-import { Database } from "../types/database.types";
+import type { Database } from "@/lib/types/db";
 
 /**
  * Returns the items's Spotify ID from the given slug.

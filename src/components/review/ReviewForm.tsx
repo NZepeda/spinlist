@@ -2,21 +2,9 @@
 
 import { StarRating } from "../StarRating";
 import { Button } from "@/components/ui-core/button";
-import { Database } from "@/lib/types/database.types";
+import type { Album } from "@/lib/types";
 import { useQuickReview } from "@/hooks/useQuickReview";
 
-// TODO: Extract this to its own file.
-type Album = Omit<
-  Database["public"]["Tables"]["albums"]["Row"],
-  "created_at" | "last_synced_at" | "tracks"
-> & {
-  tracks: {
-    id: string;
-    name: string;
-    track_number: number;
-    duration_ms: number;
-  }[];
-};
 interface ReviewFormProps {
   album: Album;
 }

@@ -1,48 +1,105 @@
-# Rules
+# Agent Instructions
 
-- NEVER make schema changes directly in Studio UI without immediately running `db diff` to capture them.
-- NEVER manually edit migration files after they've been pushed to remote.
-- ALWAYS run `pnpx supabase db diff` before committing to ensure no uncommitted schema changes exist.
-- If `db diff` outputs anything unexpected, investigate before proceeding.
-- For every added shadcn/ui component added, add the appropriate jsdoc comment describing the component and its use case.
-- If a component has more 3 pieces of state, go for a useReducer instead of useState.
-- Always attempt to separate the view logic from the business logic. Use hooks for business logic.
-- Check package.json to determine what versions of packages/libraries are being used.
-- When attempting to use any "supabase" command, run it with "pnpx supabase"
-- Never use the double negation operator (!!). Always go for Boolean() instead.
-- Never inline if statement like if(condition) return something. Always use the block form with {}.
-- Always split functions into their own files.
-- Always prefer declarative code over imperative code.
-- If clarification is needed about the requirements, ask before proceeding.
-- NEVER use `any` type in TypeScript. Always define proper types or interfaces.
+Use this file as a high-priority repository guide for AI agents working in this codebase.
+
+## Read Order
+
+1. Read the user request carefully.
+2. Read this file before making changes.
+3. Check `package.json` before using project libraries or framework features.
+4. For Next.js work, consult the local Next.js docs index in this file before relying on memory.
+5. If requirements are ambiguous and the ambiguity affects behavior, ask for clarification before proceeding.
+
+## Code Expectations
+
+- Never use `any` in TypeScript. Define explicit types or interfaces.
+- Never use the double negation operator `!!`. Use `Boolean(...)` instead.
+- Always use block-form conditionals with braces.
+- Document every function and component with JSDoc.
+- When adding a shadcn/ui component, make its JSDoc describe the component's use case, not just its structure.
+- Add inline code comments explaining the more complex logic.
+
+## Implementation Expectations
+
+- Separate view logic from business logic whenever practical.
+- Put client-side business logic into hooks when the logic is reused, stateful, or makes components harder to read.
+- If a component needs more than 3 pieces of state, prefer `useReducer` over multiple `useState` calls.
+- Keep single-use helpers close to the component or module that uses them.
+- Extract shared logic into focused modules when it is reused in multiple places.
+- Avoid mixing unrelated responsibilities in the same file.
+
+## Dependency Expectations
+
+- Treat `package.json` as the source of truth for library and framework versions.
+- Verify project versions before introducing APIs, syntax, or patterns that depend on version-specific behavior.
+
+## Change Expectations
+
+- Prefer minimal diffs that solve the requested problem without unrelated refactors.
+- Follow established repository patterns unless the user explicitly asks for a new convention.
+- If `AGENTS.md` and `CLAUDE.md` diverge, treat `AGENTS.md` as authoritative.
+
+## Supabase Expectations
+
+- Always run Supabase CLI commands through `pnpx supabase`.
+- Never make schema changes directly in Supabase Studio without immediately running `pnpx supabase db diff` to capture them.
+- Never manually edit migration files after they have been pushed to the remote project.
+- Always run `pnpx supabase db diff` before committing to confirm there are no uncommitted schema changes.
+- If `pnpx supabase db diff` outputs anything unexpected, investigate before proceeding.
 
 ## Supabase Database Workflow
 
-This project uses declarative schema files (`supabase/schemas/*.sql`) as the source of truth.
+This project uses declarative schema files in `supabase/schemas/*.sql` as the source of truth.
 
-### Making Schema Changes
-
-1. **Always update declarative schema files first** - Edit the appropriate file in `supabase/schemas/` (or create a new one if adding a table).
-
-2. **Update `config.toml` if adding new schema files** - Add the new file path to `schema_paths` in the correct order (tables before foreign key dependents).
-
-3. **Generate a migration from the diff**:
+1. Update the declarative schema files first.
+2. If you add a new schema file, update `supabase/config.toml` and place the file in `schema_paths` in dependency order.
+3. Generate a migration from the declarative diff:
 
    ```bash
    pnpx supabase db diff -f descriptive_migration_name
    ```
 
-4. **Verify the migration locally**:
+4. Verify the migration locally:
 
    ```bash
    pnpx supabase db reset
    ```
 
-5. **Push to remote**:
+5. Preview the remote push:
+
    ```bash
-   pnpx supabase db push --dry-run  # Preview first
-   pnpx supabase db push            # Apply
+   pnpx supabase db push --dry-run
    ```
+
+6. Apply the remote push:
+
+   ```bash
+   pnpx supabase db push
+   ```
+
+## Next.js Expectations
+
+- Do not rely on memory for Next.js behavior in this project.
+- Search the local Next.js docs referenced below before making framework-level decisions.
+- Prefer Server Components by default and only add `"use client"` when interactivity, client hooks, or browser-only APIs require it.
+- If the docs index is missing, generate it with:
+
+  ```bash
+  npx @next/codemod agents-md --output CLAUDE.md
+  ```
+
+## Workflow Expectations
+
+- After making any major change, explain the change and the reason for it.
+- Break down complex changes into smaller, more manageable steps.
+- After each step, explain the change and the reason for it before proceeding.
+
+## Validation Expectations
+
+- Run the smallest relevant verification for the change you made.
+- Prefer targeted validation first, then broader validation if risk or scope warrants it.
+- Use the project's existing scripts when applicable, including `pnpm lint`, `pnpm test`, and `pnpm test:ci`.
+- If you cannot run verification, or choose not to run it, state that explicitly in your final response.
 
 ## Next.JS Documentation Index
 

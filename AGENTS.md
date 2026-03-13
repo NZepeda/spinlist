@@ -18,6 +18,7 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Document every function and component with JSDoc.
 - When adding a shadcn/ui component, make its JSDoc describe the component's use case, not just its structure.
 - Add inline code comments explaining the more complex logic.
+- Think of the code from the perspectives of both a Principal Engineer and a new team member who is not familiar with the codebase. Write code that is clear and maintainable for both.
 
 ## Implementation Expectations
 

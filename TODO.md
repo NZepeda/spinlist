@@ -48,32 +48,33 @@ Goal: turn the album page into a unified "Log this album" flow that increases re
 
 ## Phase 4: Tracklist as favorite-song picker
 
-- [ ] Make the album tracklist selectable as the favorite-song input surface.
-- [ ] Allow users to set a favorite song from the tracklist with one click/tap.
-- [ ] Allow users to clear their favorite song selection.
-- [ ] Show `Your pick` on the selected track in the logged-in state.
-- [ ] Keep the tracklist usable even when the user chooses not to select a favorite song.
+- [x] Make the album tracklist selectable as the favorite-song input surface.
+- [x] Allow users to set a favorite song from the tracklist with one click/tap.
+- [x] Allow users to clear their favorite song selection.
+- [x] Show `Your pick` on the selected track in the logged-in state.
+- [x] Keep the tracklist usable even when the user chooses not to select a favorite song.
 
 ### Done when
 
-- [ ] Favorite song selection happens from the tracklist, not a hidden form control.
-- [ ] Clearing a favorite song is possible without deleting the whole log.
-- [ ] The UI stays understandable when no favorite song is selected.
+- [x] Favorite song selection happens from the tracklist, not a hidden form control.
+- [x] Clearing a favorite song is possible without deleting the whole log.
+- [x] The UI stays understandable when no favorite song is selected.
 
 ## Phase 5: Community summary
 
-- [ ] Add a server helper for album-level community summary data.
-- [ ] Include average rating and review count in the summary payload.
-- [ ] Add a rating histogram for 0.5-star increments.
-- [ ] Add favorite-song counts by track.
-- [ ] Compute a standout track for the album when enough favorite-song data exists.
-- [ ] Load the summary on the album page without deriving it from the client reviews feed.
+- [x] Add a server helper for album-level community summary data.
+- [x] Include average rating and review count in the summary payload.
+- [x] Add a rating histogram for 0.5-star increments.
+- [x] Add favorite-song counts by track.
+- [x] Compute a standout track for the album when enough favorite-song data exists.
+- [x] Load the summary on the album page without deriving it from the client reviews feed.
+- [x] Render an explicit unavailable state when the aggregate query fails.
 
 ### Done when
 
-- [ ] The hero/community modules consume a dedicated summary object.
-- [ ] Community favorite-song data does not depend on loading all reviews in the browser.
-- [ ] The page can render gracefully if some summary fields are empty.
+- [x] The hero/community modules consume a dedicated summary object.
+- [x] Community favorite-song data does not depend on loading all reviews in the browser.
+- [x] The page can render gracefully if some summary fields are empty.
 
 ## Phase 6: Album page layout update
 
@@ -107,7 +108,7 @@ Goal: turn the album page into a unified "Log this album" flow that increases re
 - [ ] Remove or retire `src/hooks/useQuickReview.ts` once the unified flow is live.
 - [ ] Remove or retire `src/hooks/useQuickReviewMutation.ts` once the unified flow is live.
 - [x] Rename or refactor `src/components/review/ReviewForm.tsx` if the file name no longer reflects its responsibility.
-- [ ] Update any stale imports, comments, and references that still describe the old quick-review behavior.
+- [x] Update any stale imports, comments, and references that still describe the old quick-review behavior.
 - [ ] Audit README diagrams and descriptions that mention outdated review submission behavior.
 
 ### Done when

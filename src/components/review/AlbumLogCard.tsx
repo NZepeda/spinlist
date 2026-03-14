@@ -2,22 +2,20 @@
 
 import { StarRating } from "../StarRating";
 import { Button } from "@/components/ui-core/button";
-import { Select, SelectOption } from "@/components/ui-core/select";
 import { Textarea } from "@/components/ui-core/textarea";
 import type { Album } from "@/lib/types";
-import { useReviewForm } from "@/hooks/useReviewForm";
-import { useUserAlbumReview } from "@/hooks/useUserAlbumReview";
+import type { UseReviewFormResult } from "@/hooks/useReviewForm";
 
 interface AlbumLogCardProps {
   album: Album;
+  reviewForm: UseReviewFormResult;
 }
 
 /**
  * Compact album logging card used on the album page.
  * Lets a signed-in listener set a rating and explicitly save it as part of an album log.
  */
-export function AlbumLogCard({ album }: AlbumLogCardProps) {
-  const { review } = useUserAlbumReview(album.id);
+export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
   const {
     favoriteTrackId,
     rating,
@@ -30,10 +28,9 @@ export function AlbumLogCard({ album }: AlbumLogCardProps) {
     setFavoriteTrackId,
     setRating,
     setReviewText,
-  } = useReviewForm({
-    album,
-    existingReview: review,
-  });
+  } = reviewForm;
+  const favoriteTrack =
+    album.tracks.find((track) => track.id === favoriteTrackId) ?? null;
 
   let buttonLabel = "Log this album";
 
@@ -62,27 +59,27 @@ export function AlbumLogCard({ album }: AlbumLogCardProps) {
       </div>
       <div className="space-y-4 p-4">
         <div className="space-y-2">
-          <label
-            className="text-sm font-medium text-foreground"
-            htmlFor={`favorite-track-${album.id}`}
-          >
+          <div className="text-sm font-medium text-foreground">
             Favorite song <span className="text-muted-foreground">(optional)</span>
-          </label>
-          <Select
-            id={`favorite-track-${album.id}`}
-            className="min-w-full"
-            value={favoriteTrackId}
-            onChange={(event) => {
-              setFavoriteTrackId(event.target.value);
-            }}
-          >
-            <SelectOption value="">Pick a song</SelectOption>
-            {album.tracks.map((track) => (
-              <SelectOption key={track.id} value={track.id}>
-                {track.track_number}. {track.name}
-              </SelectOption>
-            ))}
-          </Select>
+          </div>
+          <div className="rounded-lg border border-border bg-background/40 p-3">
+            <div className="text-sm text-foreground">
+              {favoriteTrack
+                ? `${favoriteTrack.track_number}. ${favoriteTrack.name}`
+                : "Pick a song from the tracklist below."}
+            </div>
+            {favoriteTrack ? (
+              <button
+                type="button"
+                className="mt-2 text-xs font-medium text-brand hover:text-brand-hover"
+                onClick={() => {
+                  setFavoriteTrackId("");
+                }}
+              >
+                Clear pick
+              </button>
+            ) : null}
+          </div>
         </div>
         <div className="space-y-2">
           <label

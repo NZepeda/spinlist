@@ -50,6 +50,22 @@ interface UseReviewFormMutationsOptions {
   userId: string | null;
 }
 
+export interface UseReviewFormResult {
+  rating: number;
+  reviewText: string;
+  favoriteTrackId: string;
+  errors: ReviewFormState["errors"];
+  isLoading: boolean;
+  isDirty: boolean;
+  isFormValid: boolean;
+  setRating: (rating: number) => void;
+  setReviewText: (text: string) => void;
+  setFavoriteTrackId: (trackId: string) => void;
+  handleSubmit: () => void;
+  handleDelete: () => void;
+  isEditMode: boolean;
+}
+
 /**
  * Validates the review form and returns any errors found.
  * Returns an empty object if the form is valid.
@@ -371,7 +387,10 @@ function useReviewFormMutations({
  * Handles draft-first album logging with local draft persistence, explicit saves,
  * and review deletion for the current user.
  */
-export function useReviewForm({ album, existingReview }: UseReviewFormOptions) {
+export function useReviewForm({
+  album,
+  existingReview,
+}: UseReviewFormOptions): UseReviewFormResult {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const userId = user?.id ?? null;

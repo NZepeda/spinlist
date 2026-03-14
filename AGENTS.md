@@ -98,6 +98,9 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 - After making any major change, explain the change and the reason for it.
 - Break down complex changes into smaller, more manageable steps.
 - After each step, explain the change and the reason for it before proceeding.
+- Before compacting context, spit out the most important information from the conversation into `context.md` for future reference. This should include the problem statement, the proposed solution, and any important details or decisions made during the conversation.
+  - Always check for the existence of this file before starting a new conversation. If it exists, read it and use it to inform your understanding of the problem and the proposed solution.
+  - After the contents of `context.md` are no longer relevant, delete the file to avoid confusion in future conversations.
 
 ## Validation Expectations
 

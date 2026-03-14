@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { act } from "@testing-library/react";
 import { renderHook } from "@/test/utils/renderHook";
 import { useReviewForm } from "./useReviewForm";
+import { submitReview } from "@/lib/mutations/submitReview";
 
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => ({
@@ -45,6 +46,7 @@ const mockAlbum = {
 describe("useReviewForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.localStorage.clear();
   });
 
   it("initializes with default state when no existing review", () => {
@@ -132,5 +134,34 @@ describe("useReviewForm", () => {
     });
 
     expect(result.current.errors.rating).toBeDefined();
+  });
+
+  it("restores a persisted draft for the current user and album", () => {
+    window.localStorage.setItem(
+      "review-draft:user-123:album-1",
+      JSON.stringify({
+        rating: 4,
+        reviewText: "Draft review",
+        favoriteTrackId: "t2",
+      }),
+    );
+
+    const { result } = renderHook(() => useReviewForm({ album: mockAlbum }));
+
+    expect(result.current.rating).toBe(4);
+    expect(result.current.reviewText).toBe("Draft review");
+    expect(result.current.favoriteTrackId).toBe("t2");
+    expect(result.current.isDirty).toBe(true);
+  });
+
+  it("does not submit automatically when the rating changes", () => {
+    const { result } = renderHook(() => useReviewForm({ album: mockAlbum }));
+
+    act(() => {
+      result.current.setRating(3.5);
+    });
+
+    expect(submitReview).not.toHaveBeenCalled();
+    expect(result.current.isDirty).toBe(true);
   });
 });

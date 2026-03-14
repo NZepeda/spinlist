@@ -2,8 +2,8 @@
 
 import { Suspense } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { AlbumLogCard } from "./AlbumLogCard";
 import { LoginPromptCard } from "./LoginPromptCard";
-import { QuickReview } from "./ReviewForm";
 import { ReviewFormSkeleton } from "./ReviewFormSkeleton";
 import type { Album } from "@/lib/types";
 interface ReviewSectionProps {
@@ -43,7 +43,7 @@ export function ReviewSection({ album }: ReviewSectionProps) {
 
   return (
     <Suspense fallback={<ReviewFormSkeleton />}>
-      <QuickReview album={album} />
+      <AlbumLogCard album={album} />
     </Suspense>
   );
 }

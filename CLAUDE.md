@@ -21,6 +21,7 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Think of the code from the perspectives of both a Principal Engineer and a new team member who is not familiar with the codebase. Write code that is clear and maintainable for both.
 - All JSDoc comments should should be one sentence per line break.
 - JSDoc comments should not be used to explain "what" the code is doing, but rather "why" the code is doing it, or to provide additional context that is not immediately clear from the code itself.
+- JSDoc comments/inline code comments should NEVER under any circumstance reference an implementation plane. There should be no reference of "phases", "plans" or "steps".
 
 ## Implementation Expectations
 

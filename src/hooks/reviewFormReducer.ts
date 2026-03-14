@@ -9,7 +9,7 @@ export interface ReviewFormState {
   };
 }
 
-type ReviewFormAction =
+export type ReviewFormAction =
   | { type: "SET_RATING"; payload: number }
   | { type: "SET_REVIEW_TEXT"; payload: string }
   | { type: "SET_FAVORITE_TRACK"; payload: string }

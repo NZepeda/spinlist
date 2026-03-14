@@ -5,12 +5,18 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import type { Review } from "@/lib/types";
 
+interface UseUserAlbumReviewResult {
+  review: Review | null;
+  error: Error | null;
+  refetch: () => Promise<unknown>;
+}
+
 /**
  * Hook to fetch the current user's review for a specific album.
  * Returns the review if it exists, or null if the user hasn't reviewed the album.
  * Uses Suspense for loading states - wrap the component in a Suspense boundary.
  */
-export function useUserAlbumReview(albumId: string) {
+export function useUserAlbumReview(albumId: string): UseUserAlbumReviewResult {
   const { user } = useAuth();
   const supabase = createClient();
 
@@ -45,7 +51,7 @@ export function useUserAlbumReview(albumId: string) {
 
   return {
     review: query.data ?? null,
-    error: query.error,
-    refetch: query.refetch,
+    error: query.error instanceof Error ? query.error : null,
+    refetch: async () => query.refetch(),
   };
 }

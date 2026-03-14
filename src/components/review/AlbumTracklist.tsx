@@ -46,7 +46,7 @@ export function AlbumTracklist({
             variant="ghost"
             size="sm"
             onClick={() => {
-              onFavoriteTrackChange("");
+              onFavoriteTrackChange?.("");
             }}
           >
             Clear pick

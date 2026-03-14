@@ -32,9 +32,9 @@ export default async function AlbumPage({
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-12">
+      <div className="grid grid-cols-1 gap-4 mb-12 lg:grid-cols-2 lg:items-start">
         {/* Album Image */}
-        <div className="flex justify-center lg:justify-start">
+        <div className="flex justify-center self-start lg:justify-start">
           {imageUrl ? (
             <img
               src={imageUrl}

@@ -31,6 +31,7 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Keep single-use helpers close to the component or module that uses them.
 - Extract shared logic into focused modules when it is reused in multiple places.
 - Avoid mixing unrelated responsibilities in the same file.
+- If following a TODO.md file, steps are complete, mark them as complete.
 
 ## Dependency Expectations
 
@@ -109,7 +110,9 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 
 - Use `$plan-eng-review` when the user asks for implementation-plan review, architecture review, rollout review, test-plan review, or a pre-coding technical risk review.
 - Use `$plan-ceo-review` when the user asks to challenge the premise, rethink the roadmap, expand scope strategically, reduce scope to the minimum viable version, or review from a founder/product perspective.
+- Use `$creative-director` when the user asks for UI direction, UX critique, branding feedback, visual identity work, desirability improvements, or help making the product feel more distinctive and memorable.
 - If the request mixes product/scope shaping with implementation planning, use `$plan-ceo-review` first to settle direction, then use `$plan-eng-review` to lock the execution plan.
+- If the request mixes product strategy with visual/UX direction, use `$plan-ceo-review` first to settle the product bet, then use `$creative-director` to shape how that direction should feel and present.
 - Do not use these skills for routine implementation requests unless the user explicitly asks for a planning or review phase.
 - If the user's intent is ambiguous but sounds close to planning or review, state which skill you are using and why before proceeding.
 

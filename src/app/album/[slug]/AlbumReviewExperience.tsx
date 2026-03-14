@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { AlbumLogCard } from "@/components/review/AlbumLogCard";
 import { AlbumTracklist } from "@/components/review/AlbumTracklist";
@@ -17,32 +18,122 @@ interface AlbumReviewExperienceProps {
   communitySummary: AlbumCommunitySummaryData;
 }
 
+interface AlbumMetadataProps {
+  album: Album;
+  communitySummary: AlbumCommunitySummaryData;
+}
+
 interface AlbumDetailsColumnProps {
   album: Album;
-  children: React.ReactNode;
+  children: ReactNode;
   communitySummary: AlbumCommunitySummaryData;
 }
 
 /**
- * Renders the album details shown above the review card.
+ * Formats the album release year for the metadata block.
  */
-function AlbumMetadata({ album }: AlbumReviewExperienceProps) {
+function formatReleaseYear(releaseDate: string | null): string | null {
+  if (!releaseDate) {
+    return null;
+  }
+
+  return new Date(releaseDate).getFullYear().toString();
+}
+
+/**
+ * Formats the community average for the album hero chips.
+ */
+function formatAverageChip(summary: AlbumCommunitySummaryData): string {
+  if (summary.averageRating === null) {
+    return "No ratings yet";
+  }
+
+  return `${summary.averageRating.toFixed(1)} avg`;
+}
+
+interface AlbumStatChipProps {
+  label: string;
+  value: string;
+}
+
+/**
+ * Displays a compact album fact in the hero area.
+ */
+function AlbumStatChip({ label, value }: AlbumStatChipProps) {
   return (
-    <div>
-      <h1 className="mb-2 text-4xl font-bold">{album.title}</h1>
-      <p className="text-xl text-muted-foreground">
-        {album.artist},{" "}
-        {album.release_date ? new Date(album.release_date).getFullYear() : null}
-      </p>
-      <p className="text-base text-muted-foreground">
-        {album.label ? album.label : "Unknown Label"}
-      </p>
+    <div className="rounded-full border border-border/70 bg-background/70 px-4 py-2 backdrop-blur">
+      <div className="text-[0.65rem] uppercase tracking-[0.22em] text-foreground-muted">
+        {label}
+      </div>
+      <div className="mt-1 text-sm font-semibold text-foreground">{value}</div>
     </div>
   );
 }
 
 /**
- * Renders the shared album details column used across auth states.
+ * Renders the album metadata and supporting context for the hero area.
+ */
+function AlbumMetadata({ album, communitySummary }: AlbumMetadataProps) {
+  const releaseYear = formatReleaseYear(album.release_date);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="text-sm uppercase tracking-[0.28em] text-foreground-muted">
+          Log this album
+        </p>
+        <h1 className="mt-3 text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+          {album.title}
+        </h1>
+        <p className="mt-3 text-xl text-muted-foreground">
+          {album.artist}
+          {releaseYear ? `, ${releaseYear}` : ""}
+        </p>
+        <p className="mt-2 text-base text-muted-foreground">
+          {album.label ? album.label : "Unknown label"}
+        </p>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-foreground-muted">
+          Rate it, pick the song you came back to, and leave a note if it
+          earned one.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-3">
+        <AlbumStatChip
+          label="Community"
+          value={formatAverageChip(communitySummary)}
+        />
+        <AlbumStatChip
+          label="Logs"
+          value={communitySummary.reviewCount.toString()}
+        />
+        <AlbumStatChip
+          label="Tracks"
+          value={album.tracks.length.toString()}
+        />
+      </div>
+
+      {communitySummary.availability === "available" &&
+      communitySummary.standoutTrack ? (
+        <div className="max-w-xl rounded-2xl border border-border/70 bg-background/60 p-4 backdrop-blur">
+          <p className="text-xs uppercase tracking-[0.22em] text-foreground-muted">
+            Community pick
+          </p>
+          <p className="mt-2 text-lg font-semibold text-foreground">
+            {communitySummary.standoutTrack.trackName}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {communitySummary.standoutTrack.percentage}% of favorite-song picks
+            currently land here.
+          </p>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Renders the shared album hero used across auth states.
  */
 function AlbumDetailsColumn({
   album,
@@ -50,11 +141,13 @@ function AlbumDetailsColumn({
   communitySummary,
 }: AlbumDetailsColumnProps) {
   return (
-    <div className="space-y-6">
-      <AlbumMetadata album={album} communitySummary={communitySummary} />
-      <AlbumCommunitySummary summary={communitySummary} />
-      {children}
-    </div>
+    <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-surface/80 p-6 shadow-[0_24px_80px_oklch(0.15_0.005_50/10%)] backdrop-blur sm:p-8">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-brand/8" />
+      <div className="relative grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(19rem,22rem)] xl:items-start">
+        <AlbumMetadata album={album} communitySummary={communitySummary} />
+        <div className="w-full xl:justify-self-end">{children}</div>
+      </div>
+    </section>
   );
 }
 
@@ -70,6 +163,9 @@ function ReviewExperienceFallback({
       <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
         <ReviewFormSkeleton />
       </AlbumDetailsColumn>
+      <div className="lg:col-span-2">
+        <AlbumCommunitySummary summary={communitySummary} />
+      </div>
       <AlbumTracklist album={album} />
     </>
   );
@@ -93,6 +189,9 @@ function AuthenticatedAlbumReviewExperience({
       <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
         <AlbumLogCard album={album} reviewForm={reviewForm} />
       </AlbumDetailsColumn>
+      <div className="lg:col-span-2">
+        <AlbumCommunitySummary summary={communitySummary} />
+      </div>
       <AlbumTracklist
         album={album}
         favoriteTrackId={reviewForm.favoriteTrackId}
@@ -128,6 +227,9 @@ export function AlbumReviewExperience({
         <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
           <LoginPromptCard />
         </AlbumDetailsColumn>
+        <div className="lg:col-span-2">
+          <AlbumCommunitySummary summary={communitySummary} />
+        </div>
         <AlbumTracklist album={album} />
       </>
     );

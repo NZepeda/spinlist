@@ -78,17 +78,17 @@ Goal: turn the album page into a unified "Log this album" flow that increases re
 
 ## Phase 6: Album page layout update
 
-- [ ] Update `src/app/album/[slug]/page.tsx` so the top of the page emphasizes contribution.
-- [ ] Keep album metadata visible, but move the album log card above the fold.
-- [ ] Add a community snapshot section below the hero.
-- [ ] Keep the tracklist visible and interactive.
+- [x] Update `src/app/album/[slug]/page.tsx` so the top of the page emphasizes contribution.
+- [x] Keep album metadata visible, but move the album log card above the fold.
+- [x] Add a community snapshot section below the hero.
+- [x] Keep the tracklist visible and interactive.
 - [ ] Add a reviews feed section below the tracklist/community modules.
 
 ### Done when
 
-- [ ] The page reads as an opinion/logging surface, not just a metadata page.
-- [ ] Rating, favorite-song selection, and community proof are visible without hunting.
-- [ ] The page remains usable on mobile and desktop.
+- [x] The page reads as an opinion/logging surface, not just a metadata page.
+- [x] Rating, favorite-song selection, and community proof are visible without hunting.
+- [x] The page remains usable on mobile and desktop.
 
 ## Phase 7: Reviews feed
 

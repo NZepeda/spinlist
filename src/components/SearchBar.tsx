@@ -1,56 +1,83 @@
 "use client";
 
-import { Fragment, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { Fragment } from "react";
+import { LoaderCircle, Search } from "lucide-react";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui-core/command";
-import { useDebounce } from "@/hooks/useDebounce";
-import type {
-  SearchAlbumDTO,
-  SearchArtistDTO,
-  SearchResponseDTO,
-} from "@/lib/types";
-
-async function searchSpotify(query: string): Promise<SearchResponseDTO> {
-  const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-  if (!response.ok) {
-    throw new Error("Failed to search");
-  }
-  return (await response.json()) as SearchResponseDTO;
-}
+import {
+  type SearchViewState,
+  useSearchBarState,
+} from "@/hooks/useSearchBarState";
+import type { SearchAlbumDTO, SearchArtistDTO } from "@/lib/types";
 
 interface SearchResultProps {
-  results?: SearchResponseDTO;
-  isLoading: boolean;
-  error: Error | null;
+  viewState: SearchViewState;
   onSelect: (item: SearchArtistDTO | SearchAlbumDTO) => void;
 }
 
-const SearchResults = (props: SearchResultProps) => {
-  const { results, isLoading, error, onSelect } = props;
-  if (isLoading) {
-    return <CommandEmpty>Searching...</CommandEmpty>;
+interface SearchStatusMessageProps {
+  message: string;
+  showLoadingIcon?: boolean;
+}
+
+/**
+ * Displays a non-interactive status row inside the search dropdown.
+ *
+ * @param props - The text to show for the current dropdown state.
+ * @returns A styled status message row.
+ */
+function SearchStatusMessage(props: SearchStatusMessageProps) {
+  const { message, showLoadingIcon = false } = props;
+
+  return (
+    <div className="flex items-center justify-center gap-2 py-6 text-center text-sm">
+      {showLoadingIcon ? (
+        <LoaderCircle
+          aria-hidden="true"
+          className="h-4 w-4 animate-spin text-muted-foreground"
+        />
+      ) : null}
+      <span>{message}</span>
+    </div>
+  );
+}
+
+/**
+ * Renders the dropdown content for the search command, including all empty,
+ * loading, error, and results states.
+ *
+ * @param props - The current view state and result selection callback.
+ * @returns The dropdown content for the search command.
+ */
+function SearchResults(props: SearchResultProps) {
+  const { viewState, onSelect } = props;
+
+  if (viewState.kind === "waiting") {
+    return <SearchStatusMessage message="Loading" showLoadingIcon />;
   }
 
-  if (error) {
-    return <CommandEmpty>Something went wrong. Please try again.</CommandEmpty>;
+  if (viewState.kind === "loading") {
+    return <SearchStatusMessage message="Loading" showLoadingIcon />;
   }
 
-  const { artists = [], albums = [] } = results || {};
-
-  const hasResults = artists.length > 0 || albums.length > 0;
-
-  if (!hasResults) {
-    return <CommandEmpty>No results found.</CommandEmpty>;
+  if (viewState.kind === "error") {
+    return <SearchStatusMessage message={viewState.message} />;
   }
+
+  if (viewState.kind === "empty") {
+    return <SearchStatusMessage message="No results found." />;
+  }
+
+  if (viewState.kind !== "results") {
+    return null;
+  }
+
+  const { artists, albums } = viewState.results;
 
   return (
     <Fragment>
@@ -116,42 +143,24 @@ const SearchResults = (props: SearchResultProps) => {
       )}
     </Fragment>
   );
-};
+}
 
+/**
+ * Global search input for artists and albums, backed by Spotify search results.
+ *
+ * @returns The interactive search bar and dropdown results.
+ */
 export function SearchBar() {
-  const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
-  const [open, setOpen] = useState(false);
-  const debouncedQuery = useDebounce(searchValue, 300);
-
   const {
-    data: searchResults,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["search", debouncedQuery],
-    queryFn: () => searchSpotify(debouncedQuery),
-    enabled: debouncedQuery.length > 0,
-  });
-
-  /**
-   * Accepts a selected search item and navigates to its page.
-   * From the selected item, it retrieves the appropriate slug.
-   */
-  const handleSelect = async (item: SearchArtistDTO | SearchAlbumDTO) => {
-    setSearchValue("");
-    setOpen(false);
-
-    const response = await fetch(
-      `/api/slug?spotifyId=${item.id}&type=${item.type}`,
-    );
-
-    const data = (await response.json()) as { slug: string };
-
-    const { slug } = data;
-
-    router.push(`/${item.type}/${slug}`);
-  };
+    searchValue,
+    open,
+    viewState,
+    selectionError,
+    setOpen,
+    setSearchValue,
+    handleSelect,
+  } = useSearchBarState();
+  const hasSearchValue = searchValue.trim().length > 0;
 
   return (
     <div className="relative flex-1 max-w-md">
@@ -167,16 +176,19 @@ export function SearchBar() {
             className="flex w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
-        {open && searchValue && (
+        {open && hasSearchValue && (
           <CommandList className="absolute top-full left-0 right-0 max-h-[400px] overflow-y-auto bg-background border border-t-0 rounded-b-lg shadow-md z-50">
             <SearchResults
-              results={searchResults}
-              isLoading={isLoading}
-              error={error}
+              viewState={viewState}
               onSelect={(item) => void handleSelect(item)}
             />
           </CommandList>
         )}
+        {selectionError ? (
+          <p className="px-3 py-2 text-sm text-destructive" role="alert">
+            {selectionError}
+          </p>
+        ) : null}
       </Command>
     </div>
   );

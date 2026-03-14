@@ -18,18 +18,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isProduction = process.env.NODE_ENV === "production";
   return (
     <html lang="en">
       <body className={`${satoshi.variable} ${geistMono.variable} antialiased`}>
         <QueryClientProvider>
           <AuthProvider>
-            {isProduction ? null : <Navbar />}
+            <Navbar />
             {children}
           </AuthProvider>
         </QueryClientProvider>
       </body>
-      {isProduction && <Analytics />}
+      <Analytics />
     </html>
   );
 }

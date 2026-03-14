@@ -1,6 +1,7 @@
-import { LandingPage } from "./LandingPage";
-
-function DevHome() {
+/**
+ * App home that introduces the search-and-review experience.
+ */
+export default function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="text-center py-16">
@@ -46,13 +47,4 @@ function DevHome() {
       </div>
     </main>
   );
-}
-
-/**
- * Displays the landing page or dev home based on the environment.
- */
-export default function Home() {
-  const isProduction = process.env.NODE_ENV === "production";
-
-  return isProduction ? <LandingPage /> : <DevHome />;
 }

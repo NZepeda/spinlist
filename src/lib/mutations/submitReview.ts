@@ -1,5 +1,3 @@
-import { createClient } from "../supabase/client";
-
 interface SubmitReviewParams {
   userId: string;
   albumId: string;
@@ -9,6 +7,16 @@ interface SubmitReviewParams {
   existingReviewId?: string;
 }
 
+interface ReviewApiErrorResponse {
+  code:
+    | "INVALID_REQUEST"
+    | "UNAUTHORIZED"
+    | "ALBUM_NOT_FOUND"
+    | "INVALID_FAVORITE_TRACK"
+    | "SAVE_FAILED";
+  message: string;
+}
+
 /**
  * Submits a review to the database.
  * Handles both creating new reviews and updating existing ones.
@@ -16,41 +24,28 @@ interface SubmitReviewParams {
  *
  * @throws Error if the database operation fails
  */
-export async function submitReview({
-  albumId,
-  rating,
-  reviewText,
-  favoriteTrackId,
-  existingReviewId,
-  userId,
-}: SubmitReviewParams): Promise<void> {
-  const supabase = createClient();
+export async function submitReview(params: SubmitReviewParams): Promise<void> {
+  const { albumId, rating, reviewText, favoriteTrackId, existingReviewId } =
+    params;
 
-  if (existingReviewId) {
-    const { error } = await supabase
-      .from("reviews")
-      .update({
-        rating,
-        review_text: reviewText,
-        favorite_track_id: favoriteTrackId,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", existingReviewId);
-
-    if (error) {
-      throw error;
-    }
-  } else {
-    const { error } = await supabase.from("reviews").insert({
-      user_id: userId,
-      album_id: albumId,
+  const response = await fetch("/api/reviews", {
+    body: JSON.stringify({
+      albumId,
+      existingReviewId,
+      favoriteTrackId,
       rating,
-      review_text: reviewText,
-      favorite_track_id: favoriteTrackId,
-    });
+      reviewText,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
 
-    if (error) {
-      throw error;
-    }
+  if (!response.ok) {
+    const errorResponse =
+      (await response.json().catch(() => null)) as ReviewApiErrorResponse | null;
+
+    throw new Error(errorResponse?.message ?? "Unable to save review");
   }
 }

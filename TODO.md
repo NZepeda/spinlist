@@ -82,7 +82,7 @@ Goal: turn the album page into a unified "Log this album" flow that increases re
 - [x] Keep album metadata visible, but move the album log card above the fold.
 - [x] Add a community snapshot section below the hero.
 - [x] Keep the tracklist visible and interactive.
-- [ ] Add a reviews feed section below the tracklist/community modules.
+- [x] Add a reviews feed section below the tracklist/community modules.
 
 ### Done when
 
@@ -92,16 +92,16 @@ Goal: turn the album page into a unified "Log this album" flow that increases re
 
 ## Phase 7: Reviews feed
 
-- [ ] Add a reviews feed component, likely `src/components/review/ReviewsFeed.tsx`.
-- [ ] Render rating, review text excerpt, and favorite-song badge for each review.
-- [ ] Handle the empty state when an album has no written reviews yet.
-- [ ] Ensure the feed works with reviews that have no `favorite_track_id`.
+- [x] Add a reviews feed component, likely `src/components/review/ReviewsFeed.tsx`.
+- [x] Render rating, review text excerpt, and favorite-song badge for each review.
+- [x] Handle the empty state when an album has no written reviews yet.
+- [x] Ensure the feed works with reviews that have no `favorite_track_id`.
 
 ### Done when
 
-- [ ] Reviews reinforce the album-page social loop.
-- [ ] Favorite-song badges are visible when present and absent gracefully when not.
-- [ ] Empty states do not make the page feel broken.
+- [x] Reviews reinforce the album-page social loop.
+- [x] Favorite-song badges are visible when present and absent gracefully when not.
+- [x] Empty states do not make the page feel broken.
 
 ## Phase 8: Cleanup and consolidation
 

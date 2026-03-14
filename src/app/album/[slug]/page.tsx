@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getImageUrl } from "@/lib/spotify/getImageUrl";
 import { getAlbum } from "@/lib/getAlbum";
 import { getAlbumCommunitySummary } from "@/lib/getAlbumCommunitySummary";
+import { getAlbumReviewFeed } from "@/lib/getAlbumReviewFeed";
+import { ReviewsFeed } from "@/components/review/ReviewsFeed";
 import { AlbumReviewExperience } from "./AlbumReviewExperience";
 
 /**
@@ -24,7 +26,10 @@ export default async function AlbumPage({
   }
 
   const imageUrl = getImageUrl(album.images, "large");
-  const communitySummary = await getAlbumCommunitySummary(album);
+  const [communitySummary, reviewFeed] = await Promise.all([
+    getAlbumCommunitySummary(album),
+    getAlbumReviewFeed(album),
+  ]);
 
   return (
     <main className="relative overflow-hidden">
@@ -56,6 +61,9 @@ export default async function AlbumPage({
             album={album}
             communitySummary={communitySummary}
           />
+        </div>
+        <div className="mt-6">
+          <ReviewsFeed reviews={reviewFeed} />
         </div>
       </div>
     </main>

@@ -1,4 +1,9 @@
-export type { Album, AlbumTrack } from "./domain/album";
+export type {
+  Album,
+  AlbumStreamingLinks,
+  AlbumTrack,
+  StreamingPlatform,
+} from "./domain/album";
 export type { Artist } from "./domain/artist";
 export type { Image } from "./domain/image";
 export type { Profile } from "./domain/profile";

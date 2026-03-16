@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS "public"."albums" (
     "artist" "text" NOT NULL,
     "release_date" "date",
     "images" jsonb DEFAULT '[]'::jsonb,
+    "streaming_links" jsonb DEFAULT '{}'::jsonb NOT NULL,
+    "streaming_links_synced_at" timestamp with time zone,
     "avg_rating" numeric(3,2) DEFAULT 0,
     "review_count" integer DEFAULT 0,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,

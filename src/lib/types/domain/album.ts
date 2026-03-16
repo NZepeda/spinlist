@@ -7,6 +7,10 @@ export interface AlbumTrack {
   duration_ms: number;
 }
 
+export type StreamingPlatform = "spotify" | "apple_music";
+
+export type AlbumStreamingLinks = Partial<Record<StreamingPlatform, string>>;
+
 /**
  * Canonical album model used across the app.
  * Uses snake_case to match existing DB fields until a full normalization pass.
@@ -22,5 +26,6 @@ export interface Album {
   avg_rating: number | null;
   review_count: number | null;
   images: Image[];
+  streaming_links: AlbumStreamingLinks;
   tracks: AlbumTrack[];
 }

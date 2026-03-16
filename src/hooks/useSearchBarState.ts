@@ -56,9 +56,9 @@ interface SearchViewStateArgs {
 export interface UseSearchBarStateResult {
   handleSelect: (item: SearchResultItem) => Promise<void>;
   open: boolean;
+  setOpen: (open: boolean) => void;
   searchValue: string;
   selectionError: string | null;
-  setOpen: (open: boolean) => void;
   setSearchValue: (value: string) => void;
   viewState: SearchViewState;
 }
@@ -203,8 +203,17 @@ export function useSearchBarState(): UseSearchBarStateResult {
    * @param value - The latest input value from the command field.
    */
   function setSearchValue(value: string): void {
+    const trimmedValue = value.trim();
+
     setSelectionError(null);
     setSearchValueState(value);
+
+    if (trimmedValue.length > 0) {
+      setOpen(true);
+      return;
+    }
+
+    setOpen(false);
   }
 
   /**
@@ -229,9 +238,9 @@ export function useSearchBarState(): UseSearchBarStateResult {
   return {
     handleSelect,
     open,
+    setOpen,
     searchValue,
     selectionError,
-    setOpen,
     setSearchValue,
     viewState,
   };

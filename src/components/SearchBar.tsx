@@ -216,7 +216,15 @@ export function SearchBar(props: SearchBarProps) {
             placeholder={placeholder}
             value={searchValue}
             onValueChange={setSearchValue}
-            onFocus={() => setOpen(true)}
+            onFocus={() => {
+              if (
+                searchValue.trim().length > 0 ||
+                viewState.kind === "results"
+              ) {
+                console.log("Setting open to true. Current: ", open);
+                setOpen(true);
+              }
+            }}
             onBlur={() =>
               setTimeout(() => {
                 setOpen(false);

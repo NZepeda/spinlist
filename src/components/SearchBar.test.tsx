@@ -1,4 +1,4 @@
-import { act, cleanup, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SearchBar } from "@/components/SearchBar";
@@ -95,12 +95,12 @@ describe("SearchBar", () => {
     cleanup();
   });
 
-  it("does not render dropdown content before the input is focused", () => {
+  it("does not render dropdown content before the user types a query", () => {
     render(<SearchBar />);
 
     expect(
       screen.queryByText(
-        "Search for an album or artist to start logging your listening.",
+        "Loading results...",
       ),
     ).not.toBeInTheDocument();
   });
@@ -201,6 +201,54 @@ describe("SearchBar", () => {
         screen.getByText("Something went wrong. Please try again."),
       ).toBeInTheDocument();
     });
+  });
+
+  it("hides the dropdown when the user clears the query", async () => {
+    const user = userEvent.setup();
+
+    fetchMock.mockResolvedValue(createJsonResponse(createSearchResults()));
+
+    render(<SearchBar />);
+
+    await typeSearchValue(user, "radiohead");
+
+    expect(screen.getByText("Loading results...")).toBeInTheDocument();
+
+    await user.clear(screen.getByPlaceholderText("Search for albums or artists..."));
+
+    await waitFor(() => {
+      expect(screen.queryByText("Loading results...")).not.toBeInTheDocument();
+    });
+  });
+
+  it("closes on blur and reopens on focus when the query still exists", async () => {
+    const user = userEvent.setup();
+
+    fetchMock.mockImplementation((input) => {
+      if (getRequestUrl(input).startsWith("/api/search")) {
+        return Promise.resolve(createJsonResponse(createSearchResults()));
+      }
+
+      throw new Error(`Unexpected fetch request: ${getRequestUrl(input)}`);
+    });
+
+    render(<SearchBar />);
+
+    await typeSearchValue(user, "radiohead");
+
+    const input = screen.getByPlaceholderText("Search for albums or artists...");
+
+    expect(screen.getByText("Loading results...")).toBeInTheDocument();
+
+    fireEvent.blur(input);
+
+    await waitFor(() => {
+      expect(screen.queryByText("Loading results...")).not.toBeInTheDocument();
+    });
+
+    fireEvent.focus(input);
+
+    expect(screen.getByText("Loading results...")).toBeInTheDocument();
   });
 
   it("navigates to the selected result when slug lookup succeeds", async () => {

@@ -7,4 +7,3 @@ where "label" is null;
 
 alter table "public"."albums"
   alter column "label" set not null;
-

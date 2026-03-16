@@ -1,50 +1,58 @@
+import { SearchBar } from "@/components/SearchBar";
+
 /**
- * App home that introduces the search-and-review experience.
+ * Home page that keeps the first impression centered on search.
  */
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="text-center py-16">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-6">
-          Rate & Discover Music
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Like Letterboxd, but for albums. Search, rate, and review your
-          favorite music. Discover new albums through community recommendations.
-        </p>
-      </div>
+    <main className="relative overflow-hidden bg-background text-foreground">
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-background-warm to-background" />
+      <div className="absolute -top-32 left-10 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle_at_top,_oklch(0.62_0.175_47/20%),_oklch(0.62_0.175_47/0%))] blur-2xl" />
+      <div className="absolute -top-20 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_top,_oklch(0.62_0.175_47/16%),_oklch(0.62_0.175_47/0%))] blur-2xl" />
+      <div className="absolute bottom-0 left-0 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,_oklch(0.62_0.175_47/12%),_oklch(0.62_0.175_47/0%))] blur-3xl" />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-        <div className="text-center p-6">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <span className="text-primary font-bold">🔍</span>
+      <section className="relative mx-auto grid max-w-6xl gap-12 px-6 pb-24 pt-18 md:min-h-[calc(100vh-5rem)] md:grid-cols-[minmax(0,1.15fr)_320px] md:items-center md:pt-24">
+        <div className="max-w-3xl">
+          <p className="text-sm uppercase tracking-[0.3em] text-foreground-muted">
+            Your music, remembered
+          </p>
+          <h1 className="mt-4 text-4xl font-black tracking-tight text-foreground sm:text-6xl">
+            Find the album.
+            <span className="block text-brand">Log the feeling.</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg text-foreground-muted">
+            Search for any album or artist, jump straight into the discography,
+            and start building a listening journal you actually want to revisit.
+          </p>
+          <div className="mt-8">
+            <SearchBar
+              placeholder="Search for an album, artist, or obsession..."
+              variant="hero"
+            />
           </div>
-          <h3 className="font-semibold mb-2">Search Albums</h3>
-          <p className="text-sm text-muted-foreground">
-            Find any album using our Spotify-powered search
+          <p className="mt-4 text-sm text-foreground-muted">
+            Search for the record already on your mind and start logging.
           </p>
         </div>
 
-        <div className="text-center p-6">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <span className="text-primary font-bold">⭐</span>
+        <div className="relative mx-auto hidden h-[320px] w-[320px] items-center justify-center md:flex">
+          <div className="relative h-[260px] w-[260px] rounded-full border border-foreground/20 bg-foreground shadow-[0_24px_60px_oklch(0.15_0.005_50/25%)]">
+            <div className="absolute inset-6 rounded-full border border-background/10" />
+            <div className="absolute inset-12 rounded-full border border-background/10" />
+            <div className="absolute inset-20 rounded-full border border-background/10" />
+            <div className="absolute inset-[88px] rounded-full bg-brand shadow-[0_6px_20px_oklch(0.62_0.175_47/35%)]" />
+            <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
           </div>
-          <h3 className="font-semibold mb-2">Rate & Review</h3>
-          <p className="text-sm text-muted-foreground">
-            Share your thoughts and rate albums on a 5-star scale
-          </p>
-        </div>
-
-        <div className="text-center p-6">
-          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <span className="text-primary font-bold">👥</span>
+          <div className="absolute -bottom-2 -left-4 rounded-2xl border border-border/70 bg-surface/90 px-4 py-3 shadow-[0_20px_40px_oklch(0.15_0.005_50/12%)]">
+            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              Start here
+            </p>
+            <p className="mt-2 text-sm font-medium text-foreground">
+              Search first, then let the records pull you deeper.
+            </p>
           </div>
-          <h3 className="font-semibold mb-2">Discover</h3>
-          <p className="text-sm text-muted-foreground">
-            Find new music through community recommendations
-          </p>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

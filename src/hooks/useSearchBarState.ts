@@ -17,13 +17,12 @@ const SEARCH_ERROR_MESSAGE = "Something went wrong. Please try again.";
 const SELECTION_ERROR_MESSAGE =
   "We couldn't open that result. Please try again.";
 
+type SearchResultItem = SearchArtistDTO | SearchAlbumDTO;
+
 /**
  * Represents the UI states the search dropdown can render.
  */
 export type SearchViewState =
-  | {
-      kind: "idle";
-    }
   | {
       kind: "waiting";
     }
@@ -47,21 +46,21 @@ interface SlugResponse {
 }
 
 interface SearchViewStateArgs {
-  searchValue: string;
   debouncedQuery: string;
+  error: Error | null;
   isFetching: boolean;
   results?: SearchResponseDTO;
-  error: Error | null;
+  searchValue: string;
 }
 
-interface UseSearchBarStateResult {
-  searchValue: string;
+export interface UseSearchBarStateResult {
+  handleSelect: (item: SearchResultItem) => Promise<void>;
   open: boolean;
-  viewState: SearchViewState;
+  searchValue: string;
   selectionError: string | null;
   setOpen: (open: boolean) => void;
   setSearchValue: (value: string) => void;
-  handleSelect: (item: SearchArtistDTO | SearchAlbumDTO) => Promise<void>;
+  viewState: SearchViewState;
 }
 
 /**
@@ -82,14 +81,14 @@ async function searchSpotify(query: string): Promise<SearchResponseDTO> {
 }
 
 /**
- * Retrieves the slug for a selected search result.
+ * Resolves the slug-backed pathname for a selected search result.
  *
  * @param item - The selected artist or album.
- * @returns The resolved slug string.
+ * @returns The application route for the selected result.
  * @throws Error when the slug request fails or returns invalid data.
  */
-async function fetchSearchResultSlug(
-  item: SearchArtistDTO | SearchAlbumDTO,
+export async function resolveSearchResultPath(
+  item: SearchResultItem,
 ): Promise<string> {
   const response = await fetch(
     `/api/slug?spotifyId=${item.id}&type=${item.type}`,
@@ -105,7 +104,7 @@ async function fetchSearchResultSlug(
     throw new Error("Invalid slug response");
   }
 
-  return data.slug;
+  return `/${item.type}/${data.slug}`;
 }
 
 /**
@@ -121,21 +120,17 @@ function hasSearchResults(results: SearchResponseDTO): boolean {
 /**
  * Maps the raw input and query state into the single dropdown state the UI renders.
  *
- * State flow:
- * raw input -> debounce pending -> waiting
- * raw input -> query fetching    -> loading
- * settled query + no items       -> empty
- * settled query + items          -> results
+ * Search state flow:
+ * typing      -> waiting
+ * fetching    -> loading
+ * no matches  -> empty
+ * matches     -> results
  *
  * @param args - The current search input and query state.
  * @returns The derived view state for the dropdown.
  */
 function getSearchViewState(args: SearchViewStateArgs): SearchViewState {
   const { searchValue, debouncedQuery, isFetching, results, error } = args;
-
-  if (searchValue.length === 0) {
-    return { kind: "idle" };
-  }
 
   if (searchValue !== debouncedQuery) {
     return { kind: "waiting" };
@@ -170,8 +165,7 @@ function getSearchViewState(args: SearchViewStateArgs): SearchViewState {
 }
 
 /**
- * Owns the search bar's business logic: debounced querying, derived view state,
- * and result selection navigation.
+ * Owns the search bar business logic across the application.
  *
  * @returns The UI state and event handlers required by the SearchBar component.
  */
@@ -196,11 +190,11 @@ export function useSearchBarState(): UseSearchBarStateResult {
   });
 
   const viewState = getSearchViewState({
-    searchValue: normalizedSearchValue,
     debouncedQuery,
+    error,
     isFetching,
     results: data,
-    error,
+    searchValue: normalizedSearchValue,
   });
 
   /**
@@ -214,33 +208,31 @@ export function useSearchBarState(): UseSearchBarStateResult {
   }
 
   /**
-   * Resolves the selected result to a slug and navigates to its details page.
+   * Resolves the selected result to a slug and navigates to the item (album/artist) page.
    *
    * @param item - The chosen artist or album result.
    */
-  async function handleSelect(
-    item: SearchArtistDTO | SearchAlbumDTO,
-  ): Promise<void> {
+  async function handleSelect(item: SearchResultItem): Promise<void> {
     setSelectionError(null);
 
     try {
-      const slug = await fetchSearchResultSlug(item);
+      const path = await resolveSearchResultPath(item);
 
       setSearchValueState("");
       setOpen(false);
-      router.push(`/${item.type}/${slug}`);
+      router.push(path);
     } catch {
       setSelectionError(SELECTION_ERROR_MESSAGE);
     }
   }
 
   return {
-    searchValue,
+    handleSelect,
     open,
-    viewState,
+    searchValue,
     selectionError,
     setOpen,
     setSearchValue,
-    handleSelect,
+    viewState,
   };
 }

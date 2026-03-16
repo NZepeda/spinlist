@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useUserReview } from "./useUserReview";
+import { useUserAlbumReview } from "./useUserAlbumReview";
 
 const mockFrom = vi.fn();
 
@@ -46,7 +46,7 @@ function mockSupabaseChain(data: unknown, error: unknown) {
   };
 }
 
-describe("useUserReview", () => {
+describe("useUserAlbumReview", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -56,9 +56,11 @@ describe("useUserReview", () => {
       if (table === "albums") {
         return {
           select: vi.fn().mockReturnValue({
-            eq: vi.fn().mockReturnValue(
-              mockSupabaseChain({ id: "internal-album-id" }, null),
-            ),
+            eq: vi
+              .fn()
+              .mockReturnValue(
+                mockSupabaseChain({ id: "internal-album-id" }, null),
+              ),
           }),
         };
       }
@@ -87,10 +89,9 @@ describe("useUserReview", () => {
       };
     });
 
-    const { result } = renderHook(
-      () => useUserReview({ spotifyAlbumId: "spotify-123" }),
-      { wrapper: createWrapper() },
-    );
+    const { result } = renderHook(() => useUserAlbumReview("spotify-123"), {
+      wrapper: createWrapper(),
+    });
 
     await vi.waitFor(() => {
       expect(result.current).not.toBeNull();

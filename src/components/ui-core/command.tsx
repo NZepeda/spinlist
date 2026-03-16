@@ -97,8 +97,8 @@ function CommandDialog({
 }
 
 /**
- * Input field for the Command component. Automatically filters CommandItem children
- * based on the input value. Minimal styling - parent controls appearance.
+ * Input field for the Command component.
+ * Forwards refs so higher-level search surfaces can restore focus after shortcuts.
  *
  * @example
  * ```tsx
@@ -107,18 +107,21 @@ function CommandDialog({
  * </Command>
  * ```
  */
-function CommandInput({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+const CommandInput = React.forwardRef<
+  React.ElementRef<typeof CommandPrimitive.Input>,
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
+>(({ className, ...props }, ref) => {
   return (
     <CommandPrimitive.Input
+      ref={ref}
       data-slot="command-input"
       className={cn("outline-hidden", className)}
       {...props}
     />
   );
-}
+});
+
+CommandInput.displayName = CommandPrimitive.Input.displayName;
 
 /**
  * Scrollable container for CommandGroup and CommandItem components.

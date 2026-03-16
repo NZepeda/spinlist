@@ -37,7 +37,7 @@ function createSearchResults(): SearchResponseDTO {
       {
         id: "album-1",
         name: "Kid A",
-        artistName: "Blink-182",
+        artistName: "Radiohead",
         imageUrl: null,
         releaseDate: "2000-10-02",
         type: "album",
@@ -46,7 +46,7 @@ function createSearchResults(): SearchResponseDTO {
     artists: [
       {
         id: "artist-1",
-        name: "Blink-182",
+        name: "Radiohead",
         imageUrl: null,
         type: "artist",
       },
@@ -70,15 +70,14 @@ async function waitForDebounce(): Promise<void> {
  *
  * @param user - The configured user-event instance.
  * @param value - The query to type.
+ * @param placeholder - The input placeholder to target.
  */
 async function typeSearchValue(
   user: ReturnType<typeof userEvent.setup>,
   value: string,
+  placeholder = "Search for albums or artists...",
 ): Promise<void> {
-  await user.type(
-    screen.getByPlaceholderText("Search for albums or artists..."),
-    value,
-  );
+  await user.type(screen.getByPlaceholderText(placeholder), value);
 }
 
 describe("SearchBar", () => {
@@ -96,11 +95,14 @@ describe("SearchBar", () => {
     cleanup();
   });
 
-  it("does not render dropdown content before the user types", () => {
+  it("does not render dropdown content before the input is focused", () => {
     render(<SearchBar />);
 
-    expect(screen.queryByText("Loading")).not.toBeInTheDocument();
-    expect(screen.queryByText("No results found.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Search for an album or artist to start logging your listening.",
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it("shows a waiting state before the debounce completes", async () => {
@@ -110,7 +112,7 @@ describe("SearchBar", () => {
 
     await typeSearchValue(user, "radiohead");
 
-    expect(screen.getByText("Loading")).toBeInTheDocument();
+    expect(screen.getByText("Loading results...")).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -131,12 +133,14 @@ describe("SearchBar", () => {
     await typeSearchValue(user, "radiohead");
     await waitForDebounce();
 
-    expect(screen.getByText("Loading")).toBeInTheDocument();
+    expect(screen.getByText("Loading results...")).toBeInTheDocument();
 
     deferredSearch.resolve(createJsonResponse({ artists: [], albums: [] }));
 
     await waitFor(() => {
-      expect(screen.getByText("No results found.")).toBeInTheDocument();
+      expect(
+        screen.getByText("No matches yet. Try a different album or artist."),
+      ).toBeInTheDocument();
     });
   });
 
@@ -155,7 +159,7 @@ describe("SearchBar", () => {
     });
 
     expect(screen.getByText("Kid A")).toBeInTheDocument();
-    expect(screen.getByText("Radiohead")).toBeInTheDocument();
+    expect(screen.getByText("Open the full discography.")).toBeInTheDocument();
   });
 
   it("shows an empty state only after a successful empty response", async () => {
@@ -168,12 +172,17 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     await typeSearchValue(user, "no matches");
-    expect(screen.queryByText("No results found.")).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByText("No matches yet. Try a different album or artist."),
+    ).not.toBeInTheDocument();
 
     await waitForDebounce();
 
     await waitFor(() => {
-      expect(screen.getByText("No results found.")).toBeInTheDocument();
+      expect(
+        screen.getByText("No matches yet. Try a different album or artist."),
+      ).toBeInTheDocument();
     });
   });
 

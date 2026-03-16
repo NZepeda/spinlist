@@ -1,9 +1,8 @@
 "use client";
 
 /**
- * Loading skeleton for the ReviewForm component.
- * Displays placeholder UI while the review data is being fetched.
- * Used as a Suspense fallback for the ReviewForm component.
+ * Loading skeleton for the album log card.
+ * Displays placeholder UI while the current user's album log is being fetched.
  */
 export function ReviewFormSkeleton() {
   return (

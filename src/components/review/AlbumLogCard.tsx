@@ -43,8 +43,8 @@ export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
   }
 
   return (
-    <div className="flex w-full flex-col rounded-md border bg-card lg:max-w-md">
-      <div className="border-b w-full p-4">
+    <div className="flex w-full flex-col rounded-md border border-border/70 bg-card shadow-[0_18px_50px_var(--brand-shadow-soft)] lg:max-w-md">
+      <div className="w-full border-b border-border/70 p-4">
         <div className="text-sm font-medium text-center">
           {rating ? "Your rating" : "Rate"}
         </div>
@@ -62,7 +62,7 @@ export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
           <div className="text-sm font-medium text-foreground">
             Favorite song <span className="text-muted-foreground">(optional)</span>
           </div>
-          <div className="rounded-lg border border-border bg-background/40 p-3">
+          <div className="rounded-lg border border-border/70 bg-background p-3">
             <div className="text-sm text-foreground">
               {favoriteTrack
                 ? `${favoriteTrack.track_number}. ${favoriteTrack.name}`

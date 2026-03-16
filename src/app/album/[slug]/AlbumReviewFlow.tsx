@@ -13,7 +13,7 @@ import type { AlbumCommunitySummary as AlbumCommunitySummaryData } from "@/lib/g
 import type { Album } from "@/lib/types";
 import { AlbumCommunitySummary } from "./AlbumCommunitySummary";
 
-interface AlbumReviewExperienceProps {
+interface AlbumReviewFlowProps {
   album: Album;
   communitySummary: AlbumCommunitySummaryData;
 }
@@ -93,8 +93,8 @@ function AlbumMetadata({ album, communitySummary }: AlbumMetadataProps) {
           {album.label ? album.label : "Unknown label"}
         </p>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-foreground-muted">
-          Rate it, pick the song you came back to, and leave a note if it
-          earned one.
+          Rate it, pick the song you came back to, and leave a note if it earned
+          one.
         </p>
       </div>
 
@@ -107,10 +107,7 @@ function AlbumMetadata({ album, communitySummary }: AlbumMetadataProps) {
           label="Logs"
           value={communitySummary.reviewCount.toString()}
         />
-        <AlbumStatChip
-          label="Tracks"
-          value={album.tracks.length.toString()}
-        />
+        <AlbumStatChip label="Tracks" value={album.tracks.length.toString()} />
       </div>
 
       {communitySummary.availability === "available" &&
@@ -141,8 +138,8 @@ function AlbumDetailsColumn({
   communitySummary,
 }: AlbumDetailsColumnProps) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-surface/80 p-6 shadow-[0_24px_80px_oklch(0.15_0.005_50/10%)] backdrop-blur sm:p-8">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-brand/8" />
+    <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-surface/95 p-6 shadow-[0_24px_80px_var(--brand-shadow-soft)] backdrop-blur sm:p-8">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-[var(--brand-tint-soft)]" />
       <div className="relative grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(19rem,22rem)] xl:items-start">
         <AlbumMetadata album={album} communitySummary={communitySummary} />
         <div className="w-full xl:justify-self-end">{children}</div>
@@ -154,10 +151,7 @@ function AlbumDetailsColumn({
 /**
  * Fallback UI while the current user's saved album log is loading.
  */
-function ReviewExperienceFallback({
-  album,
-  communitySummary,
-}: AlbumReviewExperienceProps) {
+function ReviewFlowFallback({ album, communitySummary }: AlbumReviewFlowProps) {
   return (
     <>
       <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
@@ -174,10 +168,10 @@ function ReviewExperienceFallback({
 /**
  * Authenticated review view that keeps the log card and tracklist in sync.
  */
-function AuthenticatedAlbumReviewExperience({
+function AuthenticatedAlbumReviewFlow({
   album,
   communitySummary,
-}: AlbumReviewExperienceProps) {
+}: AlbumReviewFlowProps) {
   const { review } = useUserAlbumReview(album.id);
   const reviewForm = useReviewForm({
     album,
@@ -206,18 +200,15 @@ function AuthenticatedAlbumReviewExperience({
  * Keeps the tracklist visible for everyone while only enabling favorite-song
  * selection for signed-in listeners.
  */
-export function AlbumReviewExperience({
+export function AlbumReviewFlow({
   album,
   communitySummary,
-}: AlbumReviewExperienceProps) {
+}: AlbumReviewFlowProps) {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <ReviewExperienceFallback
-        album={album}
-        communitySummary={communitySummary}
-      />
+      <ReviewFlowFallback album={album} communitySummary={communitySummary} />
     );
   }
 
@@ -238,13 +229,10 @@ export function AlbumReviewExperience({
   return (
     <Suspense
       fallback={
-        <ReviewExperienceFallback
-          album={album}
-          communitySummary={communitySummary}
-        />
+        <ReviewFlowFallback album={album} communitySummary={communitySummary} />
       }
     >
-      <AuthenticatedAlbumReviewExperience
+      <AuthenticatedAlbumReviewFlow
         album={album}
         communitySummary={communitySummary}
       />

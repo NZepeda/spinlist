@@ -27,7 +27,7 @@ function formatReviewDate(dateString: string): string {
  */
 export function ReviewsFeed({ reviews }: ReviewsFeedProps) {
   return (
-    <section className="rounded-[2rem] border border-border/70 bg-surface/75 p-6 shadow-[0_20px_60px_oklch(0.15_0.005_50/10%)] backdrop-blur sm:p-8">
+    <section className="rounded-[2rem] border border-border/70 bg-surface/95 p-6 shadow-[0_20px_60px_var(--brand-shadow-soft)] backdrop-blur sm:p-8">
       <div className="mb-6 flex flex-col gap-2">
         <h2 className="text-2xl font-bold text-foreground">Recent reviews</h2>
         <p className="text-sm text-muted-foreground">
@@ -45,7 +45,7 @@ export function ReviewsFeed({ reviews }: ReviewsFeedProps) {
           {reviews.map((review) => (
             <article
               key={review.id}
-              className="rounded-2xl border border-border/70 bg-background/60 p-5"
+              className="rounded-2xl border border-border/70 bg-background p-5 shadow-[0_16px_40px_var(--brand-shadow-soft)]"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -56,7 +56,7 @@ export function ReviewsFeed({ reviews }: ReviewsFeedProps) {
                     {formatReviewDate(review.createdAt)}
                   </p>
                 </div>
-                <div className="rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-sm font-semibold text-foreground">
+                <div className="rounded-full border border-foreground/10 bg-[var(--brand-tint-soft)] px-3 py-1 text-sm font-semibold text-foreground">
                   {formatRating(review.rating)}
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui-core/button";
  */
 export function LoginPromptCard() {
   return (
-    <div className="space-y-4 rounded-[1.5rem] border border-border/70 bg-card/90 p-6 text-left shadow-[0_18px_50px_oklch(0.15_0.005_50/8%)]">
+    <div className="space-y-4 rounded-[1.5rem] border border-border/70 bg-card/95 p-6 text-left shadow-[0_18px_50px_var(--brand-shadow-soft)]">
       <div className="space-y-2">
         <p className="text-lg font-semibold">Log in to rate this album</p>
         <p className="text-sm text-muted-foreground">

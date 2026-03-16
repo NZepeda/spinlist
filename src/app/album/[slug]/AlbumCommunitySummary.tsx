@@ -31,7 +31,7 @@ function AlbumCommunitySummaryContent({
   return (
     <section
       aria-label="Community summary"
-      className="rounded-2xl border bg-card/70 p-4"
+      className="rounded-2xl border border-border/70 bg-card/95 p-4 shadow-[0_18px_40px_var(--brand-shadow-soft)]"
     >
       <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -42,13 +42,13 @@ function AlbumCommunitySummaryContent({
           </p>
         </div>
         <div className="grid min-w-[12rem] grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl border bg-background/60 p-3">
+          <div className="rounded-xl border border-border/70 bg-background p-3">
             <div className="text-muted-foreground">Average</div>
             <div className="mt-1 text-2xl font-semibold">
               {formatAverageRating(summary.averageRating)}
             </div>
           </div>
-          <div className="rounded-xl border bg-background/60 p-3">
+          <div className="rounded-xl border border-border/70 bg-background p-3">
             <div className="text-muted-foreground">Logs</div>
             <div className="mt-1 text-2xl font-semibold">
               {summary.reviewCount}
@@ -133,7 +133,7 @@ export function AlbumCommunitySummary({
           </div>
         </div>
 
-        <div className="space-y-3 rounded-xl border bg-background/60 p-4">
+        <div className="space-y-3 rounded-xl border border-border/70 bg-background p-4">
           <h3 className="text-sm font-medium text-foreground">
             Standout track
           </h3>

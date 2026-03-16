@@ -88,68 +88,81 @@
   /* ==========================================================================
      Brand Primitives (raw OKLCH values)
      ========================================================================== */
-  --brand-cream: oklch(0.95 0.015 85);        /* #F5F1E6 - Primary background */
-  --brand-cream-warm: oklch(0.93 0.02 80);    /* #F2EADB - Gradient variant */
-  --brand-ink: oklch(0.15 0.005 50);          /* #0A0A0A - Primary text */
-  --brand-orange-500: oklch(0.62 0.175 47);   /* #D96A20 - Brand accent */
-  --brand-orange-400: oklch(0.72 0.17 55);    /* #F28C28 - Hover state */
-  --brand-warm-gray: oklch(0.42 0.02 55);     /* #5A5247 - Secondary text */
-  --brand-success-500: oklch(0.65 0.2 145);   /* #22C55E - Success states */
-  --brand-success-700: oklch(0.45 0.15 145);  /* #166534 - Success text */
-  --brand-error-700: oklch(0.45 0.18 25);     /* #B91C1C - Error states */
+  --brand-white: oklch(1 0 0);                    /* #FFFFFF - App background */
+  --brand-white-soft: oklch(0.985 0 0);          /* #FAFAFA - Soft background */
+  --brand-white-muted: oklch(0.97 0 0);          /* #F5F5F5 - Secondary surface */
+  --brand-black: oklch(0.205 0 0);               /* #171717 - Primary action */
+  --brand-black-hover: oklch(0.269 0 0);         /* #262626 - Hover state */
+  --brand-gray: oklch(0.556 0 0);                /* #737373 - Supporting text */
+  --brand-success-500: oklch(0.65 0.2 145);      /* #22C55E - Success states */
+  --brand-success-700: oklch(0.45 0.15 145);     /* #166534 - Success text */
+  --brand-error-500: oklch(0.577 0.245 27.325);  /* #E7000B - Destructive */
+
+  /* ==========================================================================
+     Theme Effects
+     ========================================================================== */
+  --brand-aura-strong: oklch(0.205 0 0 / 0.1);
+  --brand-aura-medium: oklch(0.205 0 0 / 0.075);
+  --brand-aura-soft: oklch(0.205 0 0 / 0.05);
+  --brand-aura-subtle: oklch(0.205 0 0 / 0.06);
+  --brand-shadow-soft: oklch(0.205 0 0 / 0.06);
+  --brand-shadow: oklch(0.205 0 0 / 0.1);
+  --brand-shadow-strong: oklch(0.205 0 0 / 0.14);
+  --brand-tint-soft: oklch(0.205 0 0 / 0.035);
+  --brand-tint-medium: oklch(0.205 0 0 / 0.08);
 
   /* ==========================================================================
      Semantic Tokens (purpose-driven)
      ========================================================================== */
-  --background: var(--brand-cream);
-  --background-warm: var(--brand-cream-warm);
-  --foreground: var(--brand-ink);
-  --foreground-muted: var(--brand-warm-gray);
+  --background: var(--brand-white);
+  --background-warm: var(--brand-white-soft);
+  --foreground: var(--brand-black);
+  --foreground-muted: var(--brand-gray);
 
-  --brand: var(--brand-orange-500);
-  --brand-hover: var(--brand-orange-400);
-  --brand-foreground: var(--brand-ink);
+  --brand: var(--brand-black);
+  --brand-hover: var(--brand-black-hover);
+  --brand-foreground: var(--brand-white-soft);
 
-  --surface: oklch(1 0 0 / 70%);              /* White/70 for glass cards */
-  --surface-elevated: oklch(1 0 0 / 80%);     /* White/80 for elevated cards */
+  --surface: oklch(0.99 0 0 / 96%);               /* Primary card surface */
+  --surface-elevated: oklch(1 0 0 / 98%);         /* Elevated surfaces */
 
   --success: var(--brand-success-500);
   --success-foreground: var(--brand-success-700);
-  --error: var(--brand-error-700);
-  --error-foreground: var(--brand-error-700);
+  --error: var(--brand-error-500);
+  --error-foreground: var(--brand-error-500);
 
   /* ==========================================================================
      shadcn/ui Compatibility Tokens
      ========================================================================== */
   --card: var(--surface-elevated);
-  --card-foreground: var(--brand-ink);
-  --popover: oklch(1 0 0);
-  --popover-foreground: var(--brand-ink);
-  --primary: var(--brand-orange-500);
-  --primary-foreground: var(--brand-cream);
-  --secondary: oklch(0.97 0.001 106.424);
-  --secondary-foreground: var(--brand-ink);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: var(--brand-warm-gray);
-  --accent: oklch(0.97 0.001 106.424);
-  --accent-foreground: var(--brand-ink);
-  --destructive: var(--brand-error-700);
-  --border: oklch(0.15 0.005 50 / 15%);
-  --input: oklch(0.15 0.005 50 / 20%);
-  --ring: var(--brand-orange-500);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: var(--brand-cream);
-  --sidebar-foreground: var(--brand-ink);
-  --sidebar-primary: var(--brand-orange-500);
-  --sidebar-primary-foreground: var(--brand-cream);
-  --sidebar-accent: oklch(0.97 0.001 106.424);
-  --sidebar-accent-foreground: var(--brand-ink);
-  --sidebar-border: oklch(0.15 0.005 50 / 10%);
-  --sidebar-ring: var(--brand-orange-500);
+  --card-foreground: var(--brand-black);
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-black);
+  --primary: var(--brand-black);
+  --primary-foreground: var(--brand-white-soft);
+  --secondary: var(--brand-white-muted);
+  --secondary-foreground: var(--brand-black);
+  --muted: var(--brand-white-muted);
+  --muted-foreground: var(--brand-gray);
+  --accent: var(--brand-white-muted);
+  --accent-foreground: var(--brand-black);
+  --destructive: var(--brand-error-500);
+  --border: oklch(0.205 0 0 / 12%);
+  --input: oklch(0.205 0 0 / 16%);
+  --ring: var(--brand-black);
+  --chart-1: oklch(0.205 0 0);
+  --chart-2: oklch(0.35 0 0);
+  --chart-3: oklch(0.5 0 0);
+  --chart-4: oklch(0.7 0 0);
+  --chart-5: var(--brand-error-500);
+  --sidebar: var(--brand-white);
+  --sidebar-foreground: var(--brand-black);
+  --sidebar-primary: var(--brand-black);
+  --sidebar-primary-foreground: var(--brand-white-soft);
+  --sidebar-accent: var(--brand-white-muted);
+  --sidebar-accent-foreground: var(--brand-black);
+  --sidebar-border: oklch(0.205 0 0 / 10%);
+  --sidebar-ring: var(--brand-black);
 }
 
 @layer base {

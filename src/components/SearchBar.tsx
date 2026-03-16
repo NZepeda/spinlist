@@ -95,7 +95,7 @@ function SearchResults(props: SearchResultProps) {
                   <img
                     src={album.imageUrl}
                     alt={album.name}
-                    className="h-12 w-12 rounded-xl object-cover shadow-[0_14px_30px_oklch(0.15_0.005_50/14%)]"
+                    className="h-12 w-12 rounded-xl object-cover shadow-[0_14px_30px_var(--brand-shadow-soft)]"
                   />
                 ) : (
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/70 bg-background/70">
@@ -135,7 +135,7 @@ function SearchResults(props: SearchResultProps) {
                   <img
                     src={artist.imageUrl}
                     alt={artist.name}
-                    className="h-12 w-12 rounded-full object-cover shadow-[0_14px_30px_oklch(0.15_0.005_50/14%)]"
+                    className="h-12 w-12 rounded-full object-cover shadow-[0_14px_30px_var(--brand-shadow-soft)]"
                   />
                 ) : (
                   <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-background/70">
@@ -192,18 +192,18 @@ export function SearchBar(props: SearchBarProps) {
       <Command
         shouldFilter={false}
         className={cn(
-          "overflow-visible border shadow-[0_20px_40px_oklch(0.15_0.005_50/10%)]",
+          "relative overflow-visible border shadow-[0_20px_40px_var(--brand-shadow-soft)]",
           isHero
-            ? "rounded-[1.75rem] border-border/70 bg-surface/90 p-2 backdrop-blur"
-            : "rounded-xl bg-background/95",
+            ? "rounded-[1.75rem] border-border/70 bg-surface/95 p-2 backdrop-blur"
+            : "rounded-xl bg-surface-elevated/95",
         )}
       >
         <div
           className={cn(
             "flex w-full items-center gap-3",
             isHero
-              ? "rounded-[1.2rem] border border-border/70 bg-background/80 px-4 py-2"
-              : "border-b px-3 py-2",
+              ? "rounded-[1.2rem] border border-border/70 bg-background px-4 py-2"
+              : "border-b border-border/70 px-3 py-2",
           )}
         >
           <Search
@@ -221,7 +221,6 @@ export function SearchBar(props: SearchBarProps) {
                 searchValue.trim().length > 0 ||
                 viewState.kind === "results"
               ) {
-                console.log("Setting open to true. Current: ", open);
                 setOpen(true);
               }
             }}
@@ -239,7 +238,7 @@ export function SearchBar(props: SearchBarProps) {
         {open ? (
           <CommandList
             className={cn(
-              "absolute left-0 right-0 z-50 mt-2 overflow-y-auto border bg-background/95 shadow-[0_24px_60px_oklch(0.15_0.005_50/14%)] backdrop-blur",
+              "absolute top-full left-0 right-0 z-50 mt-2 overflow-y-auto border bg-surface-elevated/98 shadow-[0_24px_60px_var(--brand-shadow)] backdrop-blur",
               isHero
                 ? "max-h-[420px] rounded-[1.35rem] border-border/70"
                 : "max-h-[400px] rounded-xl border-border/80",

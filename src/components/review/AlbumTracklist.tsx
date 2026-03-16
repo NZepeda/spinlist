@@ -30,7 +30,7 @@ export function AlbumTracklist({
   const isInteractive = Boolean(onFavoriteTrackChange);
 
   return (
-    <section className="rounded-[2rem] border border-border/70 bg-surface/75 p-6 shadow-[0_20px_60px_oklch(0.15_0.005_50/10%)] backdrop-blur sm:p-8 lg:col-span-2">
+    <section className="rounded-[2rem] border border-border/70 bg-surface/95 p-6 shadow-[0_20px_60px_var(--brand-shadow-soft)] backdrop-blur sm:p-8 lg:col-span-2">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold">Tracklist</h2>
@@ -60,7 +60,7 @@ export function AlbumTracklist({
             "flex w-full items-center gap-4 rounded-xl p-3 transition-colors",
             isInteractive ? "hover:bg-background/70" : "bg-transparent",
             isSelected &&
-              "border border-brand/30 bg-brand/10 shadow-[0_12px_24px_oklch(0.62_0.175_47/10%)]",
+              "border border-foreground/15 bg-[var(--brand-tint-soft)] shadow-[0_12px_24px_var(--brand-shadow-soft)]",
           );
 
           if (isInteractive && onFavoriteTrackChange) {

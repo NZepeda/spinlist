@@ -251,6 +251,33 @@ describe("SearchBar", () => {
     expect(screen.getByText("Loading results...")).toBeInTheDocument();
   });
 
+  it("anchors the dropdown below the search input", async () => {
+    const user = userEvent.setup();
+
+    fetchMock.mockResolvedValue(createJsonResponse(createSearchResults()));
+
+    const { container } = render(<SearchBar variant="hero" />);
+
+    await typeSearchValue(
+      user,
+      "radiohead",
+      "Search for albums or artists...",
+    );
+    await waitForDebounce();
+
+    await waitFor(() => {
+      expect(screen.getByText("Albums")).toBeInTheDocument();
+    });
+
+    const commandRoot = container.querySelector("[data-slot='command']");
+    const commandList = container.querySelector("[data-slot='command-list']");
+
+    expect(commandRoot).not.toBeNull();
+    expect(commandList).not.toBeNull();
+    expect(commandRoot).toHaveClass("relative");
+    expect(commandList).toHaveClass("top-full");
+  });
+
   it("navigates to the selected result when slug lookup succeeds", async () => {
     const user = userEvent.setup();
 

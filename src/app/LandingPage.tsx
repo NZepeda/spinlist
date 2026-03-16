@@ -58,9 +58,9 @@ export const LandingPage = () => {
       <main className="relative overflow-hidden bg-background text-foreground">
         {/* Translucent orb in the background */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background-warm to-background" />
-        <div className="absolute -top-32 left-10 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle_at_top,_oklch(0.62_0.175_47/20%),_oklch(0.62_0.175_47/0%))] blur-2xl" />
-        <div className="absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_top,_oklch(0.62_0.175_47/16%),_oklch(0.62_0.175_47/0%))] blur-2xl" />
-        <div className="absolute bottom-0 left-0 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,_oklch(0.62_0.175_47/12%),_oklch(0.62_0.175_47/0%))] blur-3xl" />
+        <div className="absolute -top-32 left-10 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-strong),transparent)] blur-2xl" />
+        <div className="absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-2xl" />
+        <div className="absolute bottom-0 left-0 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl" />
 
         <section className="relative mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center px-6 pb-8 pt-20 md:pt-28">
           <div className="grid items-center gap-12 md:grid-cols-[minmax(0,1fr)_320px]">
@@ -125,11 +125,11 @@ export const LandingPage = () => {
 
             {/** Vinyl record  */}
             <div className="relative mx-auto hidden h-[320px] w-[320px] items-center justify-center md:flex">
-              <div className="relative h-[260px] w-[260px] rounded-full border border-foreground/20 bg-foreground shadow-[0_24px_60px_oklch(0.15_0.005_50/25%)]">
+              <div className="relative h-[260px] w-[260px] rounded-full border border-foreground/20 bg-foreground shadow-[0_24px_60px_var(--brand-shadow-strong)]">
                 <div className="absolute inset-6 rounded-full border border-background/10" />
                 <div className="absolute inset-12 rounded-full border border-background/10" />
                 <div className="absolute inset-20 rounded-full border border-background/10" />
-                <div className="absolute inset-[88px] rounded-full bg-brand shadow-[0_6px_20px_oklch(0.62_0.175_47/35%)]" />
+                <div className="absolute inset-[88px] rounded-full bg-brand shadow-[0_6px_20px_var(--brand-shadow)]" />
                 <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
               </div>
             </div>
@@ -159,7 +159,7 @@ export const LandingPage = () => {
           ].map((feature) => (
             <div
               key={feature.title}
-              className="rounded-2xl border border-border bg-surface p-6 text-foreground shadow-[0_20px_60px_oklch(0.15_0.005_50/12%)] backdrop-blur"
+              className="rounded-2xl border border-border bg-surface p-6 text-foreground shadow-[0_20px_50px_var(--brand-shadow-soft)] backdrop-blur"
             >
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-lg">
@@ -193,7 +193,7 @@ export const LandingPage = () => {
             ].map((step, index) => (
               <div
                 key={step}
-                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-6"
+                className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-6 shadow-[0_16px_40px_var(--brand-shadow-soft)]"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-full border border-input text-sm font-semibold text-brand">
                   0{index + 1}
@@ -205,7 +205,7 @@ export const LandingPage = () => {
         </section>
 
         <section className="relative mx-auto max-w-6xl px-6 pb-28">
-          <div className="rounded-3xl border border-input bg-gradient-to-br from-brand/20 via-surface-elevated to-background p-10 text-foreground">
+          <div className="rounded-3xl border border-input bg-gradient-to-br from-secondary via-surface-elevated to-background p-10 text-foreground shadow-[0_24px_60px_var(--brand-shadow-soft)]">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 className="text-3xl font-black">

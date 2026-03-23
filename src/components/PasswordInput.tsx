@@ -6,39 +6,41 @@ import { Input } from "./ui-core/input";
 
 interface PasswordInputProps {
   className?: string;
+  defaultValue?: string;
   error?: string;
+  id: string;
   isLoading?: boolean;
   label: string;
-  password: string;
-  onPasswordChange: (updatedPassword: string) => void;
+  name: string;
 }
 
 /**
  * Renders an input field for passwords.
- * Allows the user to toggle the visibility of the password from obscured to visible.
+ * Supports password form fields that submit native input values while preserving a local visibility toggle for the current field.
  */
 export const PasswordInput = ({
   className,
+  defaultValue,
   error,
+  id,
   isLoading,
   label,
-  password,
-  onPasswordChange,
+  name,
 }: PasswordInputProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
     <div className={className}>
-      <label htmlFor="password" className="text-sm font-medium">
+      <label htmlFor={id} className="text-sm font-medium">
         {label}
       </label>
       <div className="relative">
         <Input
-          id={`password-${label}`}
+          defaultValue={defaultValue}
+          id={id}
+          name={name}
           type={isVisible ? "text" : "password"}
           placeholder="••••••••"
-          value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
           aria-invalid={Boolean(error)}
           disabled={isLoading}
           required

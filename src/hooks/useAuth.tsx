@@ -5,10 +5,12 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useState,
   ReactNode,
 } from "react";
 import { User } from "@supabase/supabase-js";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { logoutAction } from "@/app/actions/logoutAction";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types";
 import { mapProfileRowToProfile } from "@/lib/mappers/db/mapProfileRowToProfile";
@@ -26,6 +28,12 @@ interface AuthContextState {
   profile: Profile | null;
   isLoading: boolean;
   logout: () => Promise<void>;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+  initialProfile?: Profile | null;
+  initialUser?: User | null;
 }
 
 const AuthContext = createContext<AuthContextState | undefined>(undefined);
@@ -49,12 +57,34 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
  * Auth provider that manages user authentication state.
  * Listens to Supabase auth state changes and automatically fetches the user profile data.
  */
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({
+  children,
+  initialProfile = null,
+  initialUser = null,
+}: AuthProviderProps) {
   const [state, dispatch] = useReducer(authReducer, {
-    user: null,
+    user: initialUser,
   });
+  const [supabase] = useState(() => createClient());
+  const queryClient = useQueryClient();
+  const initialUserId = initialUser?.id ?? null;
 
-  const supabase = createClient();
+  useEffect(() => {
+    if (initialUserId) {
+      // Keep the bootstrap profile in the React Query cache so the initial
+      // authenticated render does not immediately refetch the same record.
+      queryClient.setQueryData(["profile", initialUserId], initialProfile);
+    }
+  }, [initialProfile, initialUserId, queryClient]);
+
+  useEffect(() => {
+    if (initialUser) {
+      dispatch({ type: "SET_USER", payload: initialUser });
+      return;
+    }
+
+    dispatch({ type: "CLEAR_AUTH" });
+  }, [initialUser]);
 
   const profileQuery = useQuery<Profile | null>({
     queryKey: ["profile", state.user?.id],
@@ -79,6 +109,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return mapProfileRowToProfile(data);
     },
     enabled: Boolean(state.user),
+    initialData:
+      state.user?.id && state.user.id === initialUserId
+        ? initialProfile
+        : undefined,
     staleTime: 15 * 60 * 1000, // 15 minutes
     refetchOnWindowFocus: true,
   });
@@ -125,16 +159,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      dispatch({ type: "CLEAR_AUTH" });
+      await logoutAction();
     } catch (error) {
       console.error("Error signing out:", error);
       throw error;
     }
   };
 
-  const isLoading = Boolean(state.user) && profileQuery.isLoading;
+  const isLoading =
+    Boolean(state.user) &&
+    profileQuery.isLoading &&
+    typeof profileQuery.data === "undefined";
 
   const contextValue: AuthContextState = {
     user: state.user,

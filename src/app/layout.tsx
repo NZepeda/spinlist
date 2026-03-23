@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@/components/contexts/QueryClientProvider";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/Navbar";
+import { getInitialAuthState } from "@/lib/auth/getInitialAuthState";
 
 export { metadata } from "./metadata";
 
@@ -13,16 +14,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const initialAuthState = await getInitialAuthState();
+
   return (
     <html lang="en">
       <body className={`${satoshi.variable} ${geistMono.variable} antialiased`}>
         <QueryClientProvider>
-          <AuthProvider>
+          <AuthProvider
+            initialProfile={initialAuthState.profile}
+            initialUser={initialAuthState.user}
+          >
             <Navbar />
             {children}
           </AuthProvider>

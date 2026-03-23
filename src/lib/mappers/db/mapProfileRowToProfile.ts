@@ -2,7 +2,7 @@ import type { ProfileRow } from "@/lib/types/db";
 import type { Profile } from "@/lib/types/domain/profile";
 
 /**
- * Maps a database profile row into the canonical profile model.
+ * Maps a database profile row into the application profile model.
  */
 export function mapProfileRowToProfile(profile: ProfileRow): Profile {
   return {

@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION "public"."handle_new_user"() ...
 ### 2. Generate Migration
 
 ```bash
-pnpx supabase db diff -f descriptive_name
+pnpm exec supabase db diff -f descriptive_name
 ```
 
 This compares your schema file against the current database and generates a migration in `supabase/migrations/`.
@@ -59,15 +59,15 @@ This compares your schema file against the current database and generates a migr
 
 ```bash
 # Apply locally
-pnpx supabase db reset
+pnpm exec supabase db reset
 
 # Push to remote
-pnpx supabase db push
+pnpm exec supabase db push
 ```
 
 ## When to Use Manual Migrations
 
-The diff tool can't handle everything. Use `pnpx supabase migration new name` for:
+The diff tool can't handle everything. Use `pnpm exec supabase migration new name` for:
 - Data operations (INSERT, UPDATE, DELETE)
 - RLS policy changes
 - Materialized views
@@ -75,10 +75,10 @@ The diff tool can't handle everything. Use `pnpx supabase migration new name` fo
 After manual migrations, regenerate all schema files:
 ```bash
 # Dump the current schema
-pnpx supabase db dump --local -f supabase/schemas/temp.sql
+pnpm exec supabase db dump --local -f supabase/schemas/temp.sql
 
 # Then manually split it back into the organized files, or just run:
-pnpx supabase db dump --local -f supabase/schemas/schema.sql
+pnpm exec supabase db dump --local -f supabase/schemas/schema.sql
 # And split it yourself
 ```
 
@@ -86,19 +86,19 @@ pnpx supabase db dump --local -f supabase/schemas/schema.sql
 
 ```bash
 # Start local Supabase
-pnpx supabase start
+pnpm exec supabase start
 
 # View local dashboard
 http://127.0.0.1:54323
 
 # Generate migration from schema changes
-pnpx supabase db diff -f migration_name
+pnpm exec supabase db diff -f migration_name
 
 # Apply all migrations locally
-pnpx supabase db reset
+pnpm exec supabase db reset
 
 # Push to remote
-pnpx supabase db push
+pnpm exec supabase db push
 ```
 
 ## Learn More

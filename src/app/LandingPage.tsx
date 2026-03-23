@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { validate as validateEmail } from "email-validator";
 import { Button } from "@/components/ui-core/button";
 import { Input } from "@/components/ui-core/input";
 import { LandingHeader, LandingFooter } from "@/components/landing";
 import { joinWaitlist } from "@/lib/actions/joinWaitlist";
+import { validateWaitlistEmail } from "@/lib/waitlist/validateWaitlistEmail";
 
 type FormStatus = "idle" | "success" | "error";
 
@@ -28,17 +28,17 @@ export const LandingPage = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const trimmedEmail = email.trim();
+    const validatedEmail = validateWaitlistEmail(email);
 
-    if (!validateEmail(trimmedEmail)) {
-      setEmailError("Please enter a valid email address.");
+    if (!validatedEmail.success) {
+      setEmailError(validatedEmail.error);
       return;
     }
 
     setEmailError(null);
 
     startTransition(async () => {
-      const result = await joinWaitlist(trimmedEmail);
+      const result = await joinWaitlist(validatedEmail.email);
 
       if (result.success) {
         setFormStatus("success");

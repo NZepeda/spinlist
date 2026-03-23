@@ -23,7 +23,7 @@ pnpm install
 ### Start local services
 
 ```bash
-pnpx supabase start
+pnpm exec supabase start
 ```
 
 Create `.env.local` with the local Supabase values from the CLI output and your Spotify app credentials:
@@ -39,7 +39,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 Apply the local schema and start the app:
 
 ```bash
-pnpx supabase db reset
+pnpm exec supabase db reset
 pnpm dev
 ```
 

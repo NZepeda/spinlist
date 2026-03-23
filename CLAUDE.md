@@ -45,11 +45,11 @@ Use this file as a high-priority repository guide for AI agents working in this 
 
 ## Supabase Expectations
 
-- Always run Supabase CLI commands through `pnpx supabase`.
-- Never make schema changes directly in Supabase Studio without immediately running `pnpx supabase db diff` to capture them.
+- Always run Supabase CLI commands through `pnpm exec supabase`.
+- Never make schema changes directly in Supabase Studio without immediately running `pnpm exec supabase db diff` to capture them.
 - Never manually edit migration files after they have been pushed to the remote project.
-- Always run `pnpx supabase db diff` before committing to confirm there are no uncommitted schema changes.
-- If `pnpx supabase db diff` outputs anything unexpected, investigate before proceeding.
+- Always run `pnpm exec supabase db diff` before committing to confirm there are no uncommitted schema changes.
+- If `pnpm exec supabase db diff` outputs anything unexpected, investigate before proceeding.
 
 ## Supabase Database Workflow
 
@@ -60,25 +60,25 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 3. Generate a migration from the declarative diff:
 
    ```bash
-   pnpx supabase db diff -f descriptive_migration_name
+   pnpm exec supabase db diff -f descriptive_migration_name
    ```
 
 4. Verify the migration locally:
 
    ```bash
-   pnpx supabase db reset
+   pnpm exec supabase db reset
    ```
 
 5. Preview the remote push:
 
    ```bash
-   pnpx supabase db push --dry-run
+   pnpm exec supabase db push --dry-run
    ```
 
 6. Apply the remote push:
 
    ```bash
-   pnpx supabase db push
+   pnpm exec supabase db push
    ```
 
 ## Next.js Expectations

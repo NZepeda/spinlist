@@ -1,7 +1,7 @@
 "use server";
 
-import { validate as validateEmail } from "email-validator";
 import { createClient } from "@/lib/supabase/server";
+import { validateWaitlistEmail } from "@/lib/waitlist/validateWaitlistEmail";
 
 interface JoinWaitlistResult {
   success: boolean;
@@ -16,20 +16,16 @@ interface JoinWaitlistResult {
  * @returns Object indicating success or failure with optional error message
  */
 export async function joinWaitlist(email: string): Promise<JoinWaitlistResult> {
-  const trimmedEmail = email.trim().toLowerCase();
+  const validatedEmail = validateWaitlistEmail(email);
 
-  if (!trimmedEmail) {
-    return { success: false, error: "Email is required." };
-  }
-
-  if (!validateEmail(trimmedEmail)) {
-    return { success: false, error: "Please enter a valid email address." };
+  if (!validatedEmail.success) {
+    return { success: false, error: validatedEmail.error };
   }
 
   const supabase = await createClient();
 
   const { error } = await supabase.from("waitlist").insert({
-    email: trimmedEmail,
+    email: validatedEmail.email,
   });
 
   if (error) {

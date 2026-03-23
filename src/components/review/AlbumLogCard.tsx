@@ -43,7 +43,7 @@ export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
   }
 
   return (
-    <div className="flex w-full flex-col rounded-md border border-border/70 bg-card shadow-[0_18px_50px_var(--brand-shadow-soft)] lg:max-w-md">
+    <div className="flex w-full flex-col rounded-[1.5rem] border border-border/70 bg-card shadow-[0_18px_50px_var(--brand-shadow-soft)] lg:max-w-md">
       <div className="w-full border-b border-border/70 p-4">
         <div className="text-sm font-medium text-center">
           {rating ? "Your rating" : "Rate"}
@@ -71,7 +71,7 @@ export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
             {favoriteTrack ? (
               <button
                 type="button"
-                className="mt-2 text-xs font-medium text-brand hover:text-brand-hover"
+                className="mt-2 min-h-10 text-xs font-medium text-brand hover:text-brand-hover"
                 onClick={() => {
                   setFavoriteTrackId("");
                 }}
@@ -114,7 +114,7 @@ export function AlbumLogCard({ album, reviewForm }: AlbumLogCardProps) {
       </div>
       <Button
         variant={isDirty ? "brand" : "ghost"}
-        className="w-full rounded-none text-sm"
+        className="w-full rounded-t-none rounded-b-[1.5rem] text-sm"
         disabled={!isDirty || isLoading}
         onClick={handleSubmit}
       >

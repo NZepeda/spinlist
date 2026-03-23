@@ -38,6 +38,20 @@
   --font-mono: var(--font-geist-mono);
 
   /* ==========================================================================
+     Layout Tokens
+     ========================================================================== */
+  --spacing-page-gutter: var(--page-gutter);
+  --spacing-section: var(--section-spacing);
+  --spacing-surface: var(--surface-padding);
+  --spacing-surface-lg: var(--surface-padding-lg);
+  --spacing-touch-target: var(--touch-target);
+  --spacing-header-height: var(--header-height);
+  --spacing-safe-top: var(--safe-top);
+  --spacing-safe-bottom: var(--safe-bottom);
+  --spacing-safe-left: var(--safe-left);
+  --spacing-safe-right: var(--safe-right);
+
+  /* ==========================================================================
      Border Radius
      ========================================================================== */
   --radius-sm: calc(var(--radius) - 4px);
@@ -84,6 +98,16 @@
 
 :root {
   --radius: 0.625rem;
+  --page-gutter: 1rem;
+  --section-spacing: clamp(3.5rem, 7vw, 5.5rem);
+  --surface-padding: 1rem;
+  --surface-padding-lg: 1.5rem;
+  --touch-target: 2.75rem;
+  --header-height: 4rem;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
 
   /* ==========================================================================
      Brand Primitives (raw OKLCH values)
@@ -166,10 +190,57 @@
 }
 
 @layer base {
+  html {
+    min-height: 100%;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    min-height: 100dvh;
+  }
+}
+
+@layer components {
+  /**
+   * Shared horizontal container used by primary application surfaces.
+   */
+  .app-shell {
+    margin-inline: auto;
+    width: min(100%, 80rem);
+    padding-left: calc(var(--page-gutter) + var(--safe-left));
+    padding-right: calc(var(--page-gutter) + var(--safe-right));
+  }
+
+  /**
+   * Shared vertical rhythm for full-page sections.
+   */
+  .app-section {
+    padding-block: var(--section-spacing);
+  }
+
+  /**
+   * Shared card padding for mobile-first surfaces.
+   */
+  .app-surface {
+    padding: var(--surface-padding);
+  }
+
+  /**
+   * Shared helper for sticky bottom safe-area spacing.
+   */
+  .safe-bottom-padding {
+    padding-bottom: calc(var(--surface-padding) + var(--safe-bottom));
+  }
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --page-gutter: 1.5rem;
+    --surface-padding: 1.25rem;
+    --surface-padding-lg: 2rem;
   }
 }

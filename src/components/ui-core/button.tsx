@@ -24,10 +24,10 @@ const buttonVariants = cva(
           "bg-brand text-brand-foreground shadow-[0_12px_30px_var(--brand-shadow)] hover:bg-brand-hover",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        default: "min-h-11 px-4 py-2.5 md:min-h-10 has-[>svg]:px-3",
+        sm: "min-h-10 rounded-md gap-1.5 px-3 py-2 md:min-h-8 has-[>svg]:px-2.5",
+        lg: "min-h-12 rounded-md px-6 py-3 text-base md:min-h-11 md:text-sm has-[>svg]:px-4",
+        icon: "size-11 md:size-10",
       },
     },
     defaultVariants: {

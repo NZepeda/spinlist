@@ -22,17 +22,14 @@ export default function Home() {
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-foreground-muted">
             Search for any album or artist, jump straight into the discography,
-            and start building a listening journal you actually want to revisit.
+            and start building your listening journal.
           </p>
           <div className="mt-8">
             <SearchBar
-              placeholder="Search for an album, artist, or obsession..."
+              placeholder="Search for an album or artist"
               variant="hero"
             />
           </div>
-          <p className="mt-4 text-sm text-foreground-muted">
-            Search for the record already on your mind and start logging.
-          </p>
         </div>
 
         <div className="relative mx-auto hidden h-[320px] w-[320px] items-center justify-center md:flex">

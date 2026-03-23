@@ -5,28 +5,28 @@ import { SearchBar } from "@/components/SearchBar";
  */
 export default function Home() {
   return (
-    <main className="relative overflow-hidden bg-background text-foreground">
+    <main className="relative flex-grow overflow-hidden bg-background text-foreground">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background-warm to-background" />
-      <div className="absolute -top-32 left-10 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-strong),transparent)] blur-2xl" />
-      <div className="absolute -top-20 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-2xl" />
-      <div className="absolute bottom-0 left-0 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl" />
+      <div className="absolute -top-24 left-0 h-[280px] w-[280px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-strong),transparent)] blur-2xl md:left-10 md:h-[380px] md:w-[380px]" />
+      <div className="absolute -top-12 right-0 h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-2xl md:-top-20 md:h-[420px] md:w-[420px]" />
+      <div className="absolute bottom-0 left-0 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl md:h-[520px] md:w-[520px]" />
 
-      <section className="relative mx-auto grid max-w-6xl gap-12 px-6 pb-24 pt-18 md:min-h-[calc(100vh-5rem)] md:grid-cols-[minmax(0,1.15fr)_320px] md:items-center md:pt-24">
+      <section className="app-shell app-section relative grid gap-10 py-10 md:min-h-[calc(100dvh-var(--header-height))] md:grid-cols-[minmax(0,1.15fr)_320px] md:items-center md:py-16">
         <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-foreground-muted">
-            Your music, remembered
+          <p className="text-sm uppercase tracking-[0.24em] text-foreground-muted">
+            Search first
           </p>
-          <h1 className="mt-4 text-4xl font-black tracking-tight text-foreground sm:text-6xl">
+          <h1 className="mt-4 text-[2.5rem] font-black tracking-tight text-foreground sm:text-6xl">
             Find the album.
             <span className="block text-brand">Log the feeling.</span>
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-foreground-muted">
+          <p className="mt-5 max-w-2xl text-base text-foreground-muted md:text-lg">
             Search for any album or artist, jump straight into the discography,
             and start building your listening journal.
           </p>
-          <div className="mt-8">
+          <div className="mt-7">
             <SearchBar
-              placeholder="Search for an album or artist"
+              placeholder="Search for an album, artist, or obsession..."
               variant="hero"
             />
           </div>

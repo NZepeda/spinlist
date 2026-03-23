@@ -155,7 +155,7 @@ export function StarRating({
               type="button"
               onClick={() => handleClick(starValue)}
               onMouseMove={(e) => handleMouseMove(e, starValue)}
-              className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm max-h-[32px]"
+              className="cursor-pointer rounded-md p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               aria-label={`Rate ${starValue} star${starValue !== 1 ? "s" : ""}`}
               aria-pressed={starValue <= value}
             >

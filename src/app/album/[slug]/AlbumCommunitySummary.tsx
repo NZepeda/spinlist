@@ -31,7 +31,7 @@ function AlbumCommunitySummaryContent({
   return (
     <section
       aria-label="Community summary"
-      className="rounded-2xl border border-border/70 bg-card/95 p-4 shadow-[0_18px_40px_var(--brand-shadow-soft)]"
+      className="rounded-[1.75rem] border border-border/70 bg-card/95 p-4 shadow-[0_18px_40px_var(--brand-shadow-soft)] md:p-5"
     >
       <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -41,7 +41,7 @@ function AlbumCommunitySummaryContent({
             showing up as the standout.
           </p>
         </div>
-        <div className="grid min-w-[12rem] grid-cols-2 gap-3 text-sm">
+        <div className="grid w-full grid-cols-2 gap-3 text-sm sm:w-auto sm:min-w-[12rem]">
           <div className="rounded-xl border border-border/70 bg-background p-3">
             <div className="text-muted-foreground">Average</div>
             <div className="mt-1 text-2xl font-semibold">
@@ -113,7 +113,7 @@ export function AlbumCommunitySummary({
                 return (
                   <div
                     key={bucket.rating}
-                    className="grid grid-cols-[3rem_minmax(0,1fr)_2rem] items-center gap-3 text-sm"
+                    className="grid grid-cols-[3rem_minmax(0,1fr)_2rem] items-center gap-2 text-sm sm:gap-3"
                   >
                     <span className="text-muted-foreground">
                       {bucket.rating.toFixed(1)}
@@ -150,9 +150,11 @@ export function AlbumCommunitySummary({
                 {summary.favoriteTracks.slice(0, 3).map((track) => (
                   <div
                     key={track.trackId}
-                    className="flex items-center justify-between text-sm"
+                    className="flex items-center justify-between gap-3 text-sm"
                   >
-                    <span className="text-foreground">{track.trackName}</span>
+                    <span className="min-w-0 flex-1 text-foreground">
+                      {track.trackName}
+                    </span>
                     <span className="text-muted-foreground">
                       {track.count} picks
                     </span>

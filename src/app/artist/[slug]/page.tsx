@@ -31,22 +31,22 @@ export default async function ArtistPage({
   const albums = await getArtistAlbumsFromSpotify(spotifyId);
 
   return (
-    <main className="container mx-auto px-4 py-8">
+    <main className="app-shell py-8 md:py-12">
       {/* Artist Header */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 mb-12">
+      <div className="mb-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         {artist.image ? (
           <img
             src={artist.image}
             alt={artist.name}
-            className="w-48 h-48 rounded-full object-cover shadow-lg"
+            className="h-32 w-32 rounded-full object-cover shadow-lg sm:h-40 sm:w-40 md:h-48 md:w-48"
           />
         ) : (
-          <div className="w-48 h-48 rounded-full bg-muted flex items-center justify-center">
+          <div className="flex h-32 w-32 items-center justify-center rounded-full bg-muted sm:h-40 sm:w-40 md:h-48 md:w-48">
             <span className="text-muted-foreground text-lg">No Image</span>
           </div>
         )}
-        <div className="text-center sm:text-left">
-          <h1 className="text-4xl font-bold">{artist.name}</h1>
+        <div className="text-left">
+          <h1 className="text-3xl font-bold sm:text-4xl">{artist.name}</h1>
           <p className="text-muted-foreground mt-2">
             {albums.length} {albums.length === 1 ? "release" : "releases"}
           </p>

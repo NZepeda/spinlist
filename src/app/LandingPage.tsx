@@ -62,17 +62,17 @@ export const LandingPage = () => {
         <div className="absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-2xl" />
         <div className="absolute bottom-0 left-0 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl" />
 
-        <section className="relative mx-auto flex min-h-[80vh] max-w-6xl flex-col justify-center px-6 pb-8 pt-20 md:pt-28">
+        <section className="app-shell relative flex min-h-[75vh] flex-col justify-center py-12 md:min-h-[80vh] md:pt-28">
           <div className="grid items-center gap-12 md:grid-cols-[minmax(0,1fr)_320px]">
             <div className="max-w-3xl">
               <p className="text-sm uppercase tracking-[0.3em] text-foreground-muted">
                 Your music, remembered
               </p>
-              <h1 className="mt-4 text-4xl font-black tracking-tight text-foreground sm:text-6xl">
+              <h1 className="mt-4 text-[2.5rem] font-black tracking-tight text-foreground sm:text-6xl">
                 <span className="text-brand">Spinlist</span> is the home for
                 obsessive listeners and intentional reviews.
               </h1>
-              <p className="mt-6 text-lg text-foreground-muted">
+              <p className="mt-6 text-base text-foreground-muted md:text-lg">
                 Spinlist turns every album into a story worth sharing. Build a
                 living shelf of your listens, share your favorites, and discover
                 what's resonating with music lovers everywhere.
@@ -85,10 +85,10 @@ export const LandingPage = () => {
                 </div>
               ) : (
                 <form
-                  className="mt-8 flex flex-wrap items-start gap-4"
+                  className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-start"
                   onSubmit={handleSubmit}
                 >
-                  <div className="min-w-[240px] flex-1">
+                  <div className="w-full flex-1">
                     <Input
                       type="email"
                       placeholder="you@example.com"
@@ -102,7 +102,7 @@ export const LandingPage = () => {
                         }
                       }}
                       aria-invalid={Boolean(emailError)}
-                      className="h-11 rounded-full border-input bg-surface-elevated text-foreground placeholder:text-foreground-muted disabled:opacity-50"
+                      className="rounded-full border-input bg-surface-elevated text-foreground placeholder:text-foreground-muted disabled:opacity-50"
                     />
                     {emailError && (
                       <p className="mt-2 text-xs text-error">
@@ -115,7 +115,7 @@ export const LandingPage = () => {
                     size="lg"
                     type="submit"
                     disabled={isPending}
-                    className="h-11 rounded-full disabled:opacity-50"
+                    className="w-full rounded-full disabled:opacity-50 sm:w-auto"
                   >
                     {isPending ? "Joining..." : "Join the waitlist"}
                   </Button>
@@ -138,7 +138,7 @@ export const LandingPage = () => {
 
         <section
           id="features"
-          className="relative mx-auto grid max-w-6xl gap-6 px-6 pb-20 pt-6 md:grid-cols-3"
+          className="app-shell relative grid gap-6 py-6 pb-20 md:grid-cols-3"
         >
           {[
             {
@@ -172,7 +172,7 @@ export const LandingPage = () => {
           ))}
         </section>
 
-        <section className="relative mx-auto flex max-w-6xl flex-col gap-8 px-6 pb-24 md:flex-row md:items-center">
+        <section className="app-shell relative flex flex-col gap-8 pb-24 md:flex-row md:items-center">
           <div className="flex-1 rounded-3xl border border-border bg-surface-elevated p-8 text-foreground">
             <p className="text-sm uppercase tracking-[0.2em] text-foreground-muted">
               How it works
@@ -204,7 +204,7 @@ export const LandingPage = () => {
           </div>
         </section>
 
-        <section className="relative mx-auto max-w-6xl px-6 pb-28">
+        <section className="app-shell relative pb-28">
           <div className="rounded-3xl border border-input bg-gradient-to-br from-secondary via-surface-elevated to-background p-10 text-foreground shadow-[0_24px_60px_var(--brand-shadow-soft)]">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               <div>
@@ -219,7 +219,7 @@ export const LandingPage = () => {
               <Button
                 size="lg"
                 type="button"
-                className="bg-foreground text-background hover:bg-foreground/90"
+                className="w-full bg-foreground text-background hover:bg-foreground/90 sm:w-auto"
                 onClick={scrollToEmailInput}
               >
                 Join the waitlist

@@ -105,6 +105,14 @@ describe("SearchBar", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("renders the mobile sheet prompt before the user starts searching", () => {
+    render(<SearchBar variant="sheet" />);
+
+    expect(
+      screen.getByText("Search for an album or artist to open the results list."),
+    ).toBeInTheDocument();
+  });
+
   it("shows a waiting state before the debounce completes", async () => {
     const user = userEvent.setup();
 
@@ -338,5 +346,40 @@ describe("SearchBar", () => {
     });
 
     expect(pushMock).not.toHaveBeenCalled();
+  });
+
+  it("runs the completion callback after a successful sheet selection", async () => {
+    const user = userEvent.setup();
+    const onSelectionComplete = vi.fn();
+
+    fetchMock.mockImplementation((input) => {
+      const url = getRequestUrl(input);
+
+      if (url.startsWith("/api/search")) {
+        return Promise.resolve(createJsonResponse(createSearchResults()));
+      }
+
+      if (url.startsWith("/api/slug")) {
+        return Promise.resolve(createJsonResponse({ slug: "kid-a" }));
+      }
+
+      throw new Error(`Unexpected fetch request: ${url}`);
+    });
+
+    render(
+      <SearchBar
+        onSelectionComplete={onSelectionComplete}
+        placeholder="Search for an album or artist"
+        variant="sheet"
+      />,
+    );
+
+    await typeSearchValue(user, "kid a", "Search for an album or artist");
+    await waitForDebounce();
+    await user.click(await screen.findByText("Kid A"));
+
+    await waitFor(() => {
+      expect(onSelectionComplete).toHaveBeenCalledTimes(1);
+    });
   });
 });

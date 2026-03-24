@@ -60,11 +60,11 @@ function LoggedInDesktopNavMenu({
 function LoggedOutDesktopNavMenu() {
   return (
     <div className="hidden md:flex items-center space-x-2">
-      <Button variant="ghost" size="sm">
-        <Link href={"/login"}>Log in</Link>
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/login">Log in</Link>
       </Button>
-      <Button size="sm">
-        <Link href={"/signup"}>Sign up</Link>
+      <Button size="sm" asChild>
+        <Link href="/signup">Sign up</Link>
       </Button>
     </div>
   );

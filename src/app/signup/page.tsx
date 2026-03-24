@@ -6,7 +6,7 @@ import { SignUpForm } from "./SignUpForm";
  */
 export default function SignUpPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <div className="app-shell flex min-h-[calc(100dvh-var(--header-height))] justify-center py-8 md:py-14">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Create an account</h1>

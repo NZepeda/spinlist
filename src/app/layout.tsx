@@ -23,7 +23,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${satoshi.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${satoshi.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+      >
         <QueryClientProvider>
           <AuthProvider
             initialProfile={initialAuthState.profile}

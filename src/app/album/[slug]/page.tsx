@@ -34,14 +34,14 @@ export default async function AlbumPage({
   return (
     <main className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background-warm to-background" />
-      <div className="absolute -top-24 left-10 h-[340px] w-[340px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-3xl" />
-      <div className="absolute right-0 top-20 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl" />
+      <div className="absolute -top-18 left-0 h-[260px] w-[260px] rounded-full bg-[radial-gradient(circle_at_top,var(--brand-aura-medium),transparent)] blur-3xl md:left-10 md:h-[340px] md:w-[340px]" />
+      <div className="absolute right-0 top-12 h-[320px] w-[320px] rounded-full bg-[radial-gradient(circle_at_center,var(--brand-aura-soft),transparent)] blur-3xl md:top-20 md:h-[420px] md:w-[420px]" />
 
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
+      <div className="app-shell relative py-8 md:py-12">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(280px,26rem)_minmax(0,1fr)] lg:items-start">
           <div className="relative self-start">
             <div className="absolute -inset-4 rounded-[2.5rem] bg-[radial-gradient(circle_at_top,var(--brand-aura-subtle),transparent)] blur-2xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-surface/95 p-3 shadow-[0_24px_64px_var(--brand-shadow-soft)] backdrop-blur">
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-border/70 bg-surface/95 p-3 shadow-[0_24px_64px_var(--brand-shadow-soft)] backdrop-blur md:rounded-[2rem]">
               {imageUrl ? (
                 <img
                   src={imageUrl}

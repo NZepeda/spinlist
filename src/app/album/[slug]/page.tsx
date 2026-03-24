@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
 
-import { getImageUrl } from "@/lib/spotify/getImageUrl";
-import { getAlbum } from "@/lib/getAlbum";
-import { getAlbumCommunitySummary } from "@/lib/getAlbumCommunitySummary";
-import { getAlbumReviewFeed } from "@/lib/getAlbumReviewFeed";
-import { ReviewsFeed } from "@/components/review/ReviewsFeed";
-import { AlbumReviewFlow } from "./AlbumReviewFlow";
+import { getImageUrl } from "@/server/spotify/getImageUrl";
+import { getAlbum } from "@/features/albums/server/getAlbum";
+import { getAlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
+import { getAlbumReviewFeed } from "@/features/reviews/server/getAlbumReviewFeed";
+import { AlbumReviewFlow } from "@/features/reviews/components/AlbumReviewFlow";
+import { ReviewsFeed } from "@/features/reviews/components/ReviewsFeed";
 
 /**
  * Album page displaying information about the Album.

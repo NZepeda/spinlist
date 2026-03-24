@@ -4,9 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getSpotifyToken } from "@/lib/getSpotifyToken";
-import type { SpotifySearchResponse } from "@/lib/types/api/spotify";
-import { mapSpotifySearchResponseToSearchResponseDTO } from "@/lib/mappers/spotify/mapSpotifySearchResponseToSearchResponseDto";
+import { getSpotifyToken } from "@/server/spotify/getSpotifyToken";
+import type { SpotifySearchResponse } from "@/server/spotify/types";
+import { mapSpotifySearchResponseToSearchResponseDTO } from "@/server/spotify/mapSpotifySearchResponseToSearchResponseDto";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

@@ -1,5 +1,5 @@
 import type { Instrumentation } from "next";
-import { logServerError } from "@/lib/logging/serverLogger";
+import { logServerError } from "@/server/logging/serverLogger";
 
 /**
  * Captures uncaught server-side request failures so production logs still record

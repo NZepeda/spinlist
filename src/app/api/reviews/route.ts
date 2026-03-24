@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { mapAlbumRowToAlbum } from "@/lib/mappers/db/mapAlbumRowToAlbum";
-import { createClient } from "@/lib/supabase/server";
-import type { AlbumRow } from "@/lib/types/db";
+import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
+import { createClient } from "@/server/supabase/server";
+import type { AlbumRow } from "@/server/database";
 
 interface ReviewRequestBody {
   albumId: string;
@@ -230,6 +230,57 @@ export async function POST(request: Request) {
     const response: ReviewErrorResponse = {
       code: "SAVE_FAILED",
       message: "The review could not be saved.",
+    };
+
+    return NextResponse.json(response, { status: 500 });
+  }
+
+  const successResponse: ReviewSuccessResponse = { ok: true };
+
+  return NextResponse.json(successResponse, { status: 200 });
+}
+
+/**
+ * Deletes a review through the same authenticated API boundary used for review writes.
+ */
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const reviewId = searchParams.get("reviewId");
+
+  if (typeof reviewId !== "string" || reviewId.trim().length === 0) {
+    const response: ReviewErrorResponse = {
+      code: "INVALID_REQUEST",
+      message: "The review payload is invalid.",
+    };
+
+    return NextResponse.json(response, { status: 400 });
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || user === null) {
+    const response: ReviewErrorResponse = {
+      code: "UNAUTHORIZED",
+      message: "You must be logged in to delete a review.",
+    };
+
+    return NextResponse.json(response, { status: 401 });
+  }
+
+  const { error: deleteError } = await supabase
+    .from("reviews")
+    .delete()
+    .eq("id", reviewId)
+    .eq("user_id", user.id);
+
+  if (deleteError) {
+    const response: ReviewErrorResponse = {
+      code: "SAVE_FAILED",
+      message: "The review could not be deleted.",
     };
 
     return NextResponse.json(response, { status: 500 });

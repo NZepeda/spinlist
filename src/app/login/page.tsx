@@ -1,4 +1,4 @@
-import { LoginForm } from "./LoginForm";
+import { LoginForm } from "@/features/auth/components/LoginForm";
 
 /**
  * Login page component for user authentication.

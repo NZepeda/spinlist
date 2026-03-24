@@ -1,7 +1,7 @@
-import { getOrCreateAlbumSlug } from "@/lib/slugs/getOrCreateAlbumSlug";
-import { getOrCreateArtistSlug } from "@/lib/slugs/getOrCreateArtistSlug";
-import { logServerError } from "@/lib/logging/serverLogger";
-import { createClient } from "@/lib/supabase/server";
+import { getOrCreateAlbumSlug } from "@/server/slugs/getOrCreateAlbumSlug";
+import { getOrCreateArtistSlug } from "@/server/slugs/getOrCreateArtistSlug";
+import { logServerError } from "@/server/logging/serverLogger";
+import { createClient } from "@/server/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 interface SlugResponseBody {

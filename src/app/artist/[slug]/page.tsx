@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import { getArtist } from "@/lib/spotify/getArtist";
-import { getArtistAlbumsFromSpotify } from "@/lib/spotify/getArtistAlbumsFromSpotify";
-import { AlbumGrid } from "@/app/album/[slug]/AlbumGrid";
-import { createClient } from "@/lib/supabase/server";
-import { getSpotifyIdFromSlug } from "@/lib/spotify/getSpotifyIdFromSlug";
+import { getArtist } from "@/server/spotify/getArtist";
+import { getArtistAlbumsFromSpotify } from "@/server/spotify/getArtistAlbumsFromSpotify";
+import { AlbumGrid } from "@/features/albums/components/AlbumGrid";
+import { createClient } from "@/server/supabase/server";
+import { getSpotifyIdFromSlug } from "@/server/spotify/getSpotifyIdFromSlug";
 
 /**
  * Displays the artist page containing:

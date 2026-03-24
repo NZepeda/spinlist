@@ -27,5 +27,11 @@ export default tseslint.config(
       },
     },
   },
+  {
+    files: ["src/server/database/generated/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-redundant-type-constituents": "off",
+    },
+  },
   eslintConfigPrettier,
 );

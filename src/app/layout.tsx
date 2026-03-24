@@ -1,11 +1,11 @@
 import { Geist_Mono } from "next/font/google";
 import { satoshi } from "./fonts";
 import "./globals.css";
-import { QueryClientProvider } from "@/components/contexts/QueryClientProvider";
-import { AuthProvider } from "@/hooks/useAuth";
+import { QueryClientProvider } from "@/shared/providers/QueryClientProvider";
+import { AuthProvider } from "@/features/auth/hooks/useAuth";
 import { Analytics } from "@vercel/analytics/next";
-import { Navbar } from "@/components/Navbar";
-import { getInitialAuthState } from "@/lib/auth/getInitialAuthState";
+import { Navbar } from "@/features/navigation/components/Navbar";
+import { getInitialAuthState } from "@/features/auth/server/getInitialAuthState";
 
 export { metadata } from "./metadata";
 

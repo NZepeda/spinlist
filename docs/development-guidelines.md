@@ -24,13 +24,15 @@
 
 - Do not use `any` in TypeScript.
 - Keep types organized by layer in `domain/`, `dto/`, `db/`, and `api/`.
-- Treat `src/lib/types/generated/` as generated output and avoid manual edits there.
+- Treat `src/server/database/generated/` as generated output and avoid manual edits there.
 
 ### Components and hooks
 
 - Keep components focused on view logic.
 - Put business logic in hooks when it is stateful, reused, or makes components harder to read.
 - Avoid direct Supabase or Spotify calls inside UI components.
+- Prefer placing feature-owned components and hooks under `src/features/<feature>/`.
+- Keep reusable route-independent UI in `src/shared/ui/`.
 
 ### Documentation expectations
 

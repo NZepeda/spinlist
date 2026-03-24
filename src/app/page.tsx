@@ -1,4 +1,4 @@
-import { SearchBar } from "@/components/SearchBar";
+import { SearchBar } from "@/features/search/components/SearchBar";
 
 /**
  * Home page that keeps the first impression centered on search.

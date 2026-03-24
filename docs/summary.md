@@ -18,25 +18,24 @@
 
 ```
 src/
-├── app/                    # Next.js App Router
-│   ├── api/                # API routes (Spotify proxy)
-│   │   ├── album/[id]/     # Album detail endpoint
-│   │   └── search/         # Album search endpoint
-│   ├── album/[id]/         # Album detail page
-│   ├── login/              # Login page
-│   ├── signup/             # Sign up page
-│   └── page.tsx            # Home page
-├── components/
-│   ├── ui-core/            # shadcn/ui components (button, input, dialog, etc.)
-│   ├── contexts/           # React Query provider
-│   ├── Navbar.tsx          # Navigation with mobile/desktop variants
-│   └── SearchBar.tsx       # Album search component
-├── hooks/                  # Custom hooks (useAuth, useLogin, useSignUp, useDebounce)
-├── lib/
-│   ├── supabase/           # Supabase client (server/client) & session handling
-│   ├── types/              # TypeScript types for album/search
-│   └── getSpotifyToken.ts  # Spotify API authentication
-└── types/                  # Database types
+├── app/                    # Next.js App Router routes and API handlers
+├── features/               # Feature-owned modules
+│   ├── albums/
+│   ├── auth/
+│   ├── navigation/
+│   ├── reviews/
+│   └── search/
+├── server/                 # Server-only adapters and database mapping
+│   ├── database/
+│   ├── spotify/
+│   ├── supabase/
+│   └── slugs/
+└── shared/                 # Generic UI, utilities, providers, and test helpers
+    ├── providers/
+    ├── test/
+    ├── types/
+    ├── ui/
+    └── utils/
 
 supabase/
 ├── migrations/             # Database migrations
@@ -68,7 +67,7 @@ Caches album metadata from Spotify to support ratings and reviews.
 | title | text | Album title |
 | artist | text | Artist name |
 | release_date | date | Album release date |
-| cover_url | text | Album cover image URL |
+| images | jsonb | Normalized album artwork payload |
 | avg_rating | numeric(0-5) | Computed average rating |
 | review_count | integer | Total number of reviews |
 | created_at | timestamptz | When album was added |
@@ -97,7 +96,7 @@ profiles (1) ──────< reviews >────── (1) albums
 
 ### Key Patterns
 
-- **Separation of concerns**: Business logic in custom hooks (`useAuth`, `useLogin`, `useSignUp`), view logic in components
-- **API proxy pattern**: Next.js API routes proxy Spotify API calls to protect credentials
-- **SSR-ready auth**: Supabase client configured for both server and client components
-- **Type safety**: Generated database types from Supabase schema
+- **Feature-first ownership**: Search, auth, navigation, albums, and reviews each own their UI and behavior in one place
+- **Thin routes**: Next.js route files compose feature and server modules instead of holding reusable logic
+- **Server boundary adapters**: Supabase, Spotify, slug resolution, and row mappers live under `src/server/`
+- **Type safety**: Generated database types stay isolated under `src/server/database/generated/`

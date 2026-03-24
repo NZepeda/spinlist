@@ -2,11 +2,11 @@ import { act, cleanup, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Home from "@/app/page";
-import { createJsonResponse } from "@/test/utils/createJsonResponse";
-import { getRequestUrl } from "@/test/utils/getRequestUrl";
-import { render } from "@/test/utils/render";
-import { ResizeObserverMock } from "@/test/utils/ResizeObserverMock";
-import type { SearchResponseDTO } from "@/lib/types";
+import { createJsonResponse } from "@/shared/test/utils/createJsonResponse";
+import { getRequestUrl } from "@/shared/test/utils/getRequestUrl";
+import { render } from "@/shared/test/utils/render";
+import { ResizeObserverMock } from "@/shared/test/utils/ResizeObserverMock";
+import type { SearchResponseDTO } from "@/shared/types";
 
 const pushMock = vi.fn();
 

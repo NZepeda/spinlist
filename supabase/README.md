@@ -77,9 +77,7 @@ After manual migrations, regenerate all schema files:
 # Dump the current schema
 pnpm exec supabase db dump --local -f supabase/schemas/temp.sql
 
-# Then manually split it back into the organized files, or just run:
-pnpm exec supabase db dump --local -f supabase/schemas/schema.sql
-# And split it yourself
+# Then manually split it back into the organized files
 ```
 
 ## Quick Reference

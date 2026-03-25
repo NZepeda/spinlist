@@ -7,8 +7,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
-import { AlbumTracklist } from "@/features/reviews/components/AlbumTracklist";
 import { Button } from "@/shared/ui/button";
+import { Select, SelectOption } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import type { Album } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
@@ -18,6 +18,13 @@ interface AlbumReviewComposerProps {
   onOpenChange: (open: boolean) => void;
   open: boolean;
   reviewState: UseAlbumReviewStateResult;
+}
+
+/**
+ * Formats track labels so the favorite-song dropdown stays compact and easy to scan.
+ */
+function formatTrackOptionLabel(track: Album["tracks"][number]): string {
+  return `${track.track_number}. ${track.name}`;
 }
 
 /**
@@ -56,15 +63,31 @@ export function AlbumReviewComposer({
 
         <div className="min-h-0 space-y-4 overflow-y-auto pb-6">
           <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">
+            <label
+              className="text-sm font-medium text-foreground"
+              htmlFor="album-review-composer-favorite-track"
+            >
               Favorite song{" "}
               <span className="text-muted-foreground">(optional)</span>
+            </label>
+            <Select
+              id="album-review-composer-favorite-track"
+              className="w-full"
+              value={reviewState.favoriteTrackId}
+              onChange={(event) => {
+                reviewState.setFavoriteTrackId(event.target.value);
+              }}
+            >
+              <SelectOption value="">No favorite song selected</SelectOption>
+              {album.tracks.map((track) => (
+                <SelectOption key={track.id} value={track.id}>
+                  {formatTrackOptionLabel(track)}
+                </SelectOption>
+              ))}
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Pick one track if a clear standout emerged.
             </p>
-            <AlbumTracklist
-              album={album}
-              favoriteTrackId={reviewState.favoriteTrackId}
-              onFavoriteTrackChange={reviewState.setFavoriteTrackId}
-            />
           </div>
 
           <div className="space-y-2">
@@ -110,7 +133,9 @@ export function AlbumReviewComposer({
           <Button
             type="button"
             variant="brand"
-            disabled={!reviewState.isComposerDirty || reviewState.isComposerSaving}
+            disabled={
+              !reviewState.isComposerDirty || reviewState.isComposerSaving
+            }
             onClick={() => {
               void handleSave();
             }}

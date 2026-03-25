@@ -112,4 +112,28 @@ describe("AlbumReviewComposer", () => {
     expect(saveComposer).toHaveBeenCalled();
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
+
+  it("uses a select list for favorite-song changes", async () => {
+    const user = userEvent.setup();
+    const setFavoriteTrackId = vi.fn();
+
+    render(
+      <AlbumReviewComposer
+        album={mockAlbum}
+        open
+        onOpenChange={vi.fn()}
+        reviewState={createReviewState({
+          setFavoriteTrackId,
+        })}
+      />,
+    );
+
+    await user.selectOptions(
+      screen.getByLabelText("Favorite song (optional)"),
+      "track-2",
+    );
+
+    expect(setFavoriteTrackId).toHaveBeenCalledWith("track-2");
+    expect(screen.queryByText("Tracklist")).not.toBeInTheDocument();
+  });
 });

@@ -4,6 +4,7 @@ import type { Database } from "@/server/database";
 /**
  * Activates a pending profile.
  * Marks the user's profile as "active".
+ * Returns true if the user can be considered active.
  */
 export async function activatePendingProfile(
   supabase: SupabaseClient<Database>,

@@ -56,6 +56,8 @@ export async function GET(request: Request) {
   }
 
   const supabase = await createClient();
+
+  // Verifies the user in the Authentication table.
   const { data: verificationData, error: verificationError } =
     await supabase.auth.verifyOtp({
       token_hash: tokenHash,
@@ -65,6 +67,8 @@ export async function GET(request: Request) {
   const verifiedUser = verificationData.user;
 
   if (verificationError || verifiedUser === null) {
+    // If the verification failed, it's possible that the user has already been verified.
+    // Check for verification.
     const {
       data: { user: currentUser },
     } = await supabase.auth.getUser();
@@ -83,6 +87,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(createInvalidConfirmationUrl(request));
   }
 
+  // Mark the user profile as "active"
   const didActivateProfile = await activatePendingProfile(
     supabase,
     verifiedUser.id,

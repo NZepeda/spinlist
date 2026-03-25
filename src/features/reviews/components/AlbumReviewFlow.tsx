@@ -1,11 +1,11 @@
 "use client";
 
 import { Suspense } from "react";
-import { AlbumLogCard } from "@/features/reviews/components/AlbumLogCard";
+import { AlbumPrimaryRatingCard } from "@/features/reviews/components/AlbumPrimaryRatingCard";
 import { LoginPromptCard } from "@/features/reviews/components/LoginPromptCard";
 import { ReviewFormSkeleton } from "@/features/reviews/components/ReviewFormSkeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useReviewForm } from "@/features/reviews/hooks/useReviewForm";
+import { useAlbumReviewState } from "@/features/reviews/hooks/useAlbumReviewState";
 import { useUserAlbumReview } from "@/features/reviews/hooks/useUserAlbumReview";
 import type { Album } from "@/shared/types";
 
@@ -25,12 +25,12 @@ function ReviewFlowFallback() {
  */
 function AuthenticatedAlbumReviewFlow({ album }: AlbumReviewFlowProps) {
   const { review } = useUserAlbumReview(album.id);
-  const reviewForm = useReviewForm({
+  const reviewState = useAlbumReviewState({
     album,
-    existingReview: review,
+    review,
   });
 
-  return <AlbumLogCard album={album} reviewForm={reviewForm} />;
+  return <AlbumPrimaryRatingCard reviewState={reviewState} />;
 }
 
 /**

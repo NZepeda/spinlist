@@ -18,21 +18,14 @@ vi.mock("@/features/reviews/hooks/useUserAlbumReview", () => ({
   }),
 }));
 
-vi.mock("@/features/reviews/hooks/useReviewForm", () => ({
-  useReviewForm: () => ({
+vi.mock("@/features/reviews/hooks/useAlbumReviewState", () => ({
+  useAlbumReviewState: () => ({
     rating: 0,
-    reviewText: "",
-    favoriteTrackId: "",
-    errors: {},
-    isLoading: false,
-    isDirty: false,
-    isFormValid: false,
+    savedRating: 0,
+    ratingError: null,
+    isRatingSaving: false,
+    hasSavedReview: false,
     setRating: vi.fn(),
-    setReviewText: vi.fn(),
-    setFavoriteTrackId: vi.fn(),
-    handleSubmit: vi.fn(),
-    handleDelete: vi.fn(),
-    isEditMode: false,
   }),
 }));
 

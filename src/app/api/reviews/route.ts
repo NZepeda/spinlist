@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
 import { createClient } from "@/server/supabase/server";
-import type { AlbumRow } from "@/server/database";
+import type { AlbumRow, ReviewRow } from "@/server/database";
 
 interface ReviewRequestBody {
   albumId: string;
@@ -23,6 +23,7 @@ interface ReviewErrorResponse {
 
 interface ReviewSuccessResponse {
   ok: true;
+  review: ReviewRow;
 }
 
 /**
@@ -197,7 +198,7 @@ export async function POST(request: Request) {
   };
 
   if (parsedBody.existingReviewId) {
-    const { error: updateError } = await supabase
+    const { data: updatedReview, error: updateError } = await supabase
       .from("reviews")
       .update({
         favorite_track_id: reviewPayload.favorite_track_id,
@@ -206,9 +207,11 @@ export async function POST(request: Request) {
         updated_at: new Date().toISOString(),
       })
       .eq("id", parsedBody.existingReviewId)
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .select("*")
+      .single();
 
-    if (updateError) {
+    if (updateError || updatedReview === null) {
       const response: ReviewErrorResponse = {
         code: "SAVE_FAILED",
         message: "The review could not be saved.",
@@ -217,16 +220,21 @@ export async function POST(request: Request) {
       return NextResponse.json(response, { status: 500 });
     }
 
-    const successResponse: ReviewSuccessResponse = { ok: true };
+    const successResponse: ReviewSuccessResponse = {
+      ok: true,
+      review: updatedReview,
+    };
 
     return NextResponse.json(successResponse, { status: 200 });
   }
 
-  const { error: insertError } = await supabase
+  const { data: insertedReview, error: insertError } = await supabase
     .from("reviews")
-    .insert(reviewPayload);
+    .insert(reviewPayload)
+    .select("*")
+    .single();
 
-  if (insertError) {
+  if (insertError || insertedReview === null) {
     const response: ReviewErrorResponse = {
       code: "SAVE_FAILED",
       message: "The review could not be saved.",
@@ -235,7 +243,10 @@ export async function POST(request: Request) {
     return NextResponse.json(response, { status: 500 });
   }
 
-  const successResponse: ReviewSuccessResponse = { ok: true };
+  const successResponse: ReviewSuccessResponse = {
+    ok: true,
+    review: insertedReview,
+  };
 
   return NextResponse.json(successResponse, { status: 200 });
 }

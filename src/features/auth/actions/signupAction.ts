@@ -54,5 +54,5 @@ export async function signupAction(
     return createUnexpectedAuthActionState();
   }
 
-  redirect("/");
+  redirect("/signup/confirm-email");
 }

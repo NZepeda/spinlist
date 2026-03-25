@@ -1,9 +1,11 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
 import { StarRating } from "@/shared/ui/StarRating";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
 
 interface AlbumPrimaryRatingCardProps {
+  onOpenComposer: () => void;
   reviewState: UseAlbumReviewStateResult;
 }
 
@@ -32,6 +34,7 @@ function getRatingStatusMessage(
  * Keeps the primary signed-in action focused on rating instead of full review editing.
  */
 export function AlbumPrimaryRatingCard({
+  onOpenComposer,
   reviewState,
 }: AlbumPrimaryRatingCardProps) {
   const statusMessage = getRatingStatusMessage(reviewState);
@@ -79,9 +82,19 @@ export function AlbumPrimaryRatingCard({
           onChange={reviewState.setRating}
           size="lg"
         />
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={onOpenComposer}
+        >
+          {reviewState.hasSavedReviewText
+            ? "Edit review details"
+            : "Add review details"}
+        </Button>
         <p className="text-center text-sm text-foreground-muted">
-          The full review composer comes later. Right now the fastest path is
-          logging the score.
+          Rating stays lightweight here. Notes save separately inside the
+          composer.
         </p>
       </div>
     </div>

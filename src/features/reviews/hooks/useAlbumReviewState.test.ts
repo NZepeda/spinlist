@@ -120,4 +120,56 @@ describe("useAlbumReviewState", () => {
       expect(result.current.rating).toBe(3.5);
     });
   });
+
+  it("keeps review text as an in-session draft until saveComposer is called", async () => {
+    const submitReviewMock = vi.mocked(submitReview);
+    const review = {
+      id: "review-1",
+      user_id: "user-123",
+      album_id: "album-1",
+      rating: 4,
+      review_text: "",
+      favorite_track_id: "t2",
+      created_at: "2026-03-20T12:00:00.000Z",
+      updated_at: "2026-03-20T12:00:00.000Z",
+    };
+
+    submitReviewMock.mockResolvedValue({
+      ...review,
+      review_text: "The guitars still feel weightless.",
+    });
+
+    const { result } = renderHook(() =>
+      useAlbumReviewState({
+        album: mockAlbum,
+        review,
+      }),
+    );
+
+    act(() => {
+      result.current.setReviewText("The guitars still feel weightless.");
+    });
+
+    expect(result.current.reviewText).toBe("The guitars still feel weightless.");
+    expect(result.current.isComposerDirty).toBe(true);
+    expect(submitReviewMock).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await result.current.saveComposer();
+    });
+
+    expect(submitReviewMock).toHaveBeenCalledWith({
+      userId: "user-123",
+      albumId: "album-1",
+      existingReviewId: "review-1",
+      favoriteTrackId: "t2",
+      rating: 4,
+      reviewText: "The guitars still feel weightless.",
+    });
+
+    await vi.waitFor(() => {
+      expect(result.current.isComposerDirty).toBe(false);
+      expect(result.current.hasSavedReviewText).toBe(true);
+    });
+  });
 });

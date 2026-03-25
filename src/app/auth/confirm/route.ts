@@ -46,7 +46,7 @@ function isEmailConfirmationType(type: string | null): type is EmailOtpType {
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
 
-  // The token has is derived from the email that is sent to the user.
+  // The token hash is derived from the email that is sent to the user.
   // The user clicks the link which contains the token hands and lands here.
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type");

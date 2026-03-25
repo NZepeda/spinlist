@@ -1,6 +1,3 @@
-/**
- * Enumerates the account states used to gate participation features.
- */
 export type ProfileStatus = "active" | "pending";
 
 /**

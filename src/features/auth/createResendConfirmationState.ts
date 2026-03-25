@@ -1,6 +1,3 @@
-/**
- * Describes the stable action-state contract for resending signup confirmations.
- */
 export interface ResendConfirmationState {
   formError?: string;
   formSuccess?: string;

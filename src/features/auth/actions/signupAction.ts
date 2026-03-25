@@ -9,6 +9,7 @@ import {
 } from "@/features/auth/mapAuthError";
 import { validateSignUpActionInput } from "@/features/auth/schemas/signupSchema";
 import { createClient } from "@/server/supabase/server";
+import { getSiteUrl } from "@/server/url/getSiteUrl";
 
 /**
  * Registers a new user to supabase.
@@ -34,6 +35,7 @@ export async function signupAction(
   }
 
   const supabase = await createClient();
+  const siteUrl = await getSiteUrl();
 
   try {
     const { error } = await supabase.auth.signUp({
@@ -43,6 +45,7 @@ export async function signupAction(
         data: {
           username: validatedInput.data.username,
         },
+        emailRedirectTo: siteUrl,
       },
     });
 
@@ -54,5 +57,7 @@ export async function signupAction(
     return createUnexpectedAuthActionState();
   }
 
-  redirect("/signup/confirm-email");
+  redirect(
+    `/signup/confirm-email?email=${encodeURIComponent(validatedInput.data.email)}`,
+  );
 }

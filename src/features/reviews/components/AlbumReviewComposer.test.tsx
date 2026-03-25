@@ -4,6 +4,30 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AlbumReviewComposer } from "@/features/reviews/components/AlbumReviewComposer";
 import { render } from "@/shared/test/utils/render";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
+import type { Album } from "@/shared/types";
+
+const mockAlbum: Album = {
+  id: "album-1",
+  spotify_id: "spotify-album-1",
+  title: "In Rainbows",
+  artist: "Radiohead",
+  label: "XL",
+  slug: "radiohead-in-rainbows",
+  release_date: "2007-10-10",
+  avg_rating: 4.5,
+  review_count: 12,
+  images: [],
+  streaming_links: {},
+  tracks: [
+    { id: "track-1", name: "15 Step", track_number: 1, duration_ms: 237000 },
+    {
+      id: "track-2",
+      name: "Bodysnatchers",
+      track_number: 2,
+      duration_ms: 242000,
+    },
+  ],
+};
 
 /**
  * Builds the composer state used by the dialog tests.
@@ -12,17 +36,22 @@ function createReviewState(
   overrides: Partial<UseAlbumReviewStateResult> = {},
 ): UseAlbumReviewStateResult {
   return {
+    favoriteTrackId: "",
     reviewText: "",
     rating: 4,
+    savedReviewText: "",
     savedRating: 4,
+    savedFavoriteTrackId: "",
     composerError: null,
     ratingError: null,
     isComposerDirty: false,
     isComposerSaving: false,
     isRatingSaving: false,
     hasSavedReview: true,
+    hasSavedFavoriteTrack: false,
     hasSavedReviewText: false,
     saveComposer: vi.fn().mockResolvedValue(true),
+    setFavoriteTrackId: vi.fn(),
     setReviewText: vi.fn(),
     setRating: vi.fn(),
     ...overrides,
@@ -37,6 +66,7 @@ describe("AlbumReviewComposer", () => {
   it("uses a full-screen mobile surface with desktop modal overrides", () => {
     render(
       <AlbumReviewComposer
+        album={mockAlbum}
         open
         onOpenChange={vi.fn()}
         reviewState={createReviewState()}
@@ -60,6 +90,7 @@ describe("AlbumReviewComposer", () => {
 
     render(
       <AlbumReviewComposer
+        album={mockAlbum}
         open
         onOpenChange={onOpenChange}
         reviewState={createReviewState({

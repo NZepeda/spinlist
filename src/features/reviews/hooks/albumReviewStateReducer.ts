@@ -3,6 +3,7 @@ import type { Review } from "@/shared/types";
 export interface AlbumReviewState {
   committedReview: Review | null;
   currentRating: number;
+  draftFavoriteTrackId: string;
   draftReviewText: string;
   isComposerSaving: boolean;
   isRatingSaving: boolean;
@@ -17,6 +18,7 @@ export type AlbumReviewStateAction =
   | { type: "SET_COMPOSER_ERROR"; payload: string }
   | { type: "SET_COMPOSER_SAVING"; payload: boolean }
   | { type: "SET_CURRENT_RATING"; payload: number }
+  | { type: "SET_DRAFT_FAVORITE_TRACK_ID"; payload: string }
   | { type: "SET_DRAFT_REVIEW_TEXT"; payload: string }
   | { type: "SET_RATING_ERROR"; payload: string }
   | { type: "SET_RATING_SAVING"; payload: boolean }
@@ -30,6 +32,13 @@ function getCommittedReviewText(review: Review | null): string {
 }
 
 /**
+ * Returns the persisted favorite-track id used as the baseline for composer draft comparisons.
+ */
+function getCommittedFavoriteTrackId(review: Review | null): string {
+  return review?.favorite_track_id ?? "";
+}
+
+/**
  * Builds the state snapshot that keeps the primary rating UI aligned with saved review data.
  */
 export function createAlbumReviewState(
@@ -38,6 +47,7 @@ export function createAlbumReviewState(
   return {
     committedReview: review,
     currentRating: review?.rating ?? 0,
+    draftFavoriteTrackId: getCommittedFavoriteTrackId(review),
     draftReviewText: getCommittedReviewText(review),
     isComposerSaving: false,
     isRatingSaving: false,
@@ -69,6 +79,7 @@ export function albumReviewStateReducer(
         ...state,
         committedReview: action.payload,
         currentRating: action.payload.rating,
+        draftFavoriteTrackId: getCommittedFavoriteTrackId(action.payload),
         draftReviewText: getCommittedReviewText(action.payload),
         isComposerSaving: false,
         composerError: null,
@@ -88,6 +99,11 @@ export function albumReviewStateReducer(
       return {
         ...state,
         currentRating: action.payload,
+      };
+    case "SET_DRAFT_FAVORITE_TRACK_ID":
+      return {
+        ...state,
+        draftFavoriteTrackId: action.payload,
       };
     case "SET_DRAFT_REVIEW_TEXT":
       return {
@@ -109,6 +125,11 @@ export function albumReviewStateReducer(
         ...state,
         committedReview: action.payload,
         currentRating: action.payload?.rating ?? 0,
+        draftFavoriteTrackId:
+          state.draftFavoriteTrackId ===
+          getCommittedFavoriteTrackId(state.committedReview)
+            ? getCommittedFavoriteTrackId(action.payload)
+            : state.draftFavoriteTrackId,
         draftReviewText:
           state.draftReviewText === getCommittedReviewText(state.committedReview)
             ? getCommittedReviewText(action.payload)

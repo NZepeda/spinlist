@@ -36,12 +36,14 @@ function AuthenticatedAlbumReviewFlow({ album }: AlbumReviewFlowProps) {
   return (
     <>
       <AlbumPrimaryRatingCard
+        album={album}
         reviewState={reviewState}
         onOpenComposer={() => {
           setIsComposerOpen(true);
         }}
       />
       <AlbumReviewComposer
+        album={album}
         open={isComposerOpen}
         onOpenChange={setIsComposerOpen}
         reviewState={reviewState}

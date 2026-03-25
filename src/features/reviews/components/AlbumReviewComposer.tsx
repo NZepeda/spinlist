@@ -7,11 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
+import { AlbumTracklist } from "@/features/reviews/components/AlbumTracklist";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
+import type { Album } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
 
 interface AlbumReviewComposerProps {
+  album: Album;
   onOpenChange: (open: boolean) => void;
   open: boolean;
   reviewState: UseAlbumReviewStateResult;
@@ -21,6 +24,7 @@ interface AlbumReviewComposerProps {
  * Opens the secondary review flow while keeping the main page focused on rating.
  */
 export function AlbumReviewComposer({
+  album,
   onOpenChange,
   open,
   reviewState,
@@ -51,6 +55,18 @@ export function AlbumReviewComposer({
         </DialogHeader>
 
         <div className="min-h-0 space-y-4 overflow-y-auto pb-6">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-foreground">
+              Favorite song{" "}
+              <span className="text-muted-foreground">(optional)</span>
+            </p>
+            <AlbumTracklist
+              album={album}
+              favoriteTrackId={reviewState.favoriteTrackId}
+              onFavoriteTrackChange={reviewState.setFavoriteTrackId}
+            />
+          </div>
+
           <div className="space-y-2">
             <label
               className="text-sm font-medium text-foreground"

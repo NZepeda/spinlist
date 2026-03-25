@@ -16,17 +16,22 @@ interface UseAlbumReviewStateOptions {
 }
 
 export interface UseAlbumReviewStateResult {
+  favoriteTrackId: string;
   reviewText: string;
   rating: number;
+  savedReviewText: string;
   savedRating: number;
+  savedFavoriteTrackId: string;
   composerError: string | null;
   ratingError: string | null;
   isComposerDirty: boolean;
   isComposerSaving: boolean;
   isRatingSaving: boolean;
   hasSavedReview: boolean;
+  hasSavedFavoriteTrack: boolean;
   hasSavedReviewText: boolean;
   saveComposer: () => Promise<boolean>;
+  setFavoriteTrackId: (trackId: string) => void;
   setReviewText: (reviewText: string) => void;
   setRating: (rating: number) => void;
 }
@@ -195,6 +200,19 @@ export function useAlbumReviewState({
   }
 
   /**
+   * Updates the in-session favorite-song draft without changing the persisted review.
+   */
+  function setFavoriteTrackId(nextFavoriteTrackId: string): void {
+    dispatch({
+      type: "CLEAR_COMPOSER_ERROR",
+    });
+    dispatch({
+      type: "SET_DRAFT_FAVORITE_TRACK_ID",
+      payload: nextFavoriteTrackId,
+    });
+  }
+
+  /**
    * Persists the current composer draft while keeping rating autosave and draft editing separate.
    */
   async function saveComposer(): Promise<boolean> {
@@ -244,7 +262,7 @@ export function useAlbumReviewState({
         userId: user.id,
         albumId: album.id,
         existingReviewId: committedReview?.id,
-        favoriteTrackId: committedReview?.favorite_track_id ?? "",
+        favoriteTrackId: state.draftFavoriteTrackId,
         rating: state.currentRating,
         reviewText: state.draftReviewText,
       });
@@ -270,19 +288,27 @@ export function useAlbumReviewState({
   }
 
   const savedReviewText = state.committedReview?.review_text ?? "";
+  const savedFavoriteTrackId = state.committedReview?.favorite_track_id ?? "";
 
   return {
+    favoriteTrackId: state.draftFavoriteTrackId,
     reviewText: state.draftReviewText,
     rating: state.currentRating,
+    savedReviewText,
     savedRating: state.committedReview?.rating ?? 0,
+    savedFavoriteTrackId,
     composerError: state.composerError,
     ratingError: state.ratingError,
-    isComposerDirty: state.draftReviewText !== savedReviewText,
+    isComposerDirty:
+      state.draftReviewText !== savedReviewText ||
+      state.draftFavoriteTrackId !== savedFavoriteTrackId,
     isComposerSaving: state.isComposerSaving,
     isRatingSaving: state.isRatingSaving,
     hasSavedReview: state.committedReview !== null,
+    hasSavedFavoriteTrack: savedFavoriteTrackId.length > 0,
     hasSavedReviewText: savedReviewText.trim().length > 0,
     saveComposer,
+    setFavoriteTrackId,
     setReviewText,
     setRating,
   };

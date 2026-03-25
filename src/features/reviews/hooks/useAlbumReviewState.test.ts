@@ -172,4 +172,56 @@ describe("useAlbumReviewState", () => {
       expect(result.current.hasSavedReviewText).toBe(true);
     });
   });
+
+  it("saves favorite-song changes through the composer boundary", async () => {
+    const submitReviewMock = vi.mocked(submitReview);
+    const review = {
+      id: "review-1",
+      user_id: "user-123",
+      album_id: "album-1",
+      rating: 4,
+      review_text: "",
+      favorite_track_id: "",
+      created_at: "2026-03-20T12:00:00.000Z",
+      updated_at: "2026-03-20T12:00:00.000Z",
+    };
+
+    submitReviewMock.mockResolvedValue({
+      ...review,
+      favorite_track_id: "t1",
+    });
+
+    const { result } = renderHook(() =>
+      useAlbumReviewState({
+        album: mockAlbum,
+        review,
+      }),
+    );
+
+    act(() => {
+      result.current.setFavoriteTrackId("t1");
+    });
+
+    expect(result.current.favoriteTrackId).toBe("t1");
+    expect(result.current.isComposerDirty).toBe(true);
+
+    await act(async () => {
+      await result.current.saveComposer();
+    });
+
+    expect(submitReviewMock).toHaveBeenCalledWith({
+      userId: "user-123",
+      albumId: "album-1",
+      existingReviewId: "review-1",
+      favoriteTrackId: "t1",
+      rating: 4,
+      reviewText: "",
+    });
+
+    await vi.waitFor(() => {
+      expect(result.current.hasSavedFavoriteTrack).toBe(true);
+      expect(result.current.savedFavoriteTrackId).toBe("t1");
+      expect(result.current.isComposerDirty).toBe(false);
+    });
+  });
 });

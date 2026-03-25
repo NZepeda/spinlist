@@ -224,4 +224,51 @@ describe("useAlbumReviewState", () => {
       expect(result.current.isComposerDirty).toBe(false);
     });
   });
+
+  it("keeps unsaved composer changes out of the inline rating autosave payload", async () => {
+    const submitReviewMock = vi.mocked(submitReview);
+    const review = {
+      id: "review-1",
+      user_id: "user-123",
+      album_id: "album-1",
+      rating: 4,
+      review_text: "Saved note",
+      favorite_track_id: "t2",
+      created_at: "2026-03-20T12:00:00.000Z",
+      updated_at: "2026-03-20T12:00:00.000Z",
+    };
+
+    submitReviewMock.mockResolvedValue({
+      ...review,
+      rating: 3.5,
+    });
+
+    const { result } = renderHook(() =>
+      useAlbumReviewState({
+        album: mockAlbum,
+        review,
+      }),
+    );
+
+    act(() => {
+      result.current.setReviewText("Unsaved draft");
+      result.current.setFavoriteTrackId("t1");
+      result.current.setRating(3.5);
+    });
+
+    await vi.waitFor(() => {
+      expect(submitReviewMock).toHaveBeenCalledWith({
+        userId: "user-123",
+        albumId: "album-1",
+        existingReviewId: "review-1",
+        favoriteTrackId: "t2",
+        rating: 3.5,
+        reviewText: "Saved note",
+      });
+    });
+
+    expect(result.current.reviewText).toBe("Unsaved draft");
+    expect(result.current.favoriteTrackId).toBe("t1");
+    expect(result.current.isComposerDirty).toBe(true);
+  });
 });

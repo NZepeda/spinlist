@@ -3,7 +3,7 @@ import { within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AlbumReviewFlow } from "@/features/reviews/components/AlbumReviewFlow";
-import type { Album, Review } from "@/shared/types";
+import type { Album, Profile, Review } from "@/shared/types";
 import { render } from "@/shared/test/utils/render";
 
 const useAuthMock = vi.hoisted(() => vi.fn());
@@ -55,13 +55,25 @@ const savedReview: Review = {
   updated_at: "2026-03-20T12:00:00.000Z",
 };
 
+const activeProfile: Profile = {
+  avatarUrl: null,
+  createdAt: "2026-03-25T00:00:00.000Z",
+  id: "user-123",
+  status: "active",
+  updatedAt: "2026-03-25T00:00:00.000Z",
+  username: "listener",
+};
+
 describe("AlbumReviewFlow draft behavior", () => {
   beforeEach(() => {
     useAuthMock.mockReset();
     useUserAlbumReviewMock.mockReset();
     useAuthMock.mockReturnValue({
-      user: { id: "user-123" },
-      profile: null,
+      user: {
+        email: "listener@example.com",
+        id: "user-123",
+      },
+      profile: activeProfile,
       isLoading: false,
       logout: vi.fn(),
     });

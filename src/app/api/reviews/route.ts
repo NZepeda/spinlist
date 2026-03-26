@@ -136,7 +136,7 @@ function createEmailConfirmationRequiredResponse() {
 }
 
 /**
- * Checks whether the current authenticated user is allowed to create community content.
+ * Checks whether the current authenticated user has confirmed their email.
  */
 async function ensureActiveProfile(
   supabase: SupabaseClient<Database>,

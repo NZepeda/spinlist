@@ -27,11 +27,11 @@ interface ReviewErrorResponse {
 
 interface ReviewSuccessResponse {
   ok: true;
-  review: ReviewRow;
+  review?: ReviewRow;
 }
 
 /**
- * Returns a normalized favorite track id or null if none was selected.
+ * Trims the empty space from the trackId
  */
 function normalizeFavoriteTrackId(favoriteTrackId?: string): string | null {
   const trimmedFavoriteTrackId = favoriteTrackId?.trim();
@@ -44,7 +44,8 @@ function normalizeFavoriteTrackId(favoriteTrackId?: string): string | null {
 }
 
 /**
- * Validates the request body for review writes.
+ * Validates the request body for new reviews to ensure it is valid.
+ * Returns null if invalid, otherwise, returns the review object.
  */
 function validateRequestBody(body: unknown): ReviewRequestBody | null {
   if (body === null || typeof body !== "object" || Array.isArray(body)) {

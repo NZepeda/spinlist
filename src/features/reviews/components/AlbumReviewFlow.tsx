@@ -1,12 +1,12 @@
 "use client";
 
 import { Suspense } from "react";
+import { isActiveProfile } from "@/features/auth/isActiveProfile";
 import { AlbumPrimaryRatingCard } from "@/features/reviews/components/AlbumPrimaryRatingCard";
 import { AlbumReviewComposer } from "@/features/reviews/components/AlbumReviewComposer";
 import { LoginPromptCard } from "@/features/reviews/components/LoginPromptCard";
 import { PendingVerificationPromptCard } from "@/features/reviews/components/PendingVerificationPromptCard";
 import { ReviewFormSkeleton } from "@/features/reviews/components/ReviewFormSkeleton";
-import { isActiveProfile } from "@/features/auth/isActiveProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAlbumReviewState } from "@/features/reviews/hooks/useAlbumReviewState";
 import { useUserAlbumReview } from "@/features/reviews/hooks/useUserAlbumReview";
@@ -57,11 +57,8 @@ function AuthenticatedAlbumReviewFlow({ album }: AlbumReviewFlowProps) {
 /**
  * Coordinates the auth-gated primary action area shown inside the album hero.
  */
-export function AlbumReviewFlow({
-  album,
-  communitySummary,
-}: AlbumReviewFlowProps) {
-  const { profile, user, isLoading } = useAuth();
+export function AlbumReviewFlow({ album }: AlbumReviewFlowProps) {
+  const { user, profile, isLoading } = useAuth();
 
   if (isLoading) {
     return <ReviewFlowFallback />;
@@ -72,17 +69,7 @@ export function AlbumReviewFlow({
   }
 
   if (!isActiveProfile(profile)) {
-    return (
-      <>
-        <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
-          <PendingVerificationPromptCard email={user.email} />
-        </AlbumDetailsColumn>
-        <div className="lg:col-span-2">
-          <AlbumCommunitySummary summary={communitySummary} />
-        </div>
-        <AlbumTracklist album={album} />
-      </>
-    );
+    return <PendingVerificationPromptCard email={user.email} />;
   }
 
   return (

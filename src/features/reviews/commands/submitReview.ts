@@ -1,3 +1,5 @@
+import type { Review } from "@/shared/types";
+
 interface SubmitReviewParams {
   userId: string;
   albumId: string;
@@ -18,6 +20,11 @@ interface ReviewApiErrorResponse {
   message: string;
 }
 
+interface ReviewApiSuccessResponse {
+  ok: true;
+  review: Review;
+}
+
 /**
  * Submits a review to the database.
  * Handles both creating new reviews and updating existing ones.
@@ -25,7 +32,7 @@ interface ReviewApiErrorResponse {
  *
  * @throws Error if the database operation fails
  */
-export async function submitReview(params: SubmitReviewParams): Promise<void> {
+export async function submitReview(params: SubmitReviewParams): Promise<Review> {
   const { albumId, rating, reviewText, favoriteTrackId, existingReviewId } =
     params;
 
@@ -49,4 +56,9 @@ export async function submitReview(params: SubmitReviewParams): Promise<void> {
 
     throw new Error(errorResponse?.message ?? "Unable to save review");
   }
+
+  const successResponse =
+    (await response.json()) as ReviewApiSuccessResponse;
+
+  return successResponse.review;
 }

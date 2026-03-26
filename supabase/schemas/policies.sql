@@ -11,7 +11,7 @@ CREATE POLICY "Anyone can create albums" ON "public"."albums" FOR INSERT WITH CH
 CREATE POLICY "Anyone can update albums" ON "public"."albums" FOR UPDATE USING (true);
 
 -- Profiles policies
-CREATE POLICY "Profiles are viewable by everyone" ON "public"."profiles" FOR SELECT USING (true);
+CREATE POLICY "Active profiles are viewable by everyone" ON "public"."profiles" FOR SELECT USING ((("status" = 'active'::text) OR ("auth"."uid"() = "id")));
 CREATE POLICY "Users can update their own profile" ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
 
 -- Reviews policies

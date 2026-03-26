@@ -5,7 +5,9 @@ import { Suspense } from "react";
 import { AlbumLogCard } from "@/features/reviews/components/AlbumLogCard";
 import { AlbumTracklist } from "@/features/reviews/components/AlbumTracklist";
 import { LoginPromptCard } from "@/features/reviews/components/LoginPromptCard";
+import { PendingVerificationPromptCard } from "@/features/reviews/components/PendingVerificationPromptCard";
 import { ReviewFormSkeleton } from "@/features/reviews/components/ReviewFormSkeleton";
+import { isActiveProfile } from "@/features/auth/isActiveProfile";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useReviewForm } from "@/features/reviews/hooks/useReviewForm";
 import { useUserAlbumReview } from "@/features/reviews/hooks/useUserAlbumReview";
@@ -204,7 +206,7 @@ export function AlbumReviewFlow({
   album,
   communitySummary,
 }: AlbumReviewFlowProps) {
-  const { user, isLoading } = useAuth();
+  const { profile, user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -217,6 +219,20 @@ export function AlbumReviewFlow({
       <>
         <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
           <LoginPromptCard />
+        </AlbumDetailsColumn>
+        <div className="lg:col-span-2">
+          <AlbumCommunitySummary summary={communitySummary} />
+        </div>
+        <AlbumTracklist album={album} />
+      </>
+    );
+  }
+
+  if (!isActiveProfile(profile)) {
+    return (
+      <>
+        <AlbumDetailsColumn album={album} communitySummary={communitySummary}>
+          <PendingVerificationPromptCard email={user.email} />
         </AlbumDetailsColumn>
         <div className="lg:col-span-2">
           <AlbumCommunitySummary summary={communitySummary} />

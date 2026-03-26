@@ -55,6 +55,17 @@ async function waitForSearchDebounce(): Promise<void> {
   });
 }
 
+/**
+ * Renders the async home page with optional search params.
+ */
+async function renderHome(searchParams?: { confirmed?: string }) {
+  const homePage = await Home({
+    searchParams: Promise.resolve(searchParams ?? {}),
+  });
+
+  return render(homePage);
+}
+
 describe("Home page", () => {
   const fetchMock = vi.fn<FetchMock>();
 
@@ -71,8 +82,8 @@ describe("Home page", () => {
     cleanup();
   });
 
-  it("renders the branded search hero without seeded homepage content", () => {
-    render(<Home />);
+  it("renders the branded search hero without seeded homepage content", async () => {
+    await renderHome();
 
     expect(screen.getByText("Find the album.")).toBeInTheDocument();
     expect(screen.getByText("Log the feeling.")).toBeInTheDocument();
@@ -106,7 +117,7 @@ describe("Home page", () => {
       throw new Error(`Unexpected fetch request: ${url}`);
     });
 
-    render(<Home />);
+    await renderHome();
 
     await user.type(
       screen.getByPlaceholderText(

@@ -42,6 +42,7 @@ function createProfile(): Profile {
     avatarUrl: null,
     createdAt: "2026-03-23T00:00:00.000Z",
     id: "user-1",
+    status: "active",
     updatedAt: "2026-03-23T00:00:00.000Z",
     username: "listener",
   };

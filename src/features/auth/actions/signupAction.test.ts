@@ -13,6 +13,10 @@ vi.mock("@/server/supabase/server", () => ({
   createClient: createClientMock,
 }));
 
+vi.mock("@/server/url/getSiteUrl", () => ({
+  getSiteUrl: vi.fn(() => Promise.resolve("https://spinlist.example")),
+}));
+
 vi.mock("next/navigation", () => ({
   redirect: redirectMock,
 }));
@@ -172,7 +176,7 @@ describe("signupAction", () => {
     });
   });
 
-  it("redirects to the home page after a successful sign up", async () => {
+  it("redirects to the confirmation screen after a successful sign up", async () => {
     const supabaseClient = createMockSupabaseClient();
 
     createClientMock.mockResolvedValueOnce(supabaseClient);
@@ -187,7 +191,7 @@ describe("signupAction", () => {
           username: "new_user",
         }),
       ),
-      "/",
+      "/signup/confirm-email?email=user%40example.com",
     );
 
     expect(supabaseClient.auth.signUp).toHaveBeenCalledWith({
@@ -196,6 +200,7 @@ describe("signupAction", () => {
         data: {
           username: "new_user",
         },
+        emailRedirectTo: "https://spinlist.example",
       },
       password: "secret123",
     });

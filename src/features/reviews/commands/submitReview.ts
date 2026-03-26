@@ -13,6 +13,7 @@ interface ReviewApiErrorResponse {
   code:
     | "INVALID_REQUEST"
     | "UNAUTHORIZED"
+    | "EMAIL_CONFIRMATION_REQUIRED"
     | "ALBUM_NOT_FOUND"
     | "INVALID_FAVORITE_TRACK"
     | "SAVE_FAILED";

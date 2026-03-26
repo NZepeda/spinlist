@@ -11,6 +11,18 @@ import { validateLoginActionInput } from "@/features/auth/schemas/loginSchema";
 import { createClient } from "@/server/supabase/server";
 
 /**
+ * Returns whether the auth provider rejected login because the email is unconfirmed.
+ */
+function isUnconfirmedEmailError(message: string): boolean {
+  const normalizedMessage = message.toLowerCase();
+
+  return (
+    normalizedMessage.includes("email not confirmed") ||
+    normalizedMessage.includes("email_not_confirmed")
+  );
+}
+
+/**
  * A server action to sign in a user.
  */
 export async function loginAction(
@@ -31,6 +43,7 @@ export async function loginAction(
   }
 
   const supabase = await createClient();
+  let redirectDestination: string | null = null;
 
   try {
     const { error } = await supabase.auth.signInWithPassword({
@@ -39,11 +52,19 @@ export async function loginAction(
     });
 
     if (error) {
-      return mapLoginActionError(error);
+      if (isUnconfirmedEmailError(error.message)) {
+        redirectDestination = `/signup/confirm-email?status=login&email=${encodeURIComponent(validatedInput.data.email)}`;
+      } else {
+        return mapLoginActionError(error);
+      }
     }
   } catch (error) {
     console.error("Error signing in:", error);
     return createUnexpectedAuthActionState();
+  }
+
+  if (redirectDestination) {
+    redirect(redirectDestination);
   }
 
   redirect("/");

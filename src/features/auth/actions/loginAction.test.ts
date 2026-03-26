@@ -115,6 +115,28 @@ describe("loginAction", () => {
     });
   });
 
+  it("redirects unverified users back to the confirmation screen", async () => {
+    const supabaseClient = createMockSupabaseClient();
+
+    supabaseClient.auth.signInWithPassword.mockResolvedValueOnce({
+      error: {
+        message: "Email not confirmed",
+      },
+    });
+    createClientMock.mockResolvedValueOnce(supabaseClient);
+
+    await expectRedirect(
+      loginAction(
+        initialAuthActionState,
+        createFormData({
+          email: "user@example.com",
+          password: "secret123",
+        }),
+      ),
+      "/signup/confirm-email?status=login&email=user%40example.com",
+    );
+  });
+
   it("returns a generic form error when sign in throws unexpectedly", async () => {
     const supabaseClient = createMockSupabaseClient();
 

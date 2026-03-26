@@ -111,9 +111,14 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 
 ## Skill Routing
 
+- Use `$grill-me` when the user wants to stress-test a plan or design, get grilled on their thinking, or be pushed through unresolved decision branches.
+- Use `$write-a-prd` when the user asks to write a PRD, create a product requirements document, or shape a new feature definition before implementation work begins.
+- Use `$prd-to-plan` when the user wants to break a PRD into an implementation plan, tracer-bullet rollout, or execution slices saved under `./plans/`.
 - Use `$plan-eng-review` when the user asks for implementation-plan review, architecture review, rollout review, test-plan review, or a pre-coding technical risk review.
 - Use `$plan-ceo-review` when the user asks to challenge the premise, rethink the roadmap, expand scope strategically, reduce scope to the minimum viable version, or review from a founder/product perspective.
 - Use `$creative-director` when the user asks for UI direction, UX critique, branding feedback, visual identity work, desirability improvements, or help making the product feel more distinctive and memorable.
+- If the user needs a PRD before execution planning, use `$write-a-prd` first and then use `$prd-to-plan`.
+- If the user wants their plan challenged aggressively before it is formalized, use `$grill-me` before `$write-a-prd` or `$prd-to-plan`.
 - If the request mixes product/scope shaping with implementation planning, use `$plan-ceo-review` first to settle direction, then use `$plan-eng-review` to lock the execution plan.
 - If the request mixes product strategy with visual/UX direction, use `$plan-ceo-review` first to settle the product bet, then use `$creative-director` to shape how that direction should feel and present.
 - Do not use these skills for routine implementation requests unless the user explicitly asks for a planning or review phase.

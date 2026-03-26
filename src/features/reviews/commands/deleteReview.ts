@@ -2,6 +2,10 @@ interface DeleteReviewParams {
   reviewId: string;
 }
 
+interface ReviewApiErrorResponse {
+  message: string;
+}
+
 /**
  * Deletes a review from the database.
  *
@@ -15,6 +19,9 @@ export async function deleteReview({
   });
 
   if (!response.ok) {
-    throw new Error("Unable to delete review");
+    const errorResponse =
+      (await response.json().catch(() => null)) as ReviewApiErrorResponse | null;
+
+    throw new Error(errorResponse?.message ?? "Unable to delete review");
   }
 }

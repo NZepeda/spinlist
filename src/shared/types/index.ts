@@ -6,7 +6,7 @@ export type {
 } from "./domain/album";
 export type { Artist } from "./domain/artist";
 export type { Image } from "./domain/image";
-export type { Profile } from "./domain/profile";
+export type { Profile, ProfileStatus } from "./domain/profile";
 export type { Review } from "./domain/review";
 export type {
   SearchAlbumDTO,

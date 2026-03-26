@@ -1,9 +1,37 @@
 import { SearchBar } from "@/features/search/components/SearchBar";
 
+interface HomePageProps {
+  searchParams: Promise<{
+    confirmed?: string;
+  }>;
+}
+
+interface ConfirmationBannerProps {
+  confirmed?: string;
+}
+
+/**
+ * Renders the one-time confirmation success banner after activation.
+ */
+function ConfirmationBanner({ confirmed }: ConfirmationBannerProps) {
+  if (confirmed !== "1") {
+    return null;
+  }
+
+  return (
+    <div className="mb-6 max-w-2xl rounded-[1.4rem] border border-brand/20 bg-brand/10 px-5 py-4 text-sm leading-6 text-foreground shadow-[0_12px_30px_var(--brand-shadow-soft)]">
+      Thank you for confirming your email! Feel free to begin logging your
+      listening journey.
+    </div>
+  );
+}
+
 /**
  * Home page that keeps the first impression centered on search.
  */
-export default function Home() {
+export default async function Home({ searchParams }: HomePageProps) {
+  const resolvedSearchParams = await searchParams;
+
   return (
     <main className="relative flex-grow overflow-hidden bg-background text-foreground">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background-warm to-background" />
@@ -13,6 +41,7 @@ export default function Home() {
 
       <section className="app-shell app-section relative grid gap-10 py-10 md:min-h-[calc(100dvh-var(--header-height))] md:grid-cols-[minmax(0,1.15fr)_320px] md:items-center md:py-16">
         <div className="max-w-3xl">
+          <ConfirmationBanner confirmed={resolvedSearchParams.confirmed} />
           <p className="text-sm uppercase tracking-[0.24em] text-foreground-muted">
             Search first
           </p>

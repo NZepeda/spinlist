@@ -32,13 +32,20 @@ export async function resendSignupConfirmationAction(
   const siteUrl = await getSiteUrl();
 
   try {
-    await supabase.auth.resend({
+    const { error } = await supabase.auth.resend({
       type: "signup",
       email,
       options: {
         emailRedirectTo: siteUrl,
       },
     });
+
+    if (error) {
+      console.error("Error resending signup confirmation:", error);
+      return createResendConfirmationState({
+        formError: "Something went wrong. Please try again.",
+      });
+    }
   } catch (error) {
     console.error("Error resending signup confirmation:", error);
     return createResendConfirmationState({

@@ -20,7 +20,7 @@ function createMockSupabaseClient() {
   return {
     auth: {
       resend: vi.fn(() =>
-        Promise.resolve({
+        Promise.resolve<{ error: { message: string } | null }>({
           error: null,
         }),
       ),
@@ -87,6 +87,28 @@ describe("resendSignupConfirmationAction", () => {
     expect(state).toEqual({
       formSuccess:
         "We sent a fresh confirmation email if that account is still pending.",
+    });
+  });
+
+  it("returns a generic form error when Supabase reports a resend error", async () => {
+    const supabaseClient = createMockSupabaseClient();
+
+    supabaseClient.auth.resend.mockResolvedValueOnce({
+      error: {
+        message: "Email rate limit exceeded",
+      },
+    });
+    createClientMock.mockResolvedValueOnce(supabaseClient);
+
+    const state = await resendSignupConfirmationAction(
+      initialResendConfirmationState,
+      createFormData({
+        email: "listener@example.com",
+      }),
+    );
+
+    expect(state).toEqual({
+      formError: "Something went wrong. Please try again.",
     });
   });
 

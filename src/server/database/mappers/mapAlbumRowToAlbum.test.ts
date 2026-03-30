@@ -18,8 +18,6 @@ function createAlbumRow(overrides: Partial<AlbumRow> = {}): AlbumRow {
     review_count: 10,
     slug: "daft-punk-discovery",
     spotify_id: "spotify-album-1",
-    streaming_links: {},
-    streaming_links_synced_at: null,
     title: "Discovery",
     tracks: [],
     ...overrides,
@@ -27,35 +25,65 @@ function createAlbumRow(overrides: Partial<AlbumRow> = {}): AlbumRow {
 }
 
 describe("mapAlbumRowToAlbum", () => {
-  it("maps supported streaming link platforms", () => {
+  it("maps valid track payloads into the domain model", () => {
     const album = mapAlbumRowToAlbum(
       createAlbumRow({
-        streaming_links: {
-          spotify: "https://open.spotify.com/album/123",
-          apple_music: "https://music.apple.com/us/album/456",
-        },
+        tracks: [
+          {
+            duration_ms: 345000,
+            id: "track-1",
+            name: "One More Time",
+            track_number: 1,
+          },
+        ],
       }),
     );
 
-    expect(album.streaming_links).toEqual({
-      spotify: "https://open.spotify.com/album/123",
-      apple_music: "https://music.apple.com/us/album/456",
-    });
+    expect(album.tracks).toEqual([
+      {
+        duration_ms: 345000,
+        id: "track-1",
+        name: "One More Time",
+        track_number: 1,
+      },
+    ]);
   });
 
-  it("ignores invalid and unsupported streaming link values", () => {
+  it("ignores invalid image and track payloads", () => {
     const album = mapAlbumRowToAlbum(
       createAlbumRow({
-        streaming_links: {
-          spotify: 123,
-          apple_music: "https://music.apple.com/us/album/456",
-          youtube_music: "https://music.youtube.com/watch?v=123",
-        },
+        images: [null, { url: "https://cdn.example.com/cover.jpg", width: 640 }],
+        tracks: [
+          {
+            duration_ms: 345000,
+            id: "track-1",
+            name: "One More Time",
+            track_number: 1,
+          },
+          {
+            duration_ms: "345000",
+            id: "track-2",
+            name: "Aerodynamic",
+            track_number: 2,
+          },
+        ],
       }),
     );
 
-    expect(album.streaming_links).toEqual({
-      apple_music: "https://music.apple.com/us/album/456",
-    });
+    expect(album.images).toEqual([
+      {
+        height: undefined,
+        url: "https://cdn.example.com/cover.jpg",
+        width: 640,
+      },
+    ]);
+    expect(album.tracks).toEqual([
+      {
+        duration_ms: 345000,
+        id: "track-1",
+        name: "One More Time",
+        track_number: 1,
+      },
+    ]);
   });
 });

@@ -26,7 +26,6 @@ const mockAlbum = {
   release_date: "2007-10-10",
   images: [],
   slug: "radiohead-in-rainbows",
-  streaming_links: {},
   tracks: [
     { id: "t1", name: "15 Step", track_number: 1, duration_ms: 237000 },
     {

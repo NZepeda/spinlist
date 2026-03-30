@@ -15,9 +15,6 @@ const mockAlbum: Album = {
   avg_rating: 4.5,
   review_count: 12,
   images: [],
-  streaming_links: {
-    spotify: "https://open.spotify.com/album/1",
-  },
   tracks: [
     { id: "track-1", name: "15 Step", track_number: 1, duration_ms: 237000 },
     {
@@ -44,8 +41,7 @@ describe("AlbumReadOnlyMetadata", () => {
     expect(
       screen.queryByRole("button", { name: /bodysnatchers/i }),
     ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Open in Spotify" }),
-    ).toHaveAttribute("href", "https://open.spotify.com/album/1");
+    expect(screen.getByText("Track count")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
   });
 });

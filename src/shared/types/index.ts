@@ -1,8 +1,6 @@
 export type {
   Album,
-  AlbumStreamingLinks,
   AlbumTrack,
-  StreamingPlatform,
 } from "./domain/album";
 export type { Artist } from "./domain/artist";
 export type { Image } from "./domain/image";

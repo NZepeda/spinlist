@@ -30,7 +30,6 @@ const mockAlbum = {
   release_date: "1997-05-21",
   images: [],
   slug: "radiohead-ok-computer",
-  streaming_links: {},
   tracks: [
     { id: "t1", name: "Airbag", track_number: 1, duration_ms: 283000 },
     {

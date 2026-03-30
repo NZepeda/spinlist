@@ -47,8 +47,6 @@ export type Database = {
           review_count: number | null;
           slug: string;
           spotify_id: string;
-          streaming_links: Json;
-          streaming_links_synced_at: string | null;
           title: string;
           tracks: Json | null;
         };
@@ -64,8 +62,6 @@ export type Database = {
           review_count?: number | null;
           slug: string;
           spotify_id: string;
-          streaming_links?: Json;
-          streaming_links_synced_at?: string | null;
           title: string;
           tracks?: Json | null;
         };
@@ -81,8 +77,6 @@ export type Database = {
           review_count?: number | null;
           slug?: string;
           spotify_id?: string;
-          streaming_links?: Json;
-          streaming_links_synced_at?: string | null;
           title?: string;
           tracks?: Json | null;
         };

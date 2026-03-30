@@ -33,7 +33,6 @@ const mockAlbum: Album = {
   avg_rating: 4.4,
   review_count: 5,
   images: [],
-  streaming_links: {},
   tracks: [
     {
       id: "track-1",

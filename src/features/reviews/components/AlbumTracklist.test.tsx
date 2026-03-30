@@ -16,7 +16,6 @@ const mockAlbum: Album = {
   avg_rating: 4.5,
   review_count: 12,
   images: [],
-  streaming_links: {},
   tracks: [
     { id: "track-1", name: "15 Step", track_number: 1, duration_ms: 237000 },
     {

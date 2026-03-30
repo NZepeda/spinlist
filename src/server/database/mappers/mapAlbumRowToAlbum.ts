@@ -1,13 +1,6 @@
 import type { AlbumRow } from "@/server/database";
-import type {
-  Album,
-  AlbumStreamingLinks,
-  AlbumTrack,
-  StreamingPlatform,
-} from "@/shared/types/domain/album";
+import type { Album, AlbumTrack } from "@/shared/types/domain/album";
 import type { Image } from "@/shared/types/domain/image";
-
-const STREAMING_PLATFORMS: StreamingPlatform[] = ["spotify", "apple_music"];
 
 /**
  * Maps a database album row into the canonical album model.
@@ -79,8 +72,6 @@ export function mapAlbumRowToAlbum(album: AlbumRow): Album {
     ];
   });
 
-  const streamingLinks = mapStreamingLinks(album.streaming_links);
-
   return {
     id: album.id,
     spotify_id: album.spotify_id,
@@ -92,33 +83,6 @@ export function mapAlbumRowToAlbum(album: AlbumRow): Album {
     avg_rating: album.avg_rating,
     review_count: album.review_count,
     images,
-    streaming_links: streamingLinks,
     tracks,
   };
-}
-
-/**
- * Restricts persisted streaming link payloads to supported platforms and URL strings.
- */
-function mapStreamingLinks(rawStreamingLinks: AlbumRow["streaming_links"]): AlbumStreamingLinks {
-  if (
-    rawStreamingLinks === null ||
-    typeof rawStreamingLinks !== "object" ||
-    Array.isArray(rawStreamingLinks)
-  ) {
-    return {};
-  }
-
-  const record = rawStreamingLinks as Record<string, unknown>;
-  const streamingLinks: AlbumStreamingLinks = {};
-
-  for (const platform of STREAMING_PLATFORMS) {
-    const url = record[platform];
-
-    if (typeof url === "string") {
-      streamingLinks[platform] = url;
-    }
-  }
-
-  return streamingLinks;
 }

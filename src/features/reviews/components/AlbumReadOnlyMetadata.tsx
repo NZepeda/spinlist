@@ -1,11 +1,5 @@
-import Link from "next/link";
 import { AlbumTracklist } from "@/features/reviews/components/AlbumTracklist";
-import { Button } from "@/shared/ui/button";
-import type {
-  Album,
-  AlbumStreamingLinks,
-  StreamingPlatform,
-} from "@/shared/types";
+import type { Album } from "@/shared/types";
 
 interface AlbumReadOnlyMetadataProps {
   album: Album;
@@ -15,22 +9,6 @@ interface MetadataFieldProps {
   label: string;
   value: string;
 }
-
-interface StreamingLinkDefinition {
-  label: string;
-  platform: StreamingPlatform;
-}
-
-const STREAMING_LINK_DEFINITIONS: StreamingLinkDefinition[] = [
-  {
-    label: "Spotify",
-    platform: "spotify",
-  },
-  {
-    label: "Apple Music",
-    platform: "apple_music",
-  },
-];
 
 /**
  * Formats the full album release date for the supporting metadata area.
@@ -45,28 +23,6 @@ function formatReleaseDate(releaseDate: string | null): string {
     day: "numeric",
     year: "numeric",
   }).format(new Date(releaseDate));
-}
-
-/**
- * Returns the streaming links that are available for the current album.
- */
-function getAvailableStreamingLinks(
-  streamingLinks: AlbumStreamingLinks,
-): Array<{ href: string; label: string }> {
-  return STREAMING_LINK_DEFINITIONS.flatMap((definition) => {
-    const href = streamingLinks[definition.platform];
-
-    if (!href) {
-      return [];
-    }
-
-    return [
-      {
-        href,
-        label: definition.label,
-      },
-    ];
-  });
 }
 
 /**
@@ -89,8 +45,6 @@ function MetadataField({ label, value }: MetadataFieldProps) {
 export function AlbumReadOnlyMetadata({
   album,
 }: AlbumReadOnlyMetadataProps) {
-  const streamingLinks = getAvailableStreamingLinks(album.streaming_links);
-
   return (
     <section aria-label="Album details" className="space-y-6">
       <div className="rounded-[1.75rem] border border-border/70 bg-surface/95 p-4 shadow-[0_20px_60px_var(--brand-shadow-soft)] backdrop-blur sm:p-6 xl:rounded-[2rem] xl:p-8">
@@ -116,22 +70,6 @@ export function AlbumReadOnlyMetadata({
             value={album.tracks.length.toString()}
           />
         </dl>
-
-        {streamingLinks.length > 0 ? (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {streamingLinks.map((streamingLink) => (
-              <Button key={streamingLink.href} variant="outline" asChild>
-                <Link
-                  href={streamingLink.href}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Open in {streamingLink.label}
-                </Link>
-              </Button>
-            ))}
-          </div>
-        ) : null}
       </div>
 
       <AlbumTracklist album={album} />

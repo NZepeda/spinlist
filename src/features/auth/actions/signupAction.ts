@@ -38,6 +38,7 @@ export async function signupAction(
   const siteUrl = await getSiteUrl();
 
   try {
+    console.log("Sign up with emailRedirectTo: ", siteUrl);
     const { error } = await supabase.auth.signUp({
       email: validatedInput.data.email,
       password: validatedInput.data.password,

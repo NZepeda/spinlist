@@ -32,6 +32,7 @@ export async function resendSignupConfirmationAction(
   const siteUrl = await getSiteUrl();
 
   try {
+    console.log("Resending confirmation email with redirectTo: ", siteUrl);
     const { error } = await supabase.auth.resend({
       type: "signup",
       email,

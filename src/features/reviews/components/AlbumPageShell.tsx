@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { AlbumHeroCard } from "@/features/reviews/components/AlbumHeroCard";
 import { AlbumCommunitySummary } from "@/features/reviews/components/AlbumCommunitySummary";
 import { AlbumReadOnlyMetadata } from "@/features/reviews/components/AlbumReadOnlyMetadata";
@@ -11,7 +10,6 @@ interface AlbumPageShellProps {
   album: Album;
   communitySummary: AlbumCommunitySummaryData;
   imageUrl: string | null;
-  primaryAction: ReactNode;
   reviewFeed: AlbumReviewFeedItem[];
 }
 
@@ -22,7 +20,6 @@ export function AlbumPageShell({
   album,
   communitySummary,
   imageUrl,
-  primaryAction,
   reviewFeed,
 }: AlbumPageShellProps) {
   return (
@@ -53,11 +50,7 @@ export function AlbumPageShell({
               </div>
             </div>
 
-            <AlbumHeroCard
-              album={album}
-              actionArea={primaryAction}
-              communitySummary={communitySummary}
-            />
+            <AlbumHeroCard album={album} communitySummary={communitySummary} />
           </section>
 
           <AlbumCommunitySummary summary={communitySummary} />

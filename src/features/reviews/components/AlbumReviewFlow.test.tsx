@@ -110,7 +110,9 @@ describe("AlbumReviewFlow", () => {
       screen.getByText("Confirm your email to rate this album"),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText("Tap a star to rate this album. Your score saves instantly."),
+      screen.queryByText(
+        "Tap a star to rate this album. Your score saves instantly.",
+      ),
     ).not.toBeInTheDocument();
   });
 
@@ -136,7 +138,7 @@ describe("AlbumReviewFlow", () => {
 
     render(<AlbumReviewFlow album={mockAlbum} />);
 
-    expect(screen.getByText("Rate this album")).toBeInTheDocument();
+    expect(screen.getByText("Rate")).toBeInTheDocument();
     expect(
       screen.getByRole("button", {
         name: "Add review details",

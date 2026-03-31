@@ -55,7 +55,7 @@ function AuthenticatedAlbumReviewFlow({ album }: AlbumReviewFlowProps) {
 }
 
 /**
- * Coordinates the auth-gated primary action area shown inside the album hero.
+ * Renders the UI allowing user to leave an album rating.
  */
 export function AlbumReviewFlow({ album }: AlbumReviewFlowProps) {
   const { user, profile, isLoading } = useAuth();

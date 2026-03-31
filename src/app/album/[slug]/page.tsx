@@ -5,7 +5,6 @@ import { getAlbum } from "@/features/albums/server/getAlbum";
 import { AlbumPageShell } from "@/features/reviews/components/AlbumPageShell";
 import { getAlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
 import { getAlbumReviewFeed } from "@/features/reviews/server/getAlbumReviewFeed";
-import { AlbumReviewFlow } from "@/features/reviews/components/AlbumReviewFlow";
 
 /**
  * Album page displaying information about the Album.
@@ -36,7 +35,6 @@ export default async function AlbumPage({
       album={album}
       communitySummary={communitySummary}
       imageUrl={imageUrl}
-      primaryAction={<AlbumReviewFlow album={album} />}
       reviewFeed={reviewFeed}
     />
   );

@@ -1,10 +1,16 @@
 import { cleanup, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AlbumPageShell } from "@/features/reviews/components/AlbumPageShell";
 import type { AlbumReviewFeedItem } from "@/features/reviews/server/getAlbumReviewFeed";
 import type { AlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
 import type { Album } from "@/shared/types";
 import { render } from "@/shared/test/utils/render";
+
+const useAuthMock = vi.hoisted(() => vi.fn());
+
+vi.mock("@/features/auth/hooks/useAuth", () => ({
+  useAuth: useAuthMock,
+}));
 
 const mockAlbum: Album = {
   id: "album-1",
@@ -75,25 +81,37 @@ const mockReviewFeed: AlbumReviewFeedItem[] = [
 /**
  * Returns whether one DOM node appears after another in document order.
  */
-function appearsAfter(firstNode: HTMLElement, secondNode: HTMLElement): boolean {
+function appearsAfter(
+  firstNode: HTMLElement,
+  secondNode: HTMLElement,
+): boolean {
   return Boolean(
     firstNode.compareDocumentPosition(secondNode) &
-      Node.DOCUMENT_POSITION_FOLLOWING,
+    Node.DOCUMENT_POSITION_FOLLOWING,
   );
 }
 
 describe("AlbumPageShell", () => {
+  beforeEach(() => {
+    useAuthMock.mockReset();
+    useAuthMock.mockReturnValue({
+      user: null,
+      profile: null,
+      isLoading: false,
+      logout: vi.fn(),
+    });
+  });
+
   afterEach(() => {
     cleanup();
   });
 
-  it("renders the redesigned section order", () => {
+  it("renders the album page with the appropriate sections", () => {
     render(
       <AlbumPageShell
         album={mockAlbum}
         communitySummary={mockCommunitySummary}
         imageUrl={null}
-        primaryAction={<div>Primary action</div>}
         reviewFeed={mockReviewFeed}
       />,
     );

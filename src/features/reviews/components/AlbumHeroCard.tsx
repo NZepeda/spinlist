@@ -4,7 +4,6 @@ import { AlbumReviewFlow } from "./AlbumReviewFlow";
 
 interface AlbumHeroCardProps {
   album: Album;
-
   communitySummary: AlbumCommunitySummary;
 }
 

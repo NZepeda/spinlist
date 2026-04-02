@@ -42,9 +42,7 @@ function MetadataField({ label, value }: MetadataFieldProps) {
 /**
  * Groups low-priority album details below the community and review content.
  */
-export function AlbumReadOnlyMetadata({
-  album,
-}: AlbumReadOnlyMetadataProps) {
+export function AlbumReadOnlyMetadata({ album }: AlbumReadOnlyMetadataProps) {
   return (
     <section aria-label="Album details" className="space-y-6">
       <div className="rounded-[1.75rem] border border-border/70 bg-surface/95 p-4 shadow-[0_20px_60px_var(--brand-shadow-soft)] backdrop-blur sm:p-6 xl:rounded-[2rem] xl:p-8">
@@ -61,10 +59,7 @@ export function AlbumReadOnlyMetadata({
             label="Release date"
             value={formatReleaseDate(album.release_date)}
           />
-          <MetadataField
-            label="Label"
-            value={album.label || "Unknown label"}
-          />
+          <MetadataField label="Label" value={album.label || "Unknown label"} />
           <MetadataField
             label="Track count"
             value={album.tracks.length.toString()}

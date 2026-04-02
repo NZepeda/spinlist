@@ -45,7 +45,7 @@ export interface SearchInteractionProps {
       onSuccess?: () => void;
     },
   ) => Promise<void>;
-  placeholder: string;
+  placeholder?: string;
   searchValue: string;
   selectionError: string | null;
   setSearchValue: (value: string) => void;

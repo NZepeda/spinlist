@@ -76,14 +76,16 @@ async function waitForDebounce(): Promise<void> {
  *
  * @param user - The configured user-event instance.
  * @param value - The query to type.
- * @param placeholder - The desktop input placeholder to target.
+ * @param placeholder - The optional desktop input placeholder to target.
  */
 async function typeDesktopSearchValue(
   user: ReturnType<typeof userEvent.setup>,
   value: string,
-  placeholder = "Search for albums or artists...",
+  placeholder?: string,
 ): Promise<void> {
-  const desktopInput = screen.getByPlaceholderText(placeholder);
+  const desktopInput = placeholder
+    ? screen.getByPlaceholderText(placeholder)
+    : screen.getByRole("combobox");
 
   await user.type(desktopInput, value);
 }
@@ -173,7 +175,7 @@ describe("SearchBar", () => {
 
     expect(screen.getByText("Loading results...")).toBeInTheDocument();
 
-    await user.clear(screen.getByPlaceholderText("Search for albums or artists..."));
+    await user.clear(screen.getByRole("combobox"));
 
     await waitFor(() => {
       expect(screen.queryByText("Loading results...")).not.toBeInTheDocument();
@@ -189,7 +191,7 @@ describe("SearchBar", () => {
 
     await typeDesktopSearchValue(user, "radiohead");
 
-    const input = screen.getByPlaceholderText("Search for albums or artists...");
+    const input = screen.getByRole("combobox");
 
     expect(screen.getByText("Loading results...")).toBeInTheDocument();
 
@@ -227,12 +229,17 @@ describe("SearchBar", () => {
 
     fetchMock.mockResolvedValue(createJsonResponse(createSearchResults()));
 
-    const { container } = render(<SearchBar variant="hero" />);
+    const { container } = render(
+      <SearchBar
+        placeholder="Search for an album or artist"
+        variant="hero"
+      />,
+    );
 
     await typeDesktopSearchValue(
       user,
       "radiohead",
-      "Search for albums or artists...",
+      "Search for an album or artist",
     );
     await waitForDebounce();
 
@@ -249,6 +256,34 @@ describe("SearchBar", () => {
     expect(commandList).toHaveClass("top-full");
   });
 
+  it("keeps the desktop input interactive while the animated prompt is visible", async () => {
+    const user = userEvent.setup();
+
+    const { container } = render(<SearchBar />);
+
+    const desktopInput = screen.getByRole("combobox");
+    const animatedPrompt = container.querySelector(
+      "[data-slot='animated-search-prompt']",
+    );
+
+    expect(animatedPrompt).not.toBeNull();
+    expect(animatedPrompt).toHaveClass("opacity-100");
+
+    await user.click(desktopInput);
+
+    expect(desktopInput).toHaveFocus();
+
+    await user.type(desktopInput, "kid a");
+
+    expect(desktopInput).toHaveValue("kid a");
+    expect(animatedPrompt).toHaveClass("invisible");
+    expect(animatedPrompt).toHaveClass("opacity-0");
+
+    await user.clear(desktopInput);
+
+    expect(animatedPrompt).toHaveClass("opacity-100");
+  });
+
   it("opens the compact mobile search sheet and shows the idle prompt", async () => {
     const user = userEvent.setup();
 
@@ -256,12 +291,42 @@ describe("SearchBar", () => {
 
     const dialog = await openMobileSearch(user);
 
-    expect(within(dialog).getByText("Search Spinlist")).toBeInTheDocument();
+    expect(within(dialog).getByText("Search")).toBeInTheDocument();
     expect(
       within(dialog).getByText(
         "Search for an album or artist to open the results list.",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("keeps the mobile input interactive while the animated prompt is visible", async () => {
+    const user = userEvent.setup();
+
+    render(<SearchBar />);
+
+    const dialog = await openMobileSearch(user);
+    const mobileInput = within(dialog).getByRole("combobox");
+    const animatedPrompt = dialog.querySelector(
+      "[data-slot='animated-search-prompt']",
+    );
+
+    expect(animatedPrompt).not.toBeNull();
+
+    expect(animatedPrompt).toHaveClass("opacity-100");
+
+    await user.click(mobileInput);
+
+    expect(mobileInput).toHaveFocus();
+
+    await user.type(mobileInput, "kid a");
+
+    expect(mobileInput).toHaveValue("kid a");
+    expect(animatedPrompt).toHaveClass("invisible");
+    expect(animatedPrompt).toHaveClass("opacity-0");
+
+    await user.clear(mobileInput);
+
+    expect(animatedPrompt).toHaveClass("opacity-100");
   });
 
   it("opens the hero mobile search sheet from the full-width trigger", async () => {
@@ -276,7 +341,7 @@ describe("SearchBar", () => {
 
     const dialog = await openMobileSearch(user);
 
-    expect(within(dialog).getByText("Search Spinlist")).toBeInTheDocument();
+    expect(within(dialog).getByText("Search")).toBeInTheDocument();
   });
 
   it("renders mobile empty results after a successful empty search response", async () => {
@@ -289,9 +354,7 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     const dialog = await openMobileSearch(user);
-    const mobileInput = within(dialog).getByPlaceholderText(
-      "Search for albums or artists...",
-    );
+    const mobileInput = within(dialog).getByRole("combobox");
 
     await user.type(mobileInput, "no matches");
 
@@ -320,9 +383,7 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     const dialog = await openMobileSearch(user);
-    const mobileInput = within(dialog).getByPlaceholderText(
-      "Search for albums or artists...",
-    );
+    const mobileInput = within(dialog).getByRole("combobox");
 
     await user.type(mobileInput, "broken");
     await waitForDebounce();
@@ -354,9 +415,7 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     const dialog = await openMobileSearch(user);
-    const mobileInput = within(dialog).getByPlaceholderText(
-      "Search for albums or artists...",
-    );
+    const mobileInput = within(dialog).getByRole("combobox");
 
     await user.type(mobileInput, "kid a");
     await waitForDebounce();
@@ -391,9 +450,7 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     const dialog = await openMobileSearch(user);
-    const mobileInput = within(dialog).getByPlaceholderText(
-      "Search for albums or artists...",
-    );
+    const mobileInput = within(dialog).getByRole("combobox");
 
     await user.type(mobileInput, "kid a");
     await waitForDebounce();

@@ -12,10 +12,7 @@ import type { SearchBarProps } from "@/features/search/types";
  * @returns The responsive search experience for albums and artists.
  */
 export function SearchBar(props: SearchBarProps) {
-  const {
-    placeholder = "Search for albums or artists...",
-    variant = "compact",
-  } = props;
+  const { placeholder, variant = "compact" } = props;
   const controller = useSearchController();
 
   return (
@@ -25,7 +22,6 @@ export function SearchBar(props: SearchBarProps) {
         clearSelectionError={controller.clearSelectionError}
         displayState={controller.displayState}
         handleResultSelect={controller.handleResultSelect}
-        placeholder={placeholder}
         searchValue={controller.searchValue}
         selectionError={controller.selectionError}
         setSearchValue={controller.setSearchValue}

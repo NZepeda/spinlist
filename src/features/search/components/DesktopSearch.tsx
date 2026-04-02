@@ -10,6 +10,7 @@ import {
 import { cn } from "@/shared/utils/cn";
 import { usePointerDownOutside } from "@/shared/hooks/usePointerDownOutside";
 import type { DesktopSearchProps } from "@/features/search/types";
+import { AnimatedSearchBar } from "./AnimatedSearchBar";
 import { SearchResultsList } from "./SearchResultsList";
 
 /**
@@ -123,30 +124,24 @@ export function DesktopSearch(props: DesktopSearchProps) {
         onBlurCapture={handleBlur}
         onFocusCapture={handleFocus}
       >
-        <div
-          className={cn(
-            "flex w-full items-center gap-3",
-            isHero
-              ? "rounded-[1.2rem] border border-border/70 bg-background px-4 py-2"
-              : "border-b border-border/70 px-3 py-2",
-          )}
-        >
-          <Search
-            className={cn(
-              "text-muted-foreground",
-              isHero ? "h-5 w-5" : "h-4 w-4",
-            )}
-          />
-          <CommandInput
+        {isHero ? (
+          <div className="flex w-full items-center gap-3 rounded-[1.2rem] border border-border/70 bg-background px-4 py-2">
+            <Search className="h-5 w-5 text-muted-foreground" />
+            <CommandInput
+              placeholder={placeholder}
+              value={searchValue}
+              onValueChange={handleValueChange}
+              className="flex w-full rounded-md bg-transparent py-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+            />
+          </div>
+        ) : (
+          <AnimatedSearchBar
+            className="border-b border-border/70 px-3 py-2 [&_[data-slot=animated-search-icon]]:h-4 [&_[data-slot=animated-search-icon]]:w-4 [&_[data-slot=animated-search-input]]:py-2 [&_[data-slot=animated-search-input]]:text-sm [&_[data-slot=animated-search-prompt]]:py-2 [&_[data-slot=animated-search-prompt]]:text-sm"
             placeholder={placeholder}
             value={searchValue}
             onValueChange={handleValueChange}
-            className={cn(
-              "flex w-full rounded-md bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
-              isHero ? "py-3 text-base" : "py-2 text-sm",
-            )}
           />
-        </div>
+        )}
         {shouldShowResults ? (
           <CommandList
             className={cn(

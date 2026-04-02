@@ -45,3 +45,6 @@ next-env.d.ts
 /supabase/.temp
 # next-agents-md
 .next-docs/
+
+# Sentry Config File
+.env.sentry-build-plugin

@@ -20,8 +20,10 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Add inline code comments explaining the more complex logic.
 - Think of the code from the perspectives of both a Principal Engineer and a new team member who is not familiar with the codebase. Write code that is clear and maintainable for both.
 - All JSDoc comments should should be one sentence per line break.
-- JSDoc comments should not be used to explain "what" the code is doing, but rather "why" the code is doing it, or to provide additional context that is not immediately clear from the code itself.
 - JSDoc comments/inline code comments should NEVER under any circumstance reference an implementation plane. There should be no reference of "phases", "plans" or "steps".
+- JSDoc comments should be focused on ensuring that future readers understand what the function at a quick glance.
+- JSDoc comments should be simple and easy to understand. Do not add fluff words or make the comments too technical. The goal is to make the code more accessible, not to make it more complex. A non-technical user should be able to read the comments and get a general understanding of what the code is doing without needing to understand the technical details.
+- JSDoc comments should describe the enduring business or domain purpose of a function or component in plain language, without referencing technical mechanics or assuming a specific caller, screen, or usage context unless that context is intrinsic to the abstraction.
 
 ## Implementation Expectations
 

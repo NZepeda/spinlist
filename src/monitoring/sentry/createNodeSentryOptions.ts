@@ -3,7 +3,7 @@ import { getObservabilityEnvironment } from "@/monitoring/sentry/getObservabilit
 import { isServerObservabilityEnabled } from "@/monitoring/sentry/isServerObservabilityEnabled";
 import { redactBreadcrumb } from "@/monitoring/sentry/redactBreadcrumb";
 import { redactEvent } from "@/monitoring/sentry/redactEvent";
-import { getTraceSampleRate } from "./getTraceSampleRate";
+import { createTracesSampler } from "./createTracesSampler";
 
 const DEFAULT_MAX_BREADCRUMBS = 50;
 
@@ -25,6 +25,6 @@ export function createNodeSentryOptions(): NodeOptions {
     environment,
     maxBreadcrumbs: DEFAULT_MAX_BREADCRUMBS,
     sendDefaultPii: false,
-    tracesSampleRate: getTraceSampleRate(environment),
+    tracesSampler: createTracesSampler(environment),
   };
 }

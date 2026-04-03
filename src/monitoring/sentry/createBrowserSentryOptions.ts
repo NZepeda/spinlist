@@ -3,7 +3,7 @@ import { getObservabilityEnvironment } from "@/monitoring/sentry/getObservabilit
 import { isClientObservabilityEnabled } from "@/monitoring/sentry/isClientObservabilityEnabled";
 import { redactBreadcrumb } from "@/monitoring/sentry/redactBreadcrumb";
 import { redactEvent } from "@/monitoring/sentry/redactEvent";
-import { getTraceSampleRate } from "./getTraceSampleRate";
+import { createTracesSampler } from "./createTracesSampler";
 
 const DEFAULT_MAX_BREADCRUMBS = 50;
 
@@ -27,6 +27,6 @@ export function createBrowserSentryOptions(): BrowserOptions {
     replaysOnErrorSampleRate: 1,
     replaysSessionSampleRate: 0,
     sendDefaultPii: false,
-    tracesSampleRate: getTraceSampleRate(environment),
+    tracesSampler: createTracesSampler(environment),
   };
 }

@@ -1,16 +1,26 @@
 "use client";
 
-import * as Sentry from "@sentry/nextjs";
 import NextError from "next/error";
 import { useEffect } from "react";
+import { captureException } from "@/monitoring/captureException";
 
+/**
+ * Captures app-router fatal rendering failures so the hosted observability provider records client-visible crashes that bypass route-level handlers.
+ */
 export default function GlobalError({
   error,
 }: {
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    captureException(error, {
+      context: {
+        digest: error.digest ?? null,
+      },
+      tags: {
+        boundary: "global-error",
+      },
+    });
   }, [error]);
 
   return (

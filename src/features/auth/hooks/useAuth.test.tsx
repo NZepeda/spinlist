@@ -4,14 +4,20 @@ import type { User } from "@supabase/supabase-js";
 import { cleanup, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DesktopNavMenu } from "@/features/navigation/components/DesktopNavMenu";
+import { setAuthenticatedUser } from "@/monitoring/setAuthenticatedUser";
 import type { Profile } from "@/shared/types";
 import { AuthProvider } from "./useAuth";
 import { render } from "@/shared/test/utils/render";
 
 const createClientMock = vi.hoisted(() => vi.fn());
+const setAuthenticatedUserMock = vi.hoisted(() => vi.fn());
 
 vi.mock("@/server/supabase/client", () => ({
   createClient: createClientMock,
+}));
+
+vi.mock("@/monitoring/setAuthenticatedUser", () => ({
+  setAuthenticatedUser: setAuthenticatedUserMock,
 }));
 
 /**
@@ -110,6 +116,7 @@ function renderDesktopNav(options?: {
 describe("AuthProvider bootstrap", () => {
   beforeEach(() => {
     createClientMock.mockReset();
+    setAuthenticatedUserMock.mockReset();
   });
 
   afterEach(() => {
@@ -134,6 +141,7 @@ describe("AuthProvider bootstrap", () => {
       screen.queryByRole("link", { name: "Log in" }),
     ).not.toBeInTheDocument();
     expect(supabaseClient.from).not.toHaveBeenCalled();
+    expect(setAuthenticatedUser).toHaveBeenCalledWith("user-1");
   });
 
   it("renders the anonymous desktop nav immediately when no bootstrap user exists", () => {
@@ -145,5 +153,6 @@ describe("AuthProvider bootstrap", () => {
 
     expect(screen.getByRole("link", { name: "Log in" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Sign up" })).toBeInTheDocument();
+    expect(setAuthenticatedUser).toHaveBeenCalledWith(null);
   });
 });

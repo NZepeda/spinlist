@@ -1,10 +1,11 @@
 import { getOrCreateAlbumSlug } from "@/server/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/server/slugs/getOrCreateArtistSlug";
-import { logServerError } from "@/server/logging/serverLogger";
+import { captureServerException } from "@/monitoring/captureServerException";
 import { createClient } from "@/server/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 interface SlugResponseBody {
+  eventId?: string;
   requestId: string;
   slug?: string;
 }
@@ -71,7 +72,7 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error: unknown) {
-    logServerError({
+    const eventId = captureServerException({
       context: {
         method: request.method,
         path: request.nextUrl.pathname,
@@ -86,6 +87,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Failed to retrieve slug",
+        eventId,
         requestId,
       },
       { status: 500 },

@@ -1,8 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
-import {
-  createBrowserSentryOptions,
-  isClientObservabilityEnabled,
-} from "@/monitoring/sentry/options";
+import { createBrowserSentryOptions } from "@/monitoring/sentry/createBrowserSentryOptions";
+import { isClientObservabilityEnabled } from "@/monitoring/sentry/isClientObservabilityEnabled";
 
 if (isClientObservabilityEnabled()) {
   Sentry.init(createBrowserSentryOptions());

@@ -35,12 +35,14 @@ export default async function AlbumPage({
         getAlbumReviewFeed(album),
       ]);
 
-  return (
-    <AlbumPageShell
-      album={album}
-      communitySummary={communitySummary}
-      imageUrl={imageUrl}
-      reviewFeed={reviewFeed}
-    />
+      return (
+        <AlbumPageShell
+          album={album}
+          communitySummary={communitySummary}
+          imageUrl={imageUrl}
+          reviewFeed={reviewFeed}
+        />
+      );
+    },
   );
 }

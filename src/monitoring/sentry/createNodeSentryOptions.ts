@@ -3,6 +3,7 @@ import { getObservabilityEnvironment } from "@/monitoring/sentry/getObservabilit
 import { isServerObservabilityEnabled } from "@/monitoring/sentry/isServerObservabilityEnabled";
 import { redactBreadcrumb } from "@/monitoring/sentry/redactBreadcrumb";
 import { redactEvent } from "@/monitoring/sentry/redactEvent";
+import { redactLog } from "@/monitoring/sentry/redactLog";
 import { createTracesSampler } from "./createTracesSampler";
 
 const DEFAULT_MAX_BREADCRUMBS = 50;
@@ -20,7 +21,9 @@ export function createNodeSentryOptions(): NodeOptions {
     attachStacktrace: true,
     beforeBreadcrumb: redactBreadcrumb,
     beforeSend: redactEvent,
+    beforeSendLog: redactLog,
     dsn: process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN,
+    enableLogs: true,
     enabled: isServerObservabilityEnabled(),
     environment,
     maxBreadcrumbs: DEFAULT_MAX_BREADCRUMBS,

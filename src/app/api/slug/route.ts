@@ -3,6 +3,7 @@ import { getSpotifyErrorMetadata } from "@/server/spotify/getSpotifyErrorMetadat
 import { getOrCreateAlbumSlug } from "@/server/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/server/slugs/getOrCreateArtistSlug";
 import { captureServerException } from "@/monitoring/captureServerException";
+import { logWorkflow } from "@/server/logging/logWorkflow";
 import { createClient } from "@/server/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,8 +21,22 @@ export async function GET(request: NextRequest) {
   const spotifyId = searchParams.get("spotifyId");
   const type = searchParams.get("type");
   const requestId = getRequestId(request);
+  const path = request.nextUrl.pathname;
 
   if (spotifyId === null || type === null) {
+    logWorkflow({
+      context: {
+        hasSpotifyId: Boolean(spotifyId),
+        method: request.method,
+        path,
+        requestId,
+        type,
+      },
+      event: "slug_lookup",
+      stage: "rejected",
+      workflow: "slug_lookup",
+    });
+
     const responseBody: SlugResponseBody = {
       requestId,
     };
@@ -60,7 +75,7 @@ export async function GET(request: NextRequest) {
     const eventId = captureServerException({
       context: {
         method: request.method,
-        path: request.nextUrl.pathname,
+        path,
         requestId,
         spotifyId,
         type,
@@ -69,7 +84,7 @@ export async function GET(request: NextRequest) {
       error,
       event: "slug_lookup_failed",
       tags: {
-        route: request.nextUrl.pathname,
+        route: path,
         ...spotifyErrorMetadata.tags,
       },
     });
@@ -83,6 +98,20 @@ export async function GET(request: NextRequest) {
       { status: 500 },
     );
   }
+
+  logWorkflow({
+    context: {
+      method: request.method,
+      path,
+      reason: "invalid_type",
+      requestId,
+      spotifyId,
+      type,
+    },
+    event: "slug_lookup",
+    stage: "rejected",
+    workflow: "slug_lookup",
+  });
 
   return NextResponse.json(
     {

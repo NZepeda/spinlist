@@ -6,6 +6,7 @@ import { captureServerException } from "@/monitoring/captureServerException";
 import { startSpan } from "@/monitoring/startSpan";
 import type { Database } from "@/server/database";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
+import { logWorkflow } from "@/server/logging/logWorkflow";
 import { getSupabaseErrorMetadata } from "@/server/supabase/getSupabaseErrorMetadata";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import { createClient } from "@/server/supabase/server";
@@ -41,6 +42,8 @@ interface SupabaseErrorLike {
   code?: string | null;
   message: string;
 }
+
+type ReviewWorkflowOperation = "create" | "delete" | "save" | "update";
 
 /**
  * Normalizes optional favorite-track input so blank form values do not become invalid foreign keys.
@@ -172,6 +175,30 @@ function createReviewErrorResponse(params: {
 }
 
 /**
+ * Records the lifecycle of review workflows without logging review text or other sensitive inputs.
+ *
+ * @param params - The workflow details.
+ */
+function logReviewWorkflow(params: {
+  context?: Record<string, boolean | number | string | null | undefined>;
+  event: string;
+  operation: ReviewWorkflowOperation;
+  reason?: string;
+  stage: "rejected" | "started" | "succeeded";
+}): void {
+  logWorkflow({
+    context: {
+      ...params.context,
+      operation: params.operation,
+      reason: params.reason,
+    },
+    event: params.event,
+    stage: params.stage,
+    workflow: "reviews",
+  });
+}
+
+/**
  * Wraps backend service failures so monitoring can distinguish Supabase issues from expected review outcomes.
  *
  * @param params - The backend failure details.
@@ -265,6 +292,18 @@ export async function POST(request: NextRequest) {
   try {
     requestBody = await request.json();
   } catch {
+    logReviewWorkflow({
+      context: {
+        method: request.method,
+        path,
+        requestId,
+      },
+      event: "review_mutation",
+      operation: "save",
+      reason: "invalid_json",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "INVALID_REQUEST",
       message: "The review payload is invalid.",
@@ -276,6 +315,18 @@ export async function POST(request: NextRequest) {
   const parsedBody = validateRequestBody(requestBody);
 
   if (parsedBody === null) {
+    logReviewWorkflow({
+      context: {
+        method: request.method,
+        path,
+        requestId,
+      },
+      event: "review_mutation",
+      operation: "save",
+      reason: "invalid_payload",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "INVALID_REQUEST",
       message: "The review payload is invalid.",
@@ -286,6 +337,25 @@ export async function POST(request: NextRequest) {
 
   const favoriteTrackId = normalizeFavoriteTrackId(parsedBody.favoriteTrackId);
   const reviewText = parsedBody.reviewText?.trim() ?? null;
+  const operation: ReviewWorkflowOperation = parsedBody.existingReviewId
+    ? "update"
+    : "create";
+
+  logReviewWorkflow({
+    context: {
+      albumId: parsedBody.albumId,
+      existingReviewId: parsedBody.existingReviewId ?? null,
+      hasFavoriteTrack: favoriteTrackId !== null,
+      hasReviewText: reviewText !== null,
+      method: request.method,
+      path,
+      requestId,
+    },
+    event: "review_mutation",
+    operation,
+    stage: "started",
+  });
+
   const supabase = await createClient();
   const userResult = await startSpan(
     {
@@ -325,6 +395,20 @@ export async function POST(request: NextRequest) {
   }
 
   if (user === null) {
+    logReviewWorkflow({
+      context: {
+        albumId: parsedBody.albumId,
+        existingReviewId: parsedBody.existingReviewId ?? null,
+        method: request.method,
+        path,
+        requestId,
+      },
+      event: "review_mutation",
+      operation,
+      reason: "unauthorized",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "UNAUTHORIZED",
       message: "You must be logged in to save a review.",
@@ -360,6 +444,21 @@ export async function POST(request: NextRequest) {
   }
 
   if (activeProfileRequirement) {
+    logReviewWorkflow({
+      context: {
+        albumId: parsedBody.albumId,
+        existingReviewId: parsedBody.existingReviewId ?? null,
+        method: request.method,
+        path,
+        requestId,
+        userId: user.id,
+      },
+      event: "review_mutation",
+      operation,
+      reason: "email_confirmation_required",
+      stage: "rejected",
+    });
+
     return activeProfileRequirement;
   }
 
@@ -406,6 +505,21 @@ export async function POST(request: NextRequest) {
   }
 
   if (album === null) {
+    logReviewWorkflow({
+      context: {
+        albumId: parsedBody.albumId,
+        existingReviewId: parsedBody.existingReviewId ?? null,
+        method: request.method,
+        path,
+        requestId,
+        userId: user.id,
+      },
+      event: "review_mutation",
+      operation,
+      reason: "album_not_found",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "ALBUM_NOT_FOUND",
       message: "The album could not be found.",
@@ -415,6 +529,21 @@ export async function POST(request: NextRequest) {
   }
 
   if (!isFavoriteTrackValid(album, favoriteTrackId)) {
+    logReviewWorkflow({
+      context: {
+        albumId: parsedBody.albumId,
+        existingReviewId: parsedBody.existingReviewId ?? null,
+        method: request.method,
+        path,
+        requestId,
+        userId: user.id,
+      },
+      event: "review_mutation",
+      operation,
+      reason: "invalid_favorite_track",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "INVALID_FAVORITE_TRACK",
       message: "The selected favorite song does not belong to this album.",
@@ -494,6 +623,20 @@ export async function POST(request: NextRequest) {
       review: updatedReview,
     };
 
+    logReviewWorkflow({
+      context: {
+        albumId: parsedBody.albumId,
+        method: request.method,
+        path,
+        requestId,
+        reviewId: updatedReview.id,
+        userId: user.id,
+      },
+      event: "review_mutation",
+      operation,
+      stage: "succeeded",
+    });
+
     return NextResponse.json(successResponse, { status: 200 });
   }
 
@@ -546,6 +689,20 @@ export async function POST(request: NextRequest) {
     review: insertedReview,
   };
 
+  logReviewWorkflow({
+    context: {
+      albumId: parsedBody.albumId,
+      method: request.method,
+      path,
+      requestId,
+      reviewId: insertedReview.id,
+      userId: user.id,
+    },
+    event: "review_mutation",
+    operation,
+    stage: "succeeded",
+  });
+
   return NextResponse.json(successResponse, { status: 200 });
 }
 
@@ -559,6 +716,18 @@ export async function DELETE(request: NextRequest) {
   const reviewId = searchParams.get("reviewId");
 
   if (typeof reviewId !== "string" || reviewId.trim().length === 0) {
+    logReviewWorkflow({
+      context: {
+        method: request.method,
+        path,
+        requestId,
+      },
+      event: "review_mutation",
+      operation: "delete",
+      reason: "invalid_review_id",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "INVALID_REQUEST",
       message: "The review payload is invalid.",
@@ -566,6 +735,18 @@ export async function DELETE(request: NextRequest) {
       status: 400,
     });
   }
+
+  logReviewWorkflow({
+    context: {
+      method: request.method,
+      path,
+      requestId,
+      reviewId,
+    },
+    event: "review_mutation",
+    operation: "delete",
+    stage: "started",
+  });
 
   const supabase = await createClient();
   const userResult = await startSpan(
@@ -605,6 +786,19 @@ export async function DELETE(request: NextRequest) {
   }
 
   if (user === null) {
+    logReviewWorkflow({
+      context: {
+        method: request.method,
+        path,
+        requestId,
+        reviewId,
+      },
+      event: "review_mutation",
+      operation: "delete",
+      reason: "unauthorized",
+      stage: "rejected",
+    });
+
     return createReviewErrorResponse({
       code: "UNAUTHORIZED",
       message: "You must be logged in to delete a review.",
@@ -639,6 +833,20 @@ export async function DELETE(request: NextRequest) {
   }
 
   if (activeProfileRequirement) {
+    logReviewWorkflow({
+      context: {
+        method: request.method,
+        path,
+        requestId,
+        reviewId,
+        userId: user.id,
+      },
+      event: "review_mutation",
+      operation: "delete",
+      reason: "email_confirmation_required",
+      stage: "rejected",
+    });
+
     return activeProfileRequirement;
   }
 
@@ -684,6 +892,19 @@ export async function DELETE(request: NextRequest) {
   }
 
   const successResponse: ReviewSuccessResponse = { ok: true };
+
+  logReviewWorkflow({
+    context: {
+      method: request.method,
+      path,
+      requestId,
+      reviewId,
+      userId: user.id,
+    },
+    event: "review_mutation",
+    operation: "delete",
+    stage: "succeeded",
+  });
 
   return NextResponse.json(successResponse, { status: 200 });
 }

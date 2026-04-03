@@ -1,30 +1,15 @@
+import { getRequestId } from "@/app/api/getRequestId";
+import { getSpotifyErrorMetadata } from "@/server/spotify/getSpotifyErrorMetadata";
 import { getOrCreateAlbumSlug } from "@/server/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/server/slugs/getOrCreateArtistSlug";
-import { logServerError } from "@/server/logging/serverLogger";
+import { captureServerException } from "@/monitoring/captureServerException";
 import { createClient } from "@/server/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
 interface SlugResponseBody {
+  eventId?: string;
   requestId: string;
   slug?: string;
-}
-
-/**
- * Reuses an upstream request identifier when available so one failing lookup can
- * be correlated across platform logs and API responses.
- *
- * @param request - The incoming route handler request.
- * @returns A stable request identifier for this slug lookup.
- */
-function getRequestId(request: NextRequest): string {
-  const forwardedRequestId =
-    request.headers.get("x-request-id") ?? request.headers.get("x-vercel-id");
-
-  if (forwardedRequestId) {
-    return forwardedRequestId;
-  }
-
-  return crypto.randomUUID();
 }
 
 /**
@@ -71,21 +56,28 @@ export async function GET(request: NextRequest) {
       });
     }
   } catch (error: unknown) {
-    logServerError({
+    const spotifyErrorMetadata = getSpotifyErrorMetadata(error);
+    const eventId = captureServerException({
       context: {
         method: request.method,
         path: request.nextUrl.pathname,
         requestId,
         spotifyId,
         type,
+        ...spotifyErrorMetadata.context,
       },
       error,
       event: "slug_lookup_failed",
+      tags: {
+        route: request.nextUrl.pathname,
+        ...spotifyErrorMetadata.tags,
+      },
     });
 
     return NextResponse.json(
       {
         error: "Failed to retrieve slug",
+        eventId,
         requestId,
       },
       { status: 500 },

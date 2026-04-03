@@ -1,50 +1,64 @@
-/**
- * Indeed, searching for albums and artists could be done directly from the client, but having a server route allows us to:
- * - securely handle the Spotify API token without exposing it to the client
- */
-
 import { NextRequest, NextResponse } from "next/server";
-import { getSpotifyToken } from "@/server/spotify/getSpotifyToken";
-import type { SpotifySearchResponse } from "@/server/spotify/types";
+import { getRequestId } from "@/app/api/getRequestId";
+import { captureServerException } from "@/monitoring/captureServerException";
+import { getSpotifyErrorMetadata } from "@/server/spotify/getSpotifyErrorMetadata";
 import { mapSpotifySearchResponseToSearchResponseDTO } from "@/server/spotify/mapSpotifySearchResponseToSearchResponseDto";
+import { searchSpotify } from "@/server/spotify/searchSpotify";
 
+export interface SearchErrorResponseBody {
+  error: string;
+  eventId?: string;
+  requestId: string;
+}
+
+/**
+ * Hits Spotify API to retrieve search results.
+ * @param request - The incoming search request.
+ * @returns Search results or a request-correlated error response.
+ */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");
+  const requestId = getRequestId(request);
 
   if (!query) {
-    return NextResponse.json(
-      { error: "Missing query parameter" },
-      { status: 400 },
-    );
+    const responseBody: SearchErrorResponseBody = {
+      error: "Missing query parameter",
+      requestId,
+    };
+
+    return NextResponse.json(responseBody, { status: 400 });
   }
 
   try {
-    // Get Spotify access token (cached)
-    const accessToken = await getSpotifyToken();
-
-    // Search for both artists and albums
-    const searchResponse = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-        query,
-      )}&type=artist,album&limit=5`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    if (!searchResponse.ok) {
-      throw new Error("Failed to search Spotify API");
-    }
-
-    const searchData = (await searchResponse.json()) as SpotifySearchResponse;
+    const searchData = await searchSpotify(query);
     const responseDTO = mapSpotifySearchResponseToSearchResponseDTO(searchData);
 
     return NextResponse.json(responseDTO);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to search" }, { status: 500 });
+    const spotifyErrorMetadata = getSpotifyErrorMetadata(error);
+    const eventId = captureServerException({
+      context: {
+        method: request.method,
+        path: request.nextUrl.pathname,
+        query,
+        requestId,
+        ...spotifyErrorMetadata.context,
+      },
+      error,
+      event: "search_request_failed",
+      tags: {
+        route: request.nextUrl.pathname,
+        ...spotifyErrorMetadata.tags,
+      },
+    });
+
+    const responseBody: SearchErrorResponseBody = {
+      error: "Failed to search",
+      eventId,
+      requestId,
+    };
+
+    return NextResponse.json(responseBody, { status: 500 });
   }
 }

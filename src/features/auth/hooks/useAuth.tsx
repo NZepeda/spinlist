@@ -11,6 +11,7 @@ import {
 import { User } from "@supabase/supabase-js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { logoutAction } from "@/features/auth/actions/logoutAction";
+import { setAuthenticatedUser } from "@/monitoring/setAuthenticatedUser";
 import { createClient } from "@/server/supabase/client";
 import type { Profile } from "@/shared/types";
 import { mapProfileRowToProfile } from "@/server/database/mappers/mapProfileRowToProfile";
@@ -85,6 +86,10 @@ export function AuthProvider({
 
     dispatch({ type: "CLEAR_AUTH" });
   }, [initialUser]);
+
+  useEffect(() => {
+    setAuthenticatedUser(state.user?.id ?? null);
+  }, [state.user?.id]);
 
   const profileQuery = useQuery<Profile | null>({
     queryKey: ["profile", state.user?.id],

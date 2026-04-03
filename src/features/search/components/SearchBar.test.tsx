@@ -230,10 +230,7 @@ describe("SearchBar", () => {
     fetchMock.mockResolvedValue(createJsonResponse(createSearchResults()));
 
     const { container } = render(
-      <SearchBar
-        placeholder="Search for an album or artist"
-        variant="hero"
-      />,
+      <SearchBar placeholder="Search for an album or artist" variant="hero" />,
     );
 
     await typeDesktopSearchValue(

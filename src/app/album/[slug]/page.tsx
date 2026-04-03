@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { startSpan } from "@/monitoring/startSpan";
 import { getImageUrl } from "@/server/spotify/getImageUrl";
 import { getAlbum } from "@/features/albums/server/getAlbum";
 import { AlbumPageShell } from "@/features/reviews/components/AlbumPageShell";
@@ -7,35 +8,41 @@ import { getAlbumCommunitySummary } from "@/features/reviews/server/getAlbumComm
 import { getAlbumReviewFeed } from "@/features/reviews/server/getAlbumReviewFeed";
 
 /**
- * Album page displaying information about the Album.
- * If the user is logged in, it displays the review form.
- * Otherwise, prompts the user to log in.
+ * Displays the selected album with its community context and review experience.
  */
 export default async function AlbumPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  return await startSpan(
+    {
+      name: "page.album.load",
+      op: "ui.page",
+    },
+    async () => {
+      const { slug } = await params;
 
-  const album = await getAlbum(slug);
+      const album = await getAlbum(slug);
 
-  if (!album) {
-    notFound();
-  }
+      if (!album) {
+        notFound();
+      }
 
-  const imageUrl = getImageUrl(album.images, "large");
-  const [communitySummary, reviewFeed] = await Promise.all([
-    getAlbumCommunitySummary(album),
-    getAlbumReviewFeed(album),
-  ]);
+      const imageUrl = getImageUrl(album.images, "large");
+      const [communitySummary, reviewFeed] = await Promise.all([
+        getAlbumCommunitySummary(album),
+        getAlbumReviewFeed(album),
+      ]);
 
-  return (
-    <AlbumPageShell
-      album={album}
-      communitySummary={communitySummary}
-      imageUrl={imageUrl}
-      reviewFeed={reviewFeed}
-    />
+      return (
+        <AlbumPageShell
+          album={album}
+          communitySummary={communitySummary}
+          imageUrl={imageUrl}
+          reviewFeed={reviewFeed}
+        />
+      );
+    },
   );
 }

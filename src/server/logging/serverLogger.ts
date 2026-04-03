@@ -15,6 +15,7 @@ interface SerializedError {
 interface ServerErrorLogEntry {
   context?: Record<string, LogValue>;
   error: SerializedError;
+  eventId?: string;
   event: string;
   level: "error";
   service: "spinlist-web";
@@ -25,6 +26,7 @@ interface LogServerErrorParams {
   context?: LogContext;
   error: unknown;
   event: string;
+  eventId?: string;
 }
 
 /**
@@ -95,18 +97,19 @@ function sanitizeContext(
 }
 
 /**
- * Emits a structured server-side error log that can be indexed by the hosting platform.
- *
- * @param params - The event name, error, and request-scoped metadata for the failure.
+ * Logs the server error.
+ * In production this gets logged to Vercel.
  */
 export function logServerError({
   context,
   error,
   event,
+  eventId,
 }: LogServerErrorParams): void {
   const logEntry: ServerErrorLogEntry = {
     context: sanitizeContext(context),
     error: serializeError(error),
+    eventId,
     event,
     level: "error",
     service: "spinlist-web",

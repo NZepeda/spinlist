@@ -1,24 +1,28 @@
 import { createClient } from "@/server/supabase/server";
+import { startSpan } from "@/monitoring/startSpan";
 import { resolveAlbumSlug } from "@/server/slugs/resolveAlbumSlug";
 import type { Album } from "@/shared/types";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
 
 /**
- * Returns the database entry for the album of the given slug.
- * Attempts to retrieve from our database first, and falls back to Spotify if it cannot be found.
- *
- * @param slug - The album's URL-friendly slug
- * @returns The album data, or undefined if not found
+ * Loads the canonical album record for a public album slug.
  */
 export async function getAlbum(slug: string): Promise<Album | undefined> {
-  const supabase = await createClient();
+  return await startSpan(
+    {
+      name: "page.album.record_load",
+      op: "db.supabase",
+    },
+    async () => {
+      const supabase = await createClient();
 
-  const album = await resolveAlbumSlug(supabase, slug);
+      const album = await resolveAlbumSlug(supabase, slug);
 
-  if (!album) {
-    // We cannot resolve the URL being accessed if we don't have the slug
-    return undefined;
-  }
+      if (!album) {
+        return undefined;
+      }
 
-  return mapAlbumRowToAlbum(album);
+      return mapAlbumRowToAlbum(album);
+    },
+  );
 }

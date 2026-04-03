@@ -87,11 +87,6 @@ describe("Home page", () => {
 
     expect(screen.getByText("Find the album.")).toBeInTheDocument();
     expect(screen.getByText("Log the feeling.")).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(
-        "Search for an album, artist, or obsession...",
-      ),
-    ).toBeInTheDocument();
     expect(screen.queryByText("Why search first")).not.toBeInTheDocument();
     expect(
       screen.queryByText("Albums worth logging first"),
@@ -120,9 +115,7 @@ describe("Home page", () => {
     await renderHome();
 
     await user.type(
-      screen.getByPlaceholderText(
-        "Search for an album, artist, or obsession...",
-      ),
+      screen.getByPlaceholderText("Search for an album or artist"),
       "beyonce",
     );
     await waitForSearchDebounce();

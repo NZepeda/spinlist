@@ -1,4 +1,6 @@
 import { createClient } from "@/server/supabase/server";
+import { captureException } from "@/monitoring/captureException";
+import { startSpan } from "@/monitoring/startSpan";
 import type { Album, AlbumTrack } from "@/shared/types";
 
 interface ReviewSummaryRow {
@@ -28,7 +30,7 @@ export interface AlbumCommunitySummary {
 }
 
 /**
- * Builds the rating histogram buckets used in the community summary.
+ * Keeps the community chart consistent even when some ratings have not been used yet.
  */
 function buildRatingHistogram(
   reviews: ReviewSummaryRow[],
@@ -51,7 +53,7 @@ function buildRatingHistogram(
 }
 
 /**
- * Builds favorite-track counts and percentages from the album's reviews.
+ * Summarizes favorite-song picks so standout tracks can be identified from listener activity.
  */
 function buildFavoriteTracks(
   albumTracks: AlbumTrack[],
@@ -92,7 +94,7 @@ function buildFavoriteTracks(
 }
 
 /**
- * Builds the album community summary from the album record and review rows.
+ * Combines album stats and review rows into a single community summary.
  */
 export function buildAlbumCommunitySummary(
   album: Album,
@@ -111,18 +113,39 @@ export function buildAlbumCommunitySummary(
 }
 
 /**
- * Loads the community summary for an album from the server.
+ * Loads community review aggregates while preserving a graceful fallback when review data is unavailable.
  */
 export async function getAlbumCommunitySummary(
   album: Album,
 ): Promise<AlbumCommunitySummary> {
   const supabase = await createClient();
-  const { data: reviews, error } = await supabase
-    .from("reviews")
-    .select("rating, favorite_track_id")
-    .eq("album_id", album.id);
+  const { data: reviews, error } = await startSpan(
+    {
+      name: "page.album.community_summary",
+      op: "db.supabase",
+    },
+    async () =>
+      await supabase
+        .from("reviews")
+        .select("rating, favorite_track_id")
+        .eq("album_id", album.id),
+  );
 
   if (error || !reviews) {
+    if (error) {
+      captureException(error, {
+        context: {
+          albumId: album.id,
+          path: `/album/${album.slug}`,
+        },
+        tags: {
+          dependency: "supabase",
+          pageType: "album",
+          supabaseOperation: "page.album.community_summary",
+        },
+      });
+    }
+
     // Preserve the known album-level stats while making the query failure explicit.
     return {
       averageRating: album.avg_rating,

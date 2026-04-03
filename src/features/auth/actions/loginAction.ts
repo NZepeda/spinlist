@@ -8,6 +8,8 @@ import {
   mapLoginActionError,
 } from "@/features/auth/mapAuthError";
 import { validateLoginActionInput } from "@/features/auth/schemas/loginSchema";
+import { logWorkflow } from "@/server/logging/logWorkflow";
+import { logServerError } from "@/server/logging/serverLogger";
 import { createClient } from "@/server/supabase/server";
 
 /**
@@ -46,6 +48,15 @@ export async function loginAction(
   let redirectDestination: string | null = null;
 
   try {
+    logWorkflow({
+      context: {
+        hasEmail: validatedInput.data.email.length > 0,
+      },
+      event: "auth_login",
+      stage: "started",
+      workflow: "auth_login",
+    });
+
     const { error } = await supabase.auth.signInWithPassword({
       email: validatedInput.data.email,
       password: validatedInput.data.password,
@@ -53,15 +64,36 @@ export async function loginAction(
 
     if (error) {
       if (isUnconfirmedEmailError(error.message)) {
+        logWorkflow({
+          context: {
+            reason: "email_unconfirmed",
+          },
+          event: "auth_login",
+          stage: "rejected",
+          workflow: "auth_login",
+        });
+
         redirectDestination = `/signup/confirm-email?status=login&email=${encodeURIComponent(validatedInput.data.email)}`;
       } else {
         return mapLoginActionError(error);
       }
     }
   } catch (error) {
-    console.error("Error signing in:", error);
+    logServerError({
+      context: {
+        workflow: "auth_login",
+      },
+      error,
+      event: "auth_login_failed",
+    });
     return createUnexpectedAuthActionState();
   }
+
+  logWorkflow({
+    event: "auth_login",
+    stage: "succeeded",
+    workflow: "auth_login",
+  });
 
   if (redirectDestination) {
     redirect(redirectDestination);

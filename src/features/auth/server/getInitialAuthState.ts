@@ -1,5 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { mapProfileRowToProfile } from "@/server/database/mappers/mapProfileRowToProfile";
+import { logServerError } from "@/server/logging/serverLogger";
 import { createClient } from "@/server/supabase/server";
 import type { Profile } from "@/shared/types";
 
@@ -22,7 +23,13 @@ export async function getInitialAuthState(): Promise<InitialAuthState> {
   } = await supabase.auth.getUser();
 
   if (userError) {
-    console.error("Error reading initial auth user:", userError);
+    logServerError({
+      context: {
+        workflow: "auth_bootstrap",
+      },
+      error: userError,
+      event: "auth_bootstrap_user_failed",
+    });
     return {
       profile: null,
       user: null,
@@ -43,7 +50,14 @@ export async function getInitialAuthState(): Promise<InitialAuthState> {
     .maybeSingle();
 
   if (profileError) {
-    console.error("Error reading initial auth profile:", profileError);
+    logServerError({
+      context: {
+        userId: user.id,
+        workflow: "auth_bootstrap",
+      },
+      error: profileError,
+      event: "auth_bootstrap_profile_failed",
+    });
     return {
       profile: null,
       user,

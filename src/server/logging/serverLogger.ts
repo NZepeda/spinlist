@@ -1,4 +1,10 @@
+import * as Sentry from "@sentry/nextjs";
+import { sanitizeObservabilityContext } from "@/monitoring/sanitizeObservabilityContext";
+
 type LogValue = boolean | number | string | null;
+type LogLevel = "error" | "info" | "warn";
+
+const SERVICE_NAME = "spinlist-web";
 
 export interface LogContext {
   [key: string]: LogValue | undefined;
@@ -12,14 +18,10 @@ interface SerializedError {
   thrownValue?: string;
 }
 
-interface ServerErrorLogEntry {
-  context?: Record<string, LogValue>;
-  error: SerializedError;
-  eventId?: string;
+interface LogServerEventParams {
+  context?: LogContext;
   event: string;
-  level: "error";
-  service: "spinlist-web";
-  timestamp: string;
+  level: Exclude<LogLevel, "error">;
 }
 
 interface LogServerErrorParams {
@@ -81,24 +83,79 @@ function serializeError(error: unknown): SerializedError {
 function sanitizeContext(
   context?: LogContext,
 ): Record<string, LogValue> | undefined {
-  if (!context) {
-    return undefined;
-  }
-
-  const sanitizedContext = Object.fromEntries(
-    Object.entries(context).filter(([, value]) => value !== undefined),
-  ) as Record<string, LogValue>;
-
-  if (Object.keys(sanitizedContext).length === 0) {
-    return undefined;
-  }
-
-  return sanitizedContext;
+  return sanitizeObservabilityContext(context);
 }
 
 /**
- * Logs the server error.
- * In production this gets logged to Vercel.
+ * Maps the internal log level to the matching Sentry structured logger method.
+ *
+ * @param level - The internal log level.
+ * @returns The Sentry logger function for that level.
+ */
+function getSentryLogMethod(
+  level: LogLevel,
+): (message: string, attributes?: Record<string, unknown>) => void {
+  if (level === "error") {
+    return Sentry.logger.error;
+  }
+
+  if (level === "warn") {
+    return Sentry.logger.warn;
+  }
+
+  return Sentry.logger.info;
+}
+
+/**
+ * Writes a structured log entry through Sentry so logs can be stored and queried alongside errors and traces.
+ *
+ * @param params - The Sentry log payload.
+ */
+function writeServerLog(params: {
+  context?: LogContext;
+  error?: unknown;
+  event: string;
+  eventId?: string;
+  level: LogLevel;
+}): void {
+  const sentryLog = getSentryLogMethod(params.level);
+  const serializedError =
+    params.error !== undefined ? serializeError(params.error) : undefined;
+  const attributes = sanitizeContext({
+    ...params.context,
+    errorDigest: serializedError?.digest,
+    errorMessage: serializedError?.message,
+    errorName: serializedError?.name,
+    errorStack: serializedError?.stack,
+    eventId: params.eventId,
+    service: SERVICE_NAME,
+    thrownValue: serializedError?.thrownValue,
+  });
+
+  sentryLog(params.event, attributes);
+}
+
+/**
+ * Logs a structured server event that does not include an error payload.
+ *
+ * @param params - The server event metadata.
+ */
+function logServerEvent({
+  context,
+  event,
+  level,
+}: LogServerEventParams): void {
+  writeServerLog({
+    context: sanitizeContext(context),
+    event,
+    level,
+  });
+}
+
+/**
+ * Logs a structured server error.
+ *
+ * @param params - The server error payload.
  */
 export function logServerError({
   context,
@@ -106,15 +163,43 @@ export function logServerError({
   event,
   eventId,
 }: LogServerErrorParams): void {
-  const logEntry: ServerErrorLogEntry = {
-    context: sanitizeContext(context),
-    error: serializeError(error),
-    eventId,
+  writeServerLog({
+    context,
+    error,
     event,
+    eventId,
     level: "error",
-    service: "spinlist-web",
-    timestamp: new Date().toISOString(),
-  };
+  });
+}
 
-  console.error(JSON.stringify(logEntry));
+/**
+ * Logs an informational server event for normal workflow progress.
+ *
+ * @param params - The server event metadata.
+ */
+export function logServerInfo(params: {
+  context?: LogContext;
+  event: string;
+}): void {
+  logServerEvent({
+    context: params.context,
+    event: params.event,
+    level: "info",
+  });
+}
+
+/**
+ * Logs a warning server event for expected but important workflow rejections.
+ *
+ * @param params - The server event metadata.
+ */
+export function logServerWarning(params: {
+  context?: LogContext;
+  event: string;
+}): void {
+  logServerEvent({
+    context: params.context,
+    event: params.event,
+    level: "warn",
+  });
 }

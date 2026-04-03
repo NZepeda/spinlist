@@ -8,6 +8,8 @@ import {
   mapSignUpActionError,
 } from "@/features/auth/mapAuthError";
 import { validateSignUpActionInput } from "@/features/auth/schemas/signupSchema";
+import { logWorkflow } from "@/server/logging/logWorkflow";
+import { logServerError } from "@/server/logging/serverLogger";
 import { createClient } from "@/server/supabase/server";
 import { getSiteUrl } from "@/server/url/getSiteUrl";
 
@@ -38,7 +40,16 @@ export async function signupAction(
   const siteUrl = await getSiteUrl();
 
   try {
-    console.log("Sign up with emailRedirectTo: ", siteUrl);
+    logWorkflow({
+      context: {
+        hasEmail: validatedInput.data.email.length > 0,
+        usernameLength: validatedInput.data.username.length,
+      },
+      event: "auth_signup",
+      stage: "started",
+      workflow: "auth_signup",
+    });
+
     const { error } = await supabase.auth.signUp({
       email: validatedInput.data.email,
       password: validatedInput.data.password,
@@ -54,9 +65,21 @@ export async function signupAction(
       return mapSignUpActionError(error);
     }
   } catch (error) {
-    console.error("Error signing up:", error);
+    logServerError({
+      context: {
+        workflow: "auth_signup",
+      },
+      error,
+      event: "auth_signup_failed",
+    });
     return createUnexpectedAuthActionState();
   }
+
+  logWorkflow({
+    event: "auth_signup",
+    stage: "succeeded",
+    workflow: "auth_signup",
+  });
 
   redirect(
     `/signup/confirm-email?email=${encodeURIComponent(validatedInput.data.email)}`,

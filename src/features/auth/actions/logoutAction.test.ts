@@ -52,6 +52,8 @@ describe("logoutAction", () => {
     createClientMock.mockReset();
     redirectMock.mockClear();
     vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "info").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
   });
 
   afterEach(() => {

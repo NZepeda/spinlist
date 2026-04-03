@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
+import { addBreadcrumb } from "@/monitoring/addBreadcrumb";
+import { startSpan } from "@/monitoring/startSpan";
 import type { Artist } from "@/shared/types";
 import { getSpotifyToken } from "@/server/spotify/getSpotifyToken";
+import { SpotifyDependencyError } from "@/server/spotify/SpotifyDependencyError";
+import type { SpotifyArtistFull } from "@/server/spotify/types";
 import { getImageUrl } from "./getImageUrl";
 
 /**
@@ -11,34 +15,53 @@ import { getImageUrl } from "./getImageUrl";
  * @throws Calls notFound() for 404 responses, throws Error for other failures
  */
 export async function getArtist(id: string): Promise<Artist> {
-  const accessToken = await getSpotifyToken();
-
-  const response = await fetch(`https://api.spotify.com/v1/artists/${id}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+  return await startSpan(
+    {
+      name: "spotify.artist.fetch",
+      op: "http.client.spotify",
     },
-    cache: "no-store",
-  });
+    async () => {
+      const accessToken = await getSpotifyToken();
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      notFound();
-    }
-    throw new Error("Failed to fetch artist from Spotify API");
-  }
+      const response = await fetch(`https://api.spotify.com/v1/artists/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      });
 
-  // TODO: Fix this
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 404) {
+          notFound();
+        }
 
-  return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    id: data.id,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    name: data.name,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-    image: getImageUrl(data.images, "medium"),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    externalUrl: data.external_urls?.spotify || "",
-  };
+        addBreadcrumb({
+          category: "spotify.request",
+          data: {
+            operation: "spotify.artist",
+            resource: `artists/${id}`,
+            status: response.status,
+          },
+          level: "error",
+          message: "Spotify artist request failed",
+        });
+
+        throw new SpotifyDependencyError({
+          message: `Failed to fetch artist from Spotify API: ${response.status} ${response.statusText}`,
+          operation: "spotify.artist",
+          resource: `artists/${id}`,
+          status: response.status,
+        });
+      }
+
+      const data = (await response.json()) as SpotifyArtistFull;
+
+      return {
+        id: data.id,
+        name: data.name,
+        image: getImageUrl(data.images, "medium"),
+        externalUrl: data.external_urls?.spotify || "",
+      };
+    },
+  );
 }

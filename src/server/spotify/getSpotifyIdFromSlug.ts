@@ -1,11 +1,12 @@
 import { SupabaseClient } from "@supabase/supabase-js";
+import { startSpan } from "@/monitoring/startSpan";
 import { isId } from "../slugs/isId";
 import { resolveArtistSlug } from "../slugs/resolveArtistSlug";
 import { resolveAlbumSlug } from "../slugs/resolveAlbumSlug";
 import type { Database } from "@/server/database";
 
 /**
- * Returns the items's Spotify ID from the given slug.
+ * Translates public album and artist slugs into their corresponding Spotify ids.
  */
 export const getSpotifyIdFromSlug = async (
   slug: string,
@@ -20,7 +21,13 @@ export const getSpotifyIdFromSlug = async (
 
   const resolveSlug =
     itemType === "artist" ? resolveArtistSlug : resolveAlbumSlug;
-  const result = await resolveSlug(supabase, slug);
+  const result = await startSpan(
+    {
+      name: `page.${itemType}.slug_lookup`,
+      op: "db.supabase",
+    },
+    async () => await resolveSlug(supabase, slug),
+  );
 
   return result?.spotify_id ?? null;
 };

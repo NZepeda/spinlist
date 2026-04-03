@@ -1,17 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/server/database";
+import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 
 /**
- * Resolves an artist slug to the full artist record.
- * Returns null if the slug doesn't exist in the database.
- *
- * @param supabase - The Supabase client instance
- * @param slug - The artist slug to resolve
- * @returns The full artist record, or null if not found
- *
- * @example
- * const artist = await resolveArtistSlug(supabase, "turnstile");
- * // Returns the full artist record including id, spotify_id, name, etc.
+ * Finds the artist record that matches a public artist slug.
  */
 export async function resolveArtistSlug(
   supabase: SupabaseClient<Database>,
@@ -21,9 +13,19 @@ export async function resolveArtistSlug(
     .from("artists")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    throw new SupabaseDependencyError({
+      cause: error,
+      code: error.code ?? undefined,
+      message: `supabase.artist_slug.resolve failed: ${error.message}`,
+      operation: "supabase.artist_slug.resolve",
+      resource: "artists",
+    });
+  }
+
+  if (!data) {
     return null;
   }
 

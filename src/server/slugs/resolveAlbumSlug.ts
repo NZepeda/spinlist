@@ -1,17 +1,9 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Tables } from "@/server/database";
+import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 
 /**
- * Resolves an album slug to the full album record.
- * Returns null if the slug doesn't exist in the database.
- *
- * @param supabase - The Supabase client instance
- * @param slug - The album slug to resolve
- * @returns The full album record, or null if not found
- *
- * @example
- * const album = await resolveAlbumSlug(supabase, "turnstile-glow-on");
- * // Returns the full album record including id, spotify_id, title, etc.
+ * Finds the album record that matches a public album slug.
  */
 export async function resolveAlbumSlug(
   supabase: SupabaseClient<Database>,
@@ -21,9 +13,19 @@ export async function resolveAlbumSlug(
     .from("albums")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
+    throw new SupabaseDependencyError({
+      cause: error,
+      code: error.code ?? undefined,
+      message: `supabase.album_slug.resolve failed: ${error.message}`,
+      operation: "supabase.album_slug.resolve",
+      resource: "albums",
+    });
+  }
+
+  if (!data) {
     return null;
   }
 

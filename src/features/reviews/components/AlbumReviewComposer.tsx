@@ -3,7 +3,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
@@ -54,11 +53,7 @@ export function AlbumReviewComposer({
         className="grid-rows-[auto_minmax(0,1fr)_auto] gap-0 md:top-[50%] md:left-[50%] md:h-auto md:max-h-[min(88dvh,42rem)] md:w-[min(100%-2rem,42rem)] md:max-w-none md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-2xl md:border md:p-6"
       >
         <DialogHeader className="pb-6 pr-12 text-left">
-          <DialogTitle>Review details</DialogTitle>
-          <DialogDescription>
-            Add a note now or come back later. Nothing here is published until
-            you save it explicitly.
-          </DialogDescription>
+          <DialogTitle>{album.title}</DialogTitle>
         </DialogHeader>
 
         <div className="min-h-0 space-y-4 overflow-y-auto pb-6">
@@ -85,9 +80,6 @@ export function AlbumReviewComposer({
                 </SelectOption>
               ))}
             </Select>
-            <p className="text-xs text-muted-foreground">
-              Pick one track if a clear standout emerged.
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -100,7 +92,7 @@ export function AlbumReviewComposer({
             <Textarea
               id="album-review-composer-text"
               maxLength={2000}
-              placeholder="What kept pulling you back in?"
+              placeholder="What are your thoughts?"
               value={reviewState.reviewText}
               aria-invalid={Boolean(reviewState.composerError)}
               onChange={(event) => {
@@ -108,7 +100,6 @@ export function AlbumReviewComposer({
               }}
             />
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Short notes are enough.</span>
               <span>{reviewState.reviewText.length}/2000</span>
             </div>
           </div>

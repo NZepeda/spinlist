@@ -6,7 +6,7 @@ import type { SearchBarVariant } from "@/features/search/types";
 
 interface SearchDialogButtonProps {
   onOpen: () => void;
-  placeholder: string;
+  placeholder?: string;
   variant: SearchBarVariant;
 }
 

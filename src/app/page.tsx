@@ -55,7 +55,7 @@ export default async function Home({ searchParams }: HomePageProps) {
           </p>
           <div className="mt-7">
             <SearchBar
-              placeholder="Search for an album, artist, or obsession..."
+              placeholder="Search for an album or artist"
               variant="hero"
             />
           </div>

@@ -55,27 +55,25 @@ function StarIcon({
   colorVariant?: StarColorVariant;
 }) {
   const colorClass = COLOR_CLASSES[colorVariant];
+  const sharedStarClassName = cn(sizeClass, "absolute inset-0");
 
-  if (fillState === "empty") {
-    return (
-      <Star
-        className={cn(sizeClass, "text-muted-foreground fill-muted-foreground")}
-      />
-    );
-  }
-  if (fillState === "full") {
-    return <Star className={cn(sizeClass, colorClass)} />;
-  }
-  // Half: overlay a clipped filled star on top of empty star
   return (
-    <span className="relative inline-flex">
+    <span className={cn(sizeClass, "relative inline-block shrink-0 align-middle")}>
       <Star
-        className={cn(sizeClass, "text-muted-foreground fill-muted-foreground")}
+        className={cn(
+          sharedStarClassName,
+          "text-muted-foreground fill-muted-foreground",
+        )}
       />
-      <Star
-        className={cn(sizeClass, "absolute left-0 top-0", colorClass)}
-        style={{ clipPath: "inset(0 50% 0 0)" }}
-      />
+      {fillState === "full" ? (
+        <Star className={cn(sharedStarClassName, colorClass)} />
+      ) : null}
+      {fillState === "half" ? (
+        <Star
+          className={cn(sharedStarClassName, colorClass)}
+          style={{ clipPath: "inset(0 50% 0 0)" }}
+        />
+      ) : null}
     </span>
   );
 }

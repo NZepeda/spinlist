@@ -1,20 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-} from "@/shared/ui/command";
+import { Command, CommandList } from "@/shared/ui/command";
 import type { MobileSearchDialogProps } from "@/features/search/types";
+import { AnimatedSearchBar } from "./AnimatedSearchBar";
 import { SearchDialogButton } from "./SearchDialogButton";
 import { SearchResultsList } from "./SearchResultsList";
 
@@ -64,7 +59,7 @@ export function MobileSearchDialog(props: MobileSearchDialogProps) {
   }, [isOpen]);
 
   /**
-   * Updates the mobile query while clearing stale selection errors between attempts.
+   * Updates the query while clearing stale selection errors between attempts.
    *
    * @param value - The current mobile input value.
    */
@@ -83,8 +78,6 @@ export function MobileSearchDialog(props: MobileSearchDialogProps) {
 
   /**
    * Handles mobile dialog lifecycle so dismissed sessions start from a fresh search state.
-   *
-   * @param open - Whether the mobile search dialog should stay open.
    */
   function handleOpenChange(open: boolean): void {
     setIsOpen(open);
@@ -109,27 +102,21 @@ export function MobileSearchDialog(props: MobileSearchDialogProps) {
         className="grid-rows-[auto_minmax(0,1fr)] md:hidden"
         showCloseButton
       >
-        <DialogHeader className="text-left">
-          <DialogTitle>Search Spinlist</DialogTitle>
-          <DialogDescription>
-            Search albums and artists, then jump straight into the music.
-          </DialogDescription>
+        <DialogHeader className="text-left h-6">
+          <DialogTitle className="text-2xl">Search</DialogTitle>
         </DialogHeader>
         <Command
           shouldFilter={false}
           className="flex h-full flex-col rounded-[1.75rem] border border-border/70 bg-surface/95 p-3 shadow-none backdrop-blur"
         >
-          <div className="flex w-full items-center gap-3 rounded-[1.35rem] border border-border/70 bg-background px-4 py-3">
-            <Search className="h-5 w-5 text-muted-foreground" />
-            <CommandInput
-              ref={inputRef}
-              autoFocus
-              placeholder={placeholder}
-              value={searchValue}
-              onValueChange={handleValueChange}
-              className="flex w-full rounded-md bg-transparent py-3 text-base outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-            />
-          </div>
+          <AnimatedSearchBar
+            autoFocus
+            className="rounded-[1.35rem] border border-border/70 bg-background px-4 py-3 [&_[data-slot=animated-search-icon]]:h-5 [&_[data-slot=animated-search-icon]]:w-5 [&_[data-slot=animated-search-icon]]:text-muted-background [&_[data-slot=animated-search-input]]:py-3 [&_[data-slot=animated-search-input]]:text-base [&_[data-slot=animated-search-prompt]]:py-3 [&_[data-slot=animated-search-prompt]]:text-base"
+            inputRef={inputRef}
+            placeholder={placeholder}
+            value={searchValue}
+            onValueChange={handleValueChange}
+          />
           {displayState.kind === "idle" ? (
             <div className="mt-4 flex-1">
               <SearchPromptMessage />

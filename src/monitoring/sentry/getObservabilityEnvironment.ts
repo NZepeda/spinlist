@@ -1,3 +1,5 @@
+const VALID_ENVIRONMENTS = ["production", "preview", "development"];
+
 /**
  * Normalizes the deployment environment into stable Sentry environment names so preview traffic is visible without being confused with production or local usage.
  *
@@ -10,16 +12,13 @@ export function getObservabilityEnvironment(): string {
     return configuredEnvironment;
   }
 
-  if (process.env.VERCEL_ENV === "production") {
-    return "production";
-  }
+  const vercelEnvironment = process.env.VERCEL_ENV?.trim();
 
-  if (process.env.VERCEL_ENV === "preview") {
-    return "preview";
-  }
-
-  if (process.env.NODE_ENV === "production") {
-    return "production";
+  if (vercelEnvironment && !VALID_ENVIRONMENTS.includes(vercelEnvironment)) {
+    throw new Error(
+      "Invalid VERCEL_ENV value. Expected one of: " +
+        VALID_ENVIRONMENTS.join(", "),
+    );
   }
 
   return "development";

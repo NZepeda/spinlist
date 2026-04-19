@@ -24,6 +24,7 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - JSDoc comments should be focused on ensuring that future readers understand what the function at a quick glance.
 - JSDoc comments should be simple and easy to understand. Do not add fluff words or make the comments too technical. The goal is to make the code more accessible, not to make it more complex. A non-technical user should be able to read the comments and get a general understanding of what the code is doing without needing to understand the technical details.
 - JSDoc comments should describe the enduring business or domain purpose of a function or component in plain language, without referencing technical mechanics or assuming a specific caller, screen, or usage context unless that context is intrinsic to the abstraction.
+- You are to write code that is not just functional, but is also clean, maintainable, and well-documented. The code should be written in a way that is easy for other developers to understand and work with in the future. This means following best practices for code organization, naming conventions, and documentation. The goal is to create code that is not only effective but also a pleasure to work with for any developer who may need to interact with it down the line.
 
 ## Implementation Expectations
 
@@ -49,23 +50,26 @@ Use this file as a high-priority repository guide for AI agents working in this 
 ## Supabase Expectations
 
 - Always run Supabase CLI commands through `pnpm exec supabase`.
-- Never make schema changes directly in Supabase Studio without immediately running `pnpm exec supabase db diff` to capture them.
+- Define table shape in `src/lib/db/schema.ts` and treat it as the source of truth for the relational data model.
+- Generate SQL migrations from the Drizzle schema with `pnpm exec drizzle-kit generate`.
+- Keep `supabase/migrations` as the reviewed SQL artifact that Supabase applies.
+- Use custom SQL migrations for database-native behavior that is not modeled cleanly in Drizzle, such as RLS policies, grants, triggers, functions, and views.
+- Never maintain a second hand-written table schema in `supabase/schemas/*.sql`.
 - Never manually edit migration files after they have been pushed to the remote project.
-- Always run `pnpm exec supabase db diff` before committing to confirm there are no uncommitted schema changes.
-- If `pnpm exec supabase db diff` outputs anything unexpected, investigate before proceeding.
+- Do not make table or column changes directly in Supabase Studio.
 
 ## Supabase Database Workflow
 
-This project uses declarative schema files in `supabase/schemas/*.sql` as the source of truth.
+This project uses the Drizzle schema in `src/lib/db/schema.ts` as the source of truth for the relational data model.
 
-1. Update the declarative schema files first.
-2. If you add a new schema file, update `supabase/config.toml` and place the file in `schema_paths` in dependency order.
-3. Generate a migration from the declarative diff:
+1. Update `src/lib/db/schema.ts` first.
+2. Generate a migration from the Drizzle schema:
 
    ```bash
-   pnpm exec supabase db diff -f descriptive_migration_name
+   pnpm exec drizzle-kit generate
    ```
 
+3. Review the generated SQL in `supabase/migrations` and add a custom migration when the change requires database-native SQL.
 4. Verify the migration locally:
 
    ```bash

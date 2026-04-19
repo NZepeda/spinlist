@@ -20,8 +20,11 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Add inline code comments explaining the more complex logic.
 - Think of the code from the perspectives of both a Principal Engineer and a new team member who is not familiar with the codebase. Write code that is clear and maintainable for both.
 - All JSDoc comments should should be one sentence per line break.
-- JSDoc comments should not be used to explain "what" the code is doing, but rather "why" the code is doing it, or to provide additional context that is not immediately clear from the code itself.
 - JSDoc comments/inline code comments should NEVER under any circumstance reference an implementation plane. There should be no reference of "phases", "plans" or "steps".
+- JSDoc comments should be focused on ensuring that future readers understand what the function at a quick glance.
+- JSDoc comments should be simple and easy to understand. Do not add fluff words or make the comments too technical. The goal is to make the code more accessible, not to make it more complex. A non-technical user should be able to read the comments and get a general understanding of what the code is doing without needing to understand the technical details.
+- JSDoc comments should describe the enduring business or domain purpose of a function or component in plain language, without referencing technical mechanics or assuming a specific caller, screen, or usage context unless that context is intrinsic to the abstraction.
+- You are to write code that is not just functional, but is also clean, maintainable, and well-documented. The code should be written in a way that is easy for other developers to understand and work with in the future. This means following best practices for code organization, naming conventions, and documentation. The goal is to create code that is not only effective but also a pleasure to work with for any developer who may need to interact with it down the line.
 
 ## Implementation Expectations
 
@@ -31,6 +34,7 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Keep single-use helpers close to the component or module that uses them.
 - Extract shared logic into focused modules when it is reused in multiple places.
 - Avoid mixing unrelated responsibilities in the same file.
+- If following a TODO.md file, steps are complete, mark them as complete.
 
 ## Dependency Expectations
 
@@ -46,23 +50,26 @@ Use this file as a high-priority repository guide for AI agents working in this 
 ## Supabase Expectations
 
 - Always run Supabase CLI commands through `pnpm exec supabase`.
-- Never make schema changes directly in Supabase Studio without immediately running `pnpm exec supabase db diff` to capture them.
+- Define table shape in `src/lib/db/schema.ts` and treat it as the source of truth for the relational data model.
+- Generate SQL migrations from the Drizzle schema with `pnpm exec drizzle-kit generate`.
+- Keep `supabase/migrations` as the reviewed SQL artifact that Supabase applies.
+- Use custom SQL migrations for database-native behavior that is not modeled cleanly in Drizzle, such as RLS policies, grants, triggers, functions, and views.
+- Never maintain a second hand-written table schema in `supabase/schemas/*.sql`.
 - Never manually edit migration files after they have been pushed to the remote project.
-- Always run `pnpm exec supabase db diff` before committing to confirm there are no uncommitted schema changes.
-- If `pnpm exec supabase db diff` outputs anything unexpected, investigate before proceeding.
+- Do not make table or column changes directly in Supabase Studio.
 
 ## Supabase Database Workflow
 
-This project uses declarative schema files in `supabase/schemas/*.sql` as the source of truth.
+This project uses the Drizzle schema in `src/lib/db/schema.ts` as the source of truth for the relational data model.
 
-1. Update the declarative schema files first.
-2. If you add a new schema file, update `supabase/config.toml` and place the file in `schema_paths` in dependency order.
-3. Generate a migration from the declarative diff:
+1. Update `src/lib/db/schema.ts` first.
+2. Generate a migration from the Drizzle schema:
 
    ```bash
-   pnpm exec supabase db diff -f descriptive_migration_name
+   pnpm exec drizzle-kit generate
    ```
 
+3. Review the generated SQL in `supabase/migrations` and add a custom migration when the change requires database-native SQL.
 4. Verify the migration locally:
 
    ```bash
@@ -97,6 +104,9 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 - After making any major change, explain the change and the reason for it.
 - Break down complex changes into smaller, more manageable steps.
 - After each step, explain the change and the reason for it before proceeding.
+- Before compacting context, spit out the most important information from the conversation into `context.md` for future reference. This should include the problem statement, the proposed solution, and any important details or decisions made during the conversation.
+  - Always check for the existence of this file before starting a new conversation. If it exists, read it and use it to inform your understanding of the problem and the proposed solution.
+  - After the contents of `context.md` are no longer relevant, delete the file to avoid confusion in future conversations.
 
 ## Validation Expectations
 
@@ -104,6 +114,21 @@ This project uses declarative schema files in `supabase/schemas/*.sql` as the so
 - Prefer targeted validation first, then broader validation if risk or scope warrants it.
 - Use the project's existing scripts when applicable, including `pnpm lint`, `pnpm test`, and `pnpm test:ci`.
 - If you cannot run verification, or choose not to run it, state that explicitly in your final response.
+
+## Skill Routing
+
+- Use `/grill-me` when the user wants to stress-test a plan or design, get grilled on their thinking, or be pushed through unresolved decision branches.
+- Use `/write-a-prd` when the user asks to write a PRD, create a product requirements document, or shape a new feature definition before implementation work begins.
+- Use `/prd-to-plan` when the user wants to break a PRD into an implementation plan, tracer-bullet rollout, or execution slices saved under `./plans/`.
+- Use `$plan-eng-review` when the user asks for implementation-plan review, architecture review, rollout review, test-plan review, or a pre-coding technical risk review.
+- Use `$plan-ceo-review` when the user asks to challenge the premise, rethink the roadmap, expand scope strategically, reduce scope to the minimum viable version, or review from a founder/product perspective.
+- Use `$creative-director` when the user asks for UI direction, UX critique, branding feedback, visual identity work, desirability improvements, or help making the product feel more distinctive and memorable.
+- If the user needs a PRD before execution planning, use `/write-a-prd` first and then use `/prd-to-plan`.
+- If the user wants their plan challenged aggressively before it is formalized, use `/grill-me` before `/write-a-prd` or `/prd-to-plan`.
+- If the request mixes product/scope shaping with implementation planning, use `$plan-ceo-review` first to settle direction, then use `$plan-eng-review` to lock the execution plan.
+- If the request mixes product strategy with visual/UX direction, use `$plan-ceo-review` first to settle the product bet, then use `$creative-director` to shape how that direction should feel and present.
+- Do not use these skills for routine implementation requests unless the user explicitly asks for a planning or review phase.
+- If the user's intent is ambiguous but sounds close to planning or review, state which skill you are using and why before proceeding.
 
 ## Next.JS Documentation Index
 

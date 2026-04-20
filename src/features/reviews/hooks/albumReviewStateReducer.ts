@@ -1,28 +1,8 @@
 import type { Review } from "@/shared/types";
-
-export interface AlbumReviewState {
-  committedReview: Review | null;
-  currentRating: number;
-  draftFavoriteTrackId: string;
-  draftReviewText: string;
-  isComposerSaving: boolean;
-  isRatingSaving: boolean;
-  composerError: string | null;
-  ratingError: string | null;
-}
-
-export type AlbumReviewStateAction =
-  | { type: "CLEAR_COMPOSER_ERROR" }
-  | { type: "CLEAR_RATING_ERROR" }
-  | { type: "SAVE_COMPOSER_SUCCESS"; payload: Review }
-  | { type: "SET_COMPOSER_ERROR"; payload: string }
-  | { type: "SET_COMPOSER_SAVING"; payload: boolean }
-  | { type: "SET_CURRENT_RATING"; payload: number }
-  | { type: "SET_DRAFT_FAVORITE_TRACK_ID"; payload: string }
-  | { type: "SET_DRAFT_REVIEW_TEXT"; payload: string }
-  | { type: "SET_RATING_ERROR"; payload: string }
-  | { type: "SET_RATING_SAVING"; payload: boolean }
-  | { type: "SYNC_REVIEW"; payload: Review | null };
+import type {
+  AlbumReviewState,
+  AlbumReviewStateAction,
+} from "@/features/reviews/types";
 
 /**
  * Returns the persisted review text used as the baseline for composer draft comparisons.

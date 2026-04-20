@@ -1,5 +1,9 @@
-import type { SearchResultItem } from "@/features/search/hooks/useSearchQueryState";
-import type { SearchResponseDTO } from "@/shared/types";
+import type { SearchAlbumDTO, SearchArtistDTO, SearchResponseDTO } from "@/shared/types";
+
+/**
+ * A single selectable result returned from the search API, either an artist or an album.
+ */
+export type SearchResultItem = SearchArtistDTO | SearchAlbumDTO;
 
 export type SearchBarVariant = "compact" | "hero";
 

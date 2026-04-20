@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SearchResultItem } from "@/features/search/hooks/useSearchQueryState";
+import type { SearchResultItem } from "@/features/search/types";
 
 const SELECTION_ERROR_MESSAGE =
   "We couldn't open that result. Please try again.";

@@ -9,31 +9,11 @@ import {
   createAlbumReviewState,
 } from "@/features/reviews/hooks/albumReviewStateReducer";
 import type { Album, Review } from "@/shared/types";
+import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface UseAlbumReviewStateOptions {
   album: Album;
   review: Review | null;
-}
-
-export interface UseAlbumReviewStateResult {
-  favoriteTrackId: string;
-  reviewText: string;
-  rating: number;
-  savedReviewText: string;
-  savedRating: number;
-  savedFavoriteTrackId: string;
-  composerError: string | null;
-  ratingError: string | null;
-  isComposerDirty: boolean;
-  isComposerSaving: boolean;
-  isRatingSaving: boolean;
-  hasSavedReview: boolean;
-  hasSavedFavoriteTrack: boolean;
-  hasSavedReviewText: boolean;
-  saveComposer: () => Promise<boolean>;
-  setFavoriteTrackId: (trackId: string) => void;
-  setReviewText: (reviewText: string) => void;
-  setRating: (rating: number) => void;
 }
 
 /**

@@ -2,7 +2,7 @@ import { cleanup, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AlbumPrimaryRatingCard } from "@/features/reviews/components/AlbumPrimaryRatingCard";
 import { render } from "@/shared/test/utils/render";
-import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
+import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 import type { Album } from "@/shared/types";
 
 const mockAlbum: Album = {

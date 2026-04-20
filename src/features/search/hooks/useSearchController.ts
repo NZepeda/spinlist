@@ -1,10 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  type SearchResultItem,
-  useSearchQueryState,
-} from "@/features/search/hooks/useSearchQueryState";
+import { useSearchQueryState } from "@/features/search/hooks/useSearchQueryState";
+import type { SearchResultItem } from "@/features/search/types";
 import { useSearchSelection } from "@/features/search/hooks/useSearchSelection";
 import type { SearchResponseDTO } from "@/shared/types";
 import type { SearchDisplayState } from "@/features/search/types";

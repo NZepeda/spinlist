@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { AlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
+import type { AlbumCommunitySummary } from "@/features/reviews/types";
 
 interface AlbumCommunitySummaryProps {
   summary: AlbumCommunitySummary;

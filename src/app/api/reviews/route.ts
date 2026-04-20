@@ -10,33 +10,12 @@ import { logWorkflow } from "@/server/logging/logWorkflow";
 import { getSupabaseErrorMetadata } from "@/server/supabase/getSupabaseErrorMetadata";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import { createClient } from "@/server/supabase/server";
-import type { AlbumRow, ReviewRow } from "@/server/database";
-
-interface ReviewRequestBody {
-  albumId: string;
-  rating: number;
-  reviewText?: string;
-  favoriteTrackId?: string;
-  existingReviewId?: string;
-}
-
-interface ReviewErrorResponse {
-  code:
-    | "INVALID_REQUEST"
-    | "UNAUTHORIZED"
-    | "EMAIL_CONFIRMATION_REQUIRED"
-    | "ALBUM_NOT_FOUND"
-    | "INVALID_FAVORITE_TRACK"
-    | "SAVE_FAILED";
-  eventId?: string;
-  message: string;
-  requestId?: string;
-}
-
-interface ReviewSuccessResponse {
-  ok: true;
-  review?: ReviewRow;
-}
+import type { AlbumRow } from "@/server/database";
+import type {
+  ReviewErrorResponse,
+  ReviewRequestBody,
+  ReviewSuccessResponse,
+} from "@/shared/types/api/reviews";
 
 interface SupabaseErrorLike {
   code?: string | null;

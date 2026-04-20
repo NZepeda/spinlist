@@ -8,6 +8,12 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// Required to prevent errors from the TypeAnimation component used in the SearchBar's animated prompt.
+// Under the hood, it uses ResizeObserver, which isn't supported in the JSDOM environment used for testing.
+vi.mock("react-type-animation", () => ({
+  TypeAnimation: () => null,
+}));
 import { SearchBar } from "@/features/search/components/SearchBar";
 import { createJsonResponse } from "@/shared/test/utils/createJsonResponse";
 import { getRequestUrl } from "@/shared/test/utils/getRequestUrl";

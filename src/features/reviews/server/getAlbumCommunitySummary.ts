@@ -2,31 +2,15 @@ import { createClient } from "@/server/supabase/server";
 import { captureException } from "@/monitoring/captureException";
 import { startSpan } from "@/monitoring/startSpan";
 import type { Album, AlbumTrack } from "@/shared/types";
+import type {
+  AlbumCommunityFavoriteTrack,
+  AlbumCommunityRatingBucket,
+  AlbumCommunitySummary,
+} from "@/features/reviews/types";
 
 interface ReviewSummaryRow {
   favorite_track_id: string | null;
   rating: number;
-}
-
-export interface AlbumCommunityRatingBucket {
-  rating: number;
-  count: number;
-}
-
-export interface AlbumCommunityFavoriteTrack {
-  count: number;
-  percentage: number;
-  trackId: string;
-  trackName: string;
-}
-
-export interface AlbumCommunitySummary {
-  averageRating: number | null;
-  availability: "available" | "unavailable";
-  favoriteTracks: AlbumCommunityFavoriteTrack[];
-  ratingHistogram: AlbumCommunityRatingBucket[];
-  reviewCount: number;
-  standoutTrack: AlbumCommunityFavoriteTrack | null;
 }
 
 /**

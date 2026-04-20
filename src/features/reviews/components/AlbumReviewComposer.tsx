@@ -10,7 +10,7 @@ import { Button } from "@/shared/ui/button";
 import { Select, SelectOption } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
 import type { Album } from "@/shared/types";
-import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
+import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface AlbumReviewComposerProps {
   album: Album;

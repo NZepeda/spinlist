@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { StarRating } from "@/shared/ui/StarRating";
 import type { Album } from "@/shared/types";
-import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
+import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface AlbumPrimaryRatingCardProps {
   album: Album;

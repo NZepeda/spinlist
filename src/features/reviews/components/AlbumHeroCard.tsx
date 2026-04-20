@@ -1,5 +1,5 @@
 import type { Album } from "@/shared/types";
-import type { AlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
+import type { AlbumCommunitySummary } from "@/features/reviews/types";
 import { AlbumReviewFlow } from "./AlbumReviewFlow";
 
 interface AlbumHeroCardProps {

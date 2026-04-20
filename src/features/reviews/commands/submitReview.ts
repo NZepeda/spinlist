@@ -1,28 +1,16 @@
 import type { Review } from "@/shared/types";
+import type {
+  ReviewErrorResponse,
+  ReviewSuccessResponse,
+} from "@/shared/types/api/reviews";
 
 interface SubmitReviewParams {
-  userId: string;
   albumId: string;
+  existingReviewId?: string;
+  favoriteTrackId?: string;
   rating: number;
   reviewText?: string;
-  favoriteTrackId?: string;
-  existingReviewId?: string;
-}
-
-interface ReviewApiErrorResponse {
-  code:
-    | "INVALID_REQUEST"
-    | "UNAUTHORIZED"
-    | "EMAIL_CONFIRMATION_REQUIRED"
-    | "ALBUM_NOT_FOUND"
-    | "INVALID_FAVORITE_TRACK"
-    | "SAVE_FAILED";
-  message: string;
-}
-
-interface ReviewApiSuccessResponse {
-  ok: true;
-  review: Review;
+  userId: string;
 }
 
 /**
@@ -52,13 +40,17 @@ export async function submitReview(params: SubmitReviewParams): Promise<Review> 
 
   if (!response.ok) {
     const errorResponse =
-      (await response.json().catch(() => null)) as ReviewApiErrorResponse | null;
+      (await response.json().catch(() => null)) as ReviewErrorResponse | null;
 
     throw new Error(errorResponse?.message ?? "Unable to save review");
   }
 
   const successResponse =
-    (await response.json()) as ReviewApiSuccessResponse;
+    (await response.json()) as ReviewSuccessResponse;
+
+  if (!successResponse.review) {
+    throw new Error("Unable to save review");
+  }
 
   return successResponse.review;
 }

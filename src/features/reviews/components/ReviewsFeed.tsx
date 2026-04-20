@@ -1,4 +1,4 @@
-import type { AlbumReviewFeedItem } from "@/features/reviews/server/getAlbumReviewFeed";
+import type { AlbumReviewFeedItem } from "@/features/reviews/types";
 
 interface ReviewsFeedProps {
   reviews: AlbumReviewFeedItem[];

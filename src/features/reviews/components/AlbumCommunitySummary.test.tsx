@@ -1,7 +1,7 @@
 import { cleanup, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { render } from "@/shared/test/utils/render";
-import type { AlbumCommunitySummary as AlbumCommunitySummaryData } from "@/features/reviews/server/getAlbumCommunitySummary";
+import type { AlbumCommunitySummary as AlbumCommunitySummaryData } from "@/features/reviews/types";
 import { AlbumCommunitySummary } from "./AlbumCommunitySummary";
 
 /**

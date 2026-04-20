@@ -36,6 +36,16 @@ Use this file as a high-priority repository guide for AI agents working in this 
 - Avoid mixing unrelated responsibilities in the same file.
 - If following a TODO.md file, steps are complete, mark them as complete.
 
+## Type System Expectations
+
+- All exported types and interfaces must live in dedicated type files — never export types from hooks, server functions, route handlers, or utility modules.
+- App-wide shared types belong in `src/shared/types/`. Re-export from `src/shared/types/index.ts` if the type is consumed outside its immediate feature.
+- Feature-scoped types (state shapes, hook return types, reducer action unions) belong in `src/features/{feature}/types.ts`.
+- HTTP request/response boundary types used by both a route handler and a client command belong in `src/shared/types/api/`.
+- Do not define a type that already exists — derive from `@/server/database` row types or `@/shared/types` before writing a new interface.
+- Private types that are only used within a single file (internal SQL result shapes, local helper argument objects) may stay inline and non-exported.
+- Do not import types from hook files or server function files. If a component or hook needs a type defined elsewhere, that type should already live in a types file.
+
 ## Dependency Expectations
 
 - Treat `package.json` as the source of truth for library and framework versions.

@@ -13,3 +13,10 @@ export type {
   SearchResultDTO,
 } from "./dto/search";
 export type { AlbumSummaryDTO } from "./dto/album";
+export type {
+  ReviewErrorCode,
+  ReviewErrorResponse,
+  ReviewRequestBody,
+  ReviewSuccessResponse,
+} from "./api/reviews";
+export type { SearchErrorResponseBody } from "./api/search";

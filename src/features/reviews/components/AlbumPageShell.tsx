@@ -2,8 +2,10 @@ import { AlbumHeroCard } from "@/features/reviews/components/AlbumHeroCard";
 import { AlbumCommunitySummary } from "@/features/reviews/components/AlbumCommunitySummary";
 import { AlbumReadOnlyMetadata } from "@/features/reviews/components/AlbumReadOnlyMetadata";
 import { ReviewsFeed } from "@/features/reviews/components/ReviewsFeed";
-import type { AlbumReviewFeedItem } from "@/features/reviews/server/getAlbumReviewFeed";
-import type { AlbumCommunitySummary as AlbumCommunitySummaryData } from "@/features/reviews/server/getAlbumCommunitySummary";
+import type {
+  AlbumCommunitySummary as AlbumCommunitySummaryData,
+  AlbumReviewFeedItem,
+} from "@/features/reviews/types";
 import type { Album } from "@/shared/types";
 
 interface AlbumPageShellProps {

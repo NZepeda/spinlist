@@ -3,17 +3,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import type {
-  SearchAlbumDTO,
-  SearchArtistDTO,
-  SearchResponseDTO,
-} from "@/shared/types";
+import type { SearchResponseDTO } from "@/shared/types";
 
 const SEARCH_QUERY_DEBOUNCE_MS = 300;
 const SEARCH_QUERY_STALE_TIME_MS = 30 * 1000;
 const SEARCH_QUERY_GC_TIME_MS = 5 * 60 * 1000;
-
-export type SearchResultItem = SearchArtistDTO | SearchAlbumDTO;
 
 export interface UseSearchQueryStateResult {
   clearSearch: () => void;

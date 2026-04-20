@@ -1,6 +1,6 @@
 import { cleanup, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import type { AlbumReviewFeedItem } from "@/features/reviews/server/getAlbumReviewFeed";
+import type { AlbumReviewFeedItem } from "@/features/reviews/types";
 import { render } from "@/shared/test/utils/render";
 import { ReviewsFeed } from "./ReviewsFeed";
 

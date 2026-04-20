@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AlbumReviewComposer } from "@/features/reviews/components/AlbumReviewComposer";
 import { render } from "@/shared/test/utils/render";
-import type { UseAlbumReviewStateResult } from "@/features/reviews/hooks/useAlbumReviewState";
+import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 import type { Album } from "@/shared/types";
 
 const mockAlbum: Album = {

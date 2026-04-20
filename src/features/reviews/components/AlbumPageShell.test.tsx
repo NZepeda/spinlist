@@ -1,8 +1,10 @@
 import { cleanup, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AlbumPageShell } from "@/features/reviews/components/AlbumPageShell";
-import type { AlbumReviewFeedItem } from "@/features/reviews/server/getAlbumReviewFeed";
-import type { AlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
+import type {
+  AlbumCommunitySummary,
+  AlbumReviewFeedItem,
+} from "@/features/reviews/types";
 import type { Album } from "@/shared/types";
 import { render } from "@/shared/test/utils/render";
 

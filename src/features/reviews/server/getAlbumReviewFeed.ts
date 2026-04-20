@@ -2,6 +2,7 @@ import { createClient } from "@/server/supabase/server";
 import { captureException } from "@/monitoring/captureException";
 import { startSpan } from "@/monitoring/startSpan";
 import type { Album } from "@/shared/types";
+import type { AlbumReviewFeedItem } from "@/features/reviews/types";
 
 interface ReviewFeedProfileRow {
   username: string;
@@ -14,16 +15,6 @@ interface ReviewFeedRow {
   profiles: ReviewFeedProfileRow | ReviewFeedProfileRow[] | null;
   rating: number;
   review_text: string | null;
-}
-
-export interface AlbumReviewFeedItem {
-  createdAt: string;
-  favoriteTrackId: string | null;
-  favoriteTrackName: string | null;
-  id: string;
-  rating: number;
-  reviewText: string;
-  username: string;
 }
 
 /**

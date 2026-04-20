@@ -3,8 +3,10 @@
 import { Fragment } from "react";
 import { ArrowUpRight, LoaderCircle, Search } from "lucide-react";
 import { CommandGroup, CommandItem } from "@/shared/ui/command";
-import type { SearchResultItem } from "@/features/search/hooks/useSearchQueryState";
-import type { SearchDisplayState } from "@/features/search/types";
+import type {
+  SearchResultItem,
+  SearchDisplayState,
+} from "@/features/search/types";
 
 interface SearchResultsListProps {
   displayState: SearchDisplayState;

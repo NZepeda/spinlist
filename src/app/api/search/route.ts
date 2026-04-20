@@ -5,12 +5,7 @@ import { logWorkflow } from "@/server/logging/logWorkflow";
 import { getSpotifyErrorMetadata } from "@/server/spotify/getSpotifyErrorMetadata";
 import { mapSpotifySearchResponseToSearchResponseDTO } from "@/server/spotify/mapSpotifySearchResponseToSearchResponseDto";
 import { searchSpotify } from "@/server/spotify/searchSpotify";
-
-export interface SearchErrorResponseBody {
-  error: string;
-  eventId?: string;
-  requestId: string;
-}
+import type { SearchErrorResponseBody } from "@/shared/types/api/search";
 
 /**
  * Hits Spotify API to retrieve search results.

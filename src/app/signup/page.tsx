@@ -1,4 +1,5 @@
 import { SignUpForm } from "@/features/auth/components/SignUpForm";
+import { AppPage } from "@/shared/ui/AppPage";
 
 /**
  * Sign-up page component for user registration.
@@ -6,7 +7,7 @@ import { SignUpForm } from "@/features/auth/components/SignUpForm";
  */
 export default function SignUpPage() {
   return (
-    <div className="app-shell flex min-h-[calc(100dvh-var(--header-height))] justify-center py-8 md:py-14">
+    <AppPage className="flex min-h-[calc(100dvh-var(--header-height))] justify-center">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Create an account</h1>
@@ -15,6 +16,6 @@ export default function SignUpPage() {
 
         <SignUpForm />
       </div>
-    </div>
+    </AppPage>
   );
 }

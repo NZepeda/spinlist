@@ -5,6 +5,7 @@ import { getArtistAlbumsFromSpotify } from "@/server/spotify/getArtistAlbumsFrom
 import { AlbumGrid } from "@/features/albums/components/AlbumGrid";
 import { createClient } from "@/server/supabase/server";
 import { getSpotifyIdFromSlug } from "@/server/spotify/getSpotifyIdFromSlug";
+import { AppPage } from "@/shared/ui/AppPage";
 
 /**
  * Displays an artist's discography as a grid of releases.
@@ -36,7 +37,7 @@ export default async function ArtistPage({
       const albums = await getArtistAlbumsFromSpotify(spotifyId);
 
       return (
-        <main className="app-shell py-8 md:py-12">
+        <AppPage>
           {/* Artist Header */}
           <div className="mb-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
             {artist.image ? (
@@ -59,10 +60,10 @@ export default async function ArtistPage({
           </div>
 
           <section>
-            <h2 className="text-2xl font-bold mb-6">Discography</h2>
+            <h2 className="mb-6 text-2xl font-bold">Discography</h2>
             <AlbumGrid albums={albums} />
           </section>
-        </main>
+        </AppPage>
       );
     },
   );

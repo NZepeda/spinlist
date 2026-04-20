@@ -94,9 +94,6 @@ export function SearchResultsList(props: SearchResultsListProps) {
                     <p className="truncate font-medium text-foreground">
                       {album.name}
                     </p>
-                    <span className="rounded-full border border-border/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Album
-                    </span>
                   </div>
                   <p className="truncate text-sm text-muted-foreground">
                     {album.artistName} •{" "}
@@ -134,13 +131,7 @@ export function SearchResultsList(props: SearchResultsListProps) {
                     <p className="truncate font-medium text-foreground">
                       {artist.name}
                     </p>
-                    <span className="rounded-full border border-border/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                      Artist
-                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Open the full discography.
-                  </p>
                 </div>
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
               </CommandItem>

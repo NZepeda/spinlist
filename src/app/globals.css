@@ -136,7 +136,7 @@
   --brand-tint-medium: oklch(0.205 0 0 / 0.08);
 
   /* ==========================================================================
-     Semantic Tokens (purpose-driven)
+     Semantic Tokens
      ========================================================================== */
   --background: var(--brand-white);
   --background-warm: var(--brand-white-soft);

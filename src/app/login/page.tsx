@@ -1,4 +1,5 @@
 import { LoginForm } from "@/features/auth/components/LoginForm";
+import { AppPage } from "@/shared/ui/AppPage";
 
 /**
  * Login page component for user authentication.
@@ -6,7 +7,7 @@ import { LoginForm } from "@/features/auth/components/LoginForm";
  */
 export default function LoginPage() {
   return (
-    <div className="app-shell flex min-h-[calc(100dvh-var(--header-height))] justify-center py-8 md:py-14">
+    <AppPage className="flex min-h-[calc(100dvh-var(--header-height))] justify-center">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">Welcome back</h1>
@@ -15,6 +16,6 @@ export default function LoginPage() {
 
         <LoginForm />
       </div>
-    </div>
+    </AppPage>
   );
 }

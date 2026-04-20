@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ResendConfirmationButton } from "@/features/auth/components/ResendConfirmationButton";
+import { AppPage } from "@/shared/ui/AppPage";
 import { Button } from "@/shared/ui/button";
 
 interface ConfirmEmailPageProps {
@@ -45,7 +46,7 @@ export default async function ConfirmEmailPage({
   const initialCooldownSeconds = showInvalidState || showLoginRecoveryState ? 0 : 60;
 
   return (
-    <div className="app-shell flex min-h-[calc(100dvh-var(--header-height))] justify-center py-8 md:py-14">
+    <AppPage className="flex min-h-[calc(100dvh-var(--header-height))] justify-center">
       <div className="w-full max-w-xl space-y-8 rounded-[2rem] border border-border/70 bg-surface/95 p-8 shadow-[0_24px_80px_var(--brand-shadow-soft)] backdrop-blur md:p-10">
         <div className="space-y-4 text-center">
           <p className="text-sm uppercase tracking-[0.28em] text-foreground-muted">
@@ -93,6 +94,6 @@ export default async function ConfirmEmailPage({
           </p>
         ) : null}
       </div>
-    </div>
+    </AppPage>
   );
 }

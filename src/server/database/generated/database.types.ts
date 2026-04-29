@@ -7,201 +7,279 @@ export type Json =
   | Json[];
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json;
-          operationName?: string;
-          query?: string;
-          variables?: Json;
-        };
-        Returns: Json;
-      };
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
   public: {
     Tables: {
       albums: {
         Row: {
-          artist: string;
-          avg_rating: number | null;
-          created_at: string;
           id: string;
-          images: Json | null;
-          label: string;
-          last_synced_at: string;
-          release_date: string | null;
-          review_count: number | null;
-          slug: string;
-          spotify_id: string;
+          images: Json;
+          release_group_id: string;
           title: string;
-          tracks: Json | null;
+          tracklist: Json;
         };
         Insert: {
-          artist: string;
-          avg_rating?: number | null;
-          created_at?: string;
           id?: string;
-          images?: Json | null;
-          label: string;
-          last_synced_at?: string;
-          release_date?: string | null;
-          review_count?: number | null;
-          slug: string;
-          spotify_id: string;
+          images?: Json;
+          release_group_id: string;
           title: string;
-          tracks?: Json | null;
+          tracklist?: Json;
         };
         Update: {
-          artist?: string;
-          avg_rating?: number | null;
-          created_at?: string;
           id?: string;
-          images?: Json | null;
-          label?: string;
-          last_synced_at?: string;
-          release_date?: string | null;
-          review_count?: number | null;
-          slug?: string;
-          spotify_id?: string;
+          images?: Json;
+          release_group_id?: string;
           title?: string;
-          tracks?: Json | null;
+          tracklist?: Json;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "albums_release_group_id_fkey";
+            columns: ["release_group_id"];
+            isOneToOne: false;
+            referencedRelation: "release_groups";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       artists: {
         Row: {
-          created_at: string;
           id: string;
-          image_url: string | null;
-          last_synced_at: string;
+          images: Json;
           name: string;
           slug: string;
-          spotify_id: string;
         };
         Insert: {
-          created_at?: string;
           id?: string;
-          image_url?: string | null;
-          last_synced_at?: string;
+          images?: Json;
           name: string;
           slug: string;
-          spotify_id: string;
         };
         Update: {
-          created_at?: string;
           id?: string;
-          image_url?: string | null;
-          last_synced_at?: string;
+          images?: Json;
           name?: string;
           slug?: string;
-          spotify_id?: string;
         };
         Relationships: [];
       };
-      profiles: {
+      favorites: {
         Row: {
-          avatar_url: string | null;
           created_at: string;
           id: string;
-          status: string;
-          updated_at: string;
-          username: string;
+          position: number;
+          release_group_id: string;
+          user_id: string;
         };
         Insert: {
-          avatar_url?: string | null;
-          created_at?: string;
-          id: string;
-          status?: string;
-          updated_at?: string;
-          username: string;
-        };
-        Update: {
-          avatar_url?: string | null;
           created_at?: string;
           id?: string;
-          status?: string;
-          updated_at?: string;
-          username?: string;
+          position: number;
+          release_group_id: string;
+          user_id: string;
         };
-        Relationships: [];
+        Update: {
+          created_at?: string;
+          id?: string;
+          position?: number;
+          release_group_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "favorites_release_group_id_fkey";
+            columns: ["release_group_id"];
+            isOneToOne: false;
+            referencedRelation: "release_groups";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "favorites_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      follows: {
+        Row: {
+          created_at: string;
+          followed_id: string;
+          follower_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          followed_id: string;
+          follower_id: string;
+        };
+        Update: {
+          created_at?: string;
+          followed_id?: string;
+          follower_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "follows_followed_id_fkey";
+            columns: ["followed_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "follows_follower_id_fkey";
+            columns: ["follower_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      mappings: {
+        Row: {
+          artist_id: string | null;
+          id: string;
+          provider_id: string;
+          provider_name: string;
+          release_group_id: string | null;
+          upc: string | null;
+        };
+        Insert: {
+          artist_id?: string | null;
+          id?: string;
+          provider_id: string;
+          provider_name: string;
+          release_group_id?: string | null;
+          upc?: string | null;
+        };
+        Update: {
+          artist_id?: string | null;
+          id?: string;
+          provider_id?: string;
+          provider_name?: string;
+          release_group_id?: string | null;
+          upc?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "mappings_artist_id_fkey";
+            columns: ["artist_id"];
+            isOneToOne: false;
+            referencedRelation: "artists";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "mappings_release_group_id_fkey";
+            columns: ["release_group_id"];
+            isOneToOne: false;
+            referencedRelation: "release_groups";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      release_groups: {
+        Row: {
+          artist_id: string;
+          id: string;
+          mb_group_id: string;
+          original_release_year: number | null;
+          slug: string;
+          title: string;
+          type: string;
+        };
+        Insert: {
+          artist_id: string;
+          id?: string;
+          mb_group_id: string;
+          original_release_year?: number | null;
+          slug: string;
+          title: string;
+          type: string;
+        };
+        Update: {
+          artist_id?: string;
+          id?: string;
+          mb_group_id?: string;
+          original_release_year?: number | null;
+          slug?: string;
+          title?: string;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "release_groups_artist_id_fkey";
+            columns: ["artist_id"];
+            isOneToOne: false;
+            referencedRelation: "artists";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       reviews: {
         Row: {
-          album_id: string;
+          body: string | null;
           created_at: string;
-          favorite_track_id: string | null;
+          favorite_track: string | null;
           id: string;
           rating: number;
-          review_text: string | null;
+          release_group_id: string;
           updated_at: string;
           user_id: string;
         };
         Insert: {
-          album_id: string;
+          body?: string | null;
           created_at?: string;
-          favorite_track_id?: string | null;
+          favorite_track?: string | null;
           id?: string;
           rating: number;
-          review_text?: string | null;
+          release_group_id: string;
           updated_at?: string;
           user_id: string;
         };
         Update: {
-          album_id?: string;
+          body?: string | null;
           created_at?: string;
-          favorite_track_id?: string | null;
+          favorite_track?: string | null;
           id?: string;
           rating?: number;
-          review_text?: string | null;
+          release_group_id?: string;
           updated_at?: string;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "reviews_album_id_fkey";
-            columns: ["album_id"];
+            foreignKeyName: "reviews_release_group_id_fkey";
+            columns: ["release_group_id"];
             isOneToOne: false;
-            referencedRelation: "albums";
+            referencedRelation: "release_groups";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "reviews_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
-            referencedRelation: "profiles";
+            referencedRelation: "users";
             referencedColumns: ["id"];
           },
         ];
       };
-      waitlist: {
+      users: {
         Row: {
           created_at: string;
-          email: string;
           id: string;
+          status: string;
+          username: string;
         };
         Insert: {
           created_at?: string;
-          email: string;
-          id?: string;
+          id: string;
+          status?: string;
+          username: string;
         };
         Update: {
           created_at?: string;
-          email?: string;
           id?: string;
+          status?: string;
+          username?: string;
         };
         Relationships: [];
       };
@@ -342,9 +420,6 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

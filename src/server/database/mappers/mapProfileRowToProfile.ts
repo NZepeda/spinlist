@@ -1,16 +1,13 @@
-import type { ProfileRow } from "@/server/database";
+import type { UserRow } from "@/server/database";
 import type { Profile } from "@/shared/types/domain/profile";
 
 /**
- * Maps a database profile row into the application profile model.
+ * Normalizes a database user row into the shared app user model.
+ * Concretely, narrows down the user status to either "active or "pending".
  */
-export function mapProfileRowToProfile(profile: ProfileRow): Profile {
+export function mapProfileRowToProfile(user: UserRow): Profile {
   return {
-    id: profile.id,
-    username: profile.username,
-    status: profile.status === "active" ? "active" : "pending",
-    avatarUrl: profile.avatar_url,
-    createdAt: profile.created_at,
-    updatedAt: profile.updated_at,
+    ...user,
+    status: user.status === "active" ? "active" : "pending",
   };
 }

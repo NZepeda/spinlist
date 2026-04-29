@@ -234,12 +234,12 @@ async function ensureActiveProfile(
 ): Promise<Response | SupabaseDependencyError | null> {
   const { data: profile, error: profileError } = await startSpan(
     {
-      name: "supabase.profile.read",
+      name: "supabase.user.read",
       op: "db.supabase",
     },
     async () =>
       await supabase
-        .from("profiles")
+        .from("users")
         .select("status")
         .eq("id", userId)
         .maybeSingle(),
@@ -248,8 +248,8 @@ async function ensureActiveProfile(
   if (profileError) {
     return createSupabaseDependencyError({
       error: profileError,
-      operation: "supabase.profile.read",
-      resource: "profiles",
+      operation: "supabase.user.read",
+      resource: "users",
     });
   }
 

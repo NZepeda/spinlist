@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "public"."albums" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "release_group_id" "uuid" NOT NULL,
     "title" "text" NOT NULL,
-    "images" "text"[] DEFAULT '{}'::text[] NOT NULL,
+    "images" jsonb DEFAULT '[]'::jsonb NOT NULL,
     "tracklist" jsonb DEFAULT '[]'::jsonb NOT NULL
 );
 

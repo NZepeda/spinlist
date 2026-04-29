@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS "public"."artists" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text" NOT NULL,
-    "images" "text"[] DEFAULT '{}'::text[] NOT NULL,
+    "images" jsonb DEFAULT '[]'::jsonb NOT NULL,
     "slug" "text" NOT NULL
 );
 

@@ -22,7 +22,7 @@ erDiagram
     artists {
         uuid id PK
         string name
-        text_array images
+        jsonb images
         string slug UK "URL-friendly identifier, e.g. 'the-beatles'"
     
     }
@@ -41,7 +41,7 @@ erDiagram
         uuid id PK
         uuid release_group_id FK
         string title "e.g. Deluxe Edition"
-        text_array images
+        jsonb images
         jsonb tracklist
     }
 

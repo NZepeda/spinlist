@@ -1,7 +1,7 @@
 import { createClient } from "@/server/supabase/server";
 import { captureException } from "@/monitoring/captureException";
 import { startSpan } from "@/monitoring/startSpan";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import type { AlbumReviewFeedItem } from "@/features/reviews/types";
 
 interface ReviewFeedUserRow {
@@ -31,15 +31,13 @@ function getUsername(
 }
 
 /**
- * Loads recent written reviews for a release group while falling back cleanly if that data is unavailable.
+ * Loads recent written reviews for an album record while falling back cleanly if that data is unavailable.
  */
 export async function getAlbumReviewFeed(
-  releaseGroup: Album,
+  album: AlbumRecord,
 ): Promise<AlbumReviewFeedItem[]> {
   const supabase = await createClient();
-  const trackMap = new Map(
-    releaseGroup.tracks.map((track) => [track.id, track.name]),
-  );
+  const trackMap = new Map(album.tracks.map((track) => [track.id, track.name]));
   const { data: reviews, error } = await startSpan(
     {
       name: "page.album.review_feed",
@@ -49,7 +47,7 @@ export async function getAlbumReviewFeed(
       await supabase
         .from("reviews")
         .select("id, rating, body, favorite_track, created_at, users(username)")
-        .eq("release_group_id", releaseGroup.id)
+        .eq("release_group_id", album.id)
         .not("body", "is", null)
         .order("created_at", { ascending: false })
         .limit(12),
@@ -59,8 +57,8 @@ export async function getAlbumReviewFeed(
     if (error) {
       captureException(error, {
         context: {
-          releaseGroupId: releaseGroup.id,
-          path: `/album/${releaseGroup.slug}`,
+          releaseGroupId: album.id,
+          path: `/album/${album.slug}`,
         },
         tags: {
           dependency: "supabase",

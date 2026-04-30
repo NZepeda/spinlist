@@ -8,11 +8,11 @@ import {
   albumReviewStateReducer,
   createAlbumReviewState,
 } from "@/features/reviews/hooks/albumReviewStateReducer";
-import type { Album, Review } from "@/shared/types";
+import type { AlbumRecord, Review } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface UseAlbumReviewStateOptions {
-  album: Album;
+  album: AlbumRecord;
   review: Review | null;
 }
 

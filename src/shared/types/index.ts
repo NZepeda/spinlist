@@ -1,6 +1,7 @@
 export type {
-  Album,
-  AlbumTrack,
+  AlbumRecord,
+  AlbumRecordArtist,
+  AlbumRecordTrack,
 } from "./domain/album";
 export type { Artist } from "./domain/artist";
 export type { Image } from "./domain/image";

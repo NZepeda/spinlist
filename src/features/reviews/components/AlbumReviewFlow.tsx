@@ -11,10 +11,10 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useAlbumReviewState } from "@/features/reviews/hooks/useAlbumReviewState";
 import { useUserAlbumReview } from "@/features/reviews/hooks/useUserAlbumReview";
 import { useState } from "react";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 
 interface AlbumReviewFlowProps {
-  album: Album;
+  album: AlbumRecord;
 }
 
 /**

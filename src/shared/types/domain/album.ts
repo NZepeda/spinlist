@@ -1,6 +1,12 @@
 import type { Image } from "./image";
 
-export interface AlbumTrack {
+export interface AlbumRecordArtist {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface AlbumRecordTrack {
   id: string;
   name: string;
   track_number: number;
@@ -8,19 +14,13 @@ export interface AlbumTrack {
 }
 
 /**
- * Canonical album model used across the app.
- * Uses snake_case to match existing DB fields until a full normalization pass.
+ * Canonical album record with artist credits, cover art, and track details.
  */
-export interface Album {
+export interface AlbumRecord {
   id: string;
-  spotify_id: string;
-  title: string;
-  artist: string;
-  label: string;
-  slug: string;
-  release_date: string | null;
-  avg_rating: number | null;
-  review_count: number | null;
+  artists: AlbumRecordArtist[];
   images: Image[];
-  tracks: AlbumTrack[];
+  slug: string;
+  title: string;
+  tracks: AlbumRecordTrack[];
 }

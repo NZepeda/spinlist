@@ -9,11 +9,11 @@ import {
 import { Button } from "@/shared/ui/button";
 import { Select, SelectOption } from "@/shared/ui/select";
 import { Textarea } from "@/shared/ui/textarea";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface AlbumReviewComposerProps {
-  album: Album;
+  album: AlbumRecord;
   onOpenChange: (open: boolean) => void;
   open: boolean;
   reviewState: UseAlbumReviewStateResult;
@@ -22,7 +22,7 @@ interface AlbumReviewComposerProps {
 /**
  * Formats track labels so the favorite-song dropdown stays compact and easy to scan.
  */
-function formatTrackOptionLabel(track: Album["tracks"][number]): string {
+function formatTrackOptionLabel(track: AlbumRecord["tracks"][number]): string {
   return `${track.track_number}. ${track.name}`;
 }
 

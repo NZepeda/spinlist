@@ -4,13 +4,14 @@ erDiagram
     users ||--o{ follows : follows
     users ||--o{ follows : "followed by"
     
-    artists ||--o{ release_groups : creates
     artists ||--o{ mappings : "mapped to"
+    artists ||--o{ release_group_artists : credited_on
     
     release_groups ||--o{ albums : contains
     release_groups ||--o{ reviews : "is reviewed"
     release_groups ||--o{ favorites : "is favorited"
     release_groups ||--o{ mappings : "mapped to"
+    release_groups ||--o{ release_group_artists : has_artists
 
     users {
         uuid id PK
@@ -29,7 +30,6 @@ erDiagram
 
     release_groups {
         uuid id PK
-        uuid artist_id FK
         string title
         enum type "album, ep, single"
         int original_release_year
@@ -43,6 +43,12 @@ erDiagram
         string title "e.g. Deluxe Edition"
         jsonb images
         jsonb tracklist
+    }
+
+    release_group_artists {
+        uuid release_group_id FK
+        uuid artist_id FK
+        int position "Display order, 1 = primary credit"
     }
 
     mappings {
@@ -90,3 +96,7 @@ erDiagram
     %% favorites constraints: 
     %% - UNIQUE(user_id, position)
     %% - UNIQUE(user_id, release_group_id)
+
+    %% release_group_artists constraints:
+    %% - UNIQUE(release_group_id, artist_id)
+    %% - UNIQUE(release_group_id, position)

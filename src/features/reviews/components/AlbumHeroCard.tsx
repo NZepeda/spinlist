@@ -1,29 +1,15 @@
+import Link from "next/link";
 import type { Album } from "@/shared/types";
-import type { AlbumCommunitySummary } from "@/features/reviews/types";
 import { AlbumReviewFlow } from "./AlbumReviewFlow";
 
 interface AlbumHeroCardProps {
   album: Album;
-  communitySummary: AlbumCommunitySummary;
-}
-
-/**
- * Formats the album release year for the hero identity block.
- */
-function formatReleaseYear(releaseDate: string | null): string | null {
-  if (!releaseDate) {
-    return null;
-  }
-
-  return new Date(releaseDate).getFullYear().toString();
 }
 
 /**
  * Renders the album identity and primary action container that lead the page.
  */
-export function AlbumHeroCard({ album, communitySummary }: AlbumHeroCardProps) {
-  const releaseYear = formatReleaseYear(album.release_date);
-
+export function AlbumHeroCard({ album }: AlbumHeroCardProps) {
   return (
     <section
       aria-label="Album overview"
@@ -37,25 +23,19 @@ export function AlbumHeroCard({ album, communitySummary }: AlbumHeroCardProps) {
               {album.title}
             </h1>
             <p className="mt-3 text-lg text-muted-foreground sm:text-xl">
-              {album.artist}
-              {releaseYear ? `, ${releaseYear}` : ""}
+              {album.artists.map((artist, index) => (
+                <span key={artist.id}>
+                  {index > 0 ? ", " : ""}
+                  <Link
+                    href={`/artist/${artist.slug}`}
+                    className="transition-colors hover:text-foreground"
+                  >
+                    {artist.name}
+                  </Link>
+                </span>
+              ))}
             </p>
           </div>
-          {communitySummary.availability === "available" &&
-          communitySummary.standoutTrack ? (
-            <div className="max-w-xl rounded-2xl border border-border/70 bg-background/60 p-4 backdrop-blur">
-              <p className="text-xs uppercase tracking-[0.22em] text-foreground-muted">
-                Community pick
-              </p>
-              <p className="mt-2 text-lg font-semibold text-foreground">
-                {communitySummary.standoutTrack.trackName}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {communitySummary.standoutTrack.percentage}% of favorite-song
-                picks currently land here.
-              </p>
-            </div>
-          ) : null}
         </div>
         <div className="w-full xl:justify-self-end">
           <AlbumReviewFlow album={album} />

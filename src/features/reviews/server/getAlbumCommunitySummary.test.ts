@@ -65,10 +65,10 @@ describe("buildAlbumCommunitySummary", () => {
 
   it("builds a rating histogram and standout track summary", () => {
     const summary = buildAlbumCommunitySummary(mockAlbum, [
-      { rating: 4.5, favorite_track_id: "track-1" },
-      { rating: 5, favorite_track_id: "track-1" },
-      { rating: 4, favorite_track_id: "track-2" },
-      { rating: 4.5, favorite_track_id: null },
+      { rating: 4.5, favorite_track: "track-1" },
+      { rating: 5, favorite_track: "track-1" },
+      { rating: 4, favorite_track: "track-2" },
+      { rating: 4.5, favorite_track: null },
     ]);
 
     expect(summary.reviewCount).toBe(5);
@@ -89,7 +89,7 @@ describe("buildAlbumCommunitySummary", () => {
 
   it("ignores favorite-song ids that do not belong to the album", () => {
     const summary = buildAlbumCommunitySummary(mockAlbum, [
-      { rating: 3.5, favorite_track_id: "missing-track" },
+      { rating: 3.5, favorite_track: "missing-track" },
     ]);
 
     expect(summary.favoriteTracks).toEqual([]);
@@ -103,8 +103,8 @@ describe("buildAlbumCommunitySummary", () => {
         review_count: null,
       },
       [
-        { rating: 4, favorite_track_id: null },
-        { rating: 4.5, favorite_track_id: "track-2" },
+        { rating: 4, favorite_track: null },
+        { rating: 4.5, favorite_track: "track-2" },
       ],
     );
 

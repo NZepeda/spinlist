@@ -46,20 +46,18 @@ const mockAlbum: Album = {
 const savedReview: Review = {
   id: "review-1",
   user_id: "user-123",
-  album_id: "album-1",
+  release_group_id: "album-1",
   rating: 4,
-  review_text: "",
-  favorite_track_id: "",
+  body: "",
+  favorite_track: "",
   created_at: "2026-03-20T12:00:00.000Z",
   updated_at: "2026-03-20T12:00:00.000Z",
 };
 
 const activeProfile: Profile = {
-  avatarUrl: null,
-  createdAt: "2026-03-25T00:00:00.000Z",
+  created_at: "2026-03-25T00:00:00.000Z",
   id: "user-123",
   status: "active",
-  updatedAt: "2026-03-25T00:00:00.000Z",
   username: "listener",
 };
 

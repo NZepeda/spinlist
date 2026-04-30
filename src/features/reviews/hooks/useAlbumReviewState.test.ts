@@ -48,10 +48,10 @@ describe("useAlbumReviewState", () => {
     const review = {
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 4.5,
-      review_text: "Still incredible.",
-      favorite_track_id: "t2",
+      body: "Still incredible.",
+      favorite_track: "t2",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-20T12:00:00.000Z",
     };
@@ -73,10 +73,10 @@ describe("useAlbumReviewState", () => {
     const review = {
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 4.5,
-      review_text: "Still incredible.",
-      favorite_track_id: "t2",
+      body: "Still incredible.",
+      favorite_track: "t2",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-20T12:00:00.000Z",
     };
@@ -84,10 +84,10 @@ describe("useAlbumReviewState", () => {
     submitReviewMock.mockResolvedValue({
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 3.5,
-      review_text: "Still incredible.",
-      favorite_track_id: "t2",
+      body: "Still incredible.",
+      favorite_track: "t2",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-21T12:00:00.000Z",
     });
@@ -106,7 +106,7 @@ describe("useAlbumReviewState", () => {
     await vi.waitFor(() => {
       expect(submitReviewMock).toHaveBeenCalledWith({
         userId: "user-123",
-        albumId: "album-1",
+        releaseGroupId: "album-1",
         existingReviewId: "review-1",
         favoriteTrackId: "t2",
         rating: 3.5,
@@ -125,17 +125,17 @@ describe("useAlbumReviewState", () => {
     const review = {
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 4,
-      review_text: "",
-      favorite_track_id: "t2",
+      body: "",
+      favorite_track: "t2",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-20T12:00:00.000Z",
     };
 
     submitReviewMock.mockResolvedValue({
       ...review,
-      review_text: "The guitars still feel weightless.",
+      body: "The guitars still feel weightless.",
     });
 
     const { result } = renderHook(() =>
@@ -159,7 +159,7 @@ describe("useAlbumReviewState", () => {
 
     expect(submitReviewMock).toHaveBeenCalledWith({
       userId: "user-123",
-      albumId: "album-1",
+      releaseGroupId: "album-1",
       existingReviewId: "review-1",
       favoriteTrackId: "t2",
       rating: 4,
@@ -177,17 +177,17 @@ describe("useAlbumReviewState", () => {
     const review = {
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 4,
-      review_text: "",
-      favorite_track_id: "",
+      body: "",
+      favorite_track: "",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-20T12:00:00.000Z",
     };
 
     submitReviewMock.mockResolvedValue({
       ...review,
-      favorite_track_id: "t1",
+      favorite_track: "t1",
     });
 
     const { result } = renderHook(() =>
@@ -210,7 +210,7 @@ describe("useAlbumReviewState", () => {
 
     expect(submitReviewMock).toHaveBeenCalledWith({
       userId: "user-123",
-      albumId: "album-1",
+      releaseGroupId: "album-1",
       existingReviewId: "review-1",
       favoriteTrackId: "t1",
       rating: 4,
@@ -229,10 +229,10 @@ describe("useAlbumReviewState", () => {
     const review = {
       id: "review-1",
       user_id: "user-123",
-      album_id: "album-1",
+      release_group_id: "album-1",
       rating: 4,
-      review_text: "Saved note",
-      favorite_track_id: "t2",
+      body: "Saved note",
+      favorite_track: "t2",
       created_at: "2026-03-20T12:00:00.000Z",
       updated_at: "2026-03-20T12:00:00.000Z",
     };
@@ -258,7 +258,7 @@ describe("useAlbumReviewState", () => {
     await vi.waitFor(() => {
       expect(submitReviewMock).toHaveBeenCalledWith({
         userId: "user-123",
-        albumId: "album-1",
+        releaseGroupId: "album-1",
         existingReviewId: "review-1",
         favoriteTrackId: "t2",
         rating: 3.5,

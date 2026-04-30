@@ -53,19 +53,6 @@ describe("useUserAlbumReview", () => {
 
   it("should return review data when a review exists", async () => {
     mockFrom.mockImplementation((table: string) => {
-      if (table === "albums") {
-        return {
-          select: vi.fn().mockReturnValue({
-            eq: vi
-              .fn()
-              .mockReturnValue(
-                mockSupabaseChain({ id: "internal-album-id" }, null),
-              ),
-          }),
-        };
-      }
-
-      // table === "reviews"
       return {
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
@@ -74,10 +61,10 @@ describe("useUserAlbumReview", () => {
                 {
                   id: "review-1",
                   user_id: "user-123",
-                  album_id: "internal-album-id",
+                  release_group_id: "spotify-123",
                   rating: 4,
-                  review_text: "Great",
-                  favorite_track_id: null,
+                  body: "Great",
+                  favorite_track: null,
                   created_at: "2024-01-01",
                   updated_at: "2024-01-01",
                 },
@@ -101,7 +88,7 @@ describe("useUserAlbumReview", () => {
     expect(result.current.review).toMatchObject({
       id: "review-1",
       rating: 4,
-      review_text: "Great",
+      body: "Great",
     });
   });
 });

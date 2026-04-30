@@ -5,7 +5,7 @@ import type {
 } from "@/shared/types/api/reviews";
 
 interface SubmitReviewParams {
-  albumId: string;
+  releaseGroupId: string;
   existingReviewId?: string;
   favoriteTrackId?: string;
   rating: number;
@@ -21,12 +21,17 @@ interface SubmitReviewParams {
  * @throws Error if the database operation fails
  */
 export async function submitReview(params: SubmitReviewParams): Promise<Review> {
-  const { albumId, rating, reviewText, favoriteTrackId, existingReviewId } =
-    params;
+  const {
+    releaseGroupId,
+    rating,
+    reviewText,
+    favoriteTrackId,
+    existingReviewId,
+  } = params;
 
   const response = await fetch("/api/reviews", {
     body: JSON.stringify({
-      albumId,
+      releaseGroupId,
       existingReviewId,
       favoriteTrackId,
       rating,

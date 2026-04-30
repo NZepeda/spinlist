@@ -9,7 +9,7 @@ import type {
 } from "@/features/reviews/types";
 
 interface ReviewSummaryRow {
-  favorite_track_id: string | null;
+  favorite_track: string | null;
   rating: number;
 }
 
@@ -48,11 +48,11 @@ function buildFavoriteTracks(
   let totalFavoriteSelections = 0;
 
   for (const review of reviews) {
-    if (!review.favorite_track_id) {
+    if (!review.favorite_track) {
       continue;
     }
 
-    const trackName = trackMap.get(review.favorite_track_id);
+    const trackName = trackMap.get(review.favorite_track);
 
     if (!trackName) {
       continue;
@@ -60,8 +60,8 @@ function buildFavoriteTracks(
 
     totalFavoriteSelections += 1;
 
-    const currentCount = favoriteTrackCounts.get(review.favorite_track_id) ?? 0;
-    favoriteTrackCounts.set(review.favorite_track_id, currentCount + 1);
+    const currentCount = favoriteTrackCounts.get(review.favorite_track) ?? 0;
+    favoriteTrackCounts.set(review.favorite_track, currentCount + 1);
   }
 
   return Array.from(favoriteTrackCounts.entries())
@@ -78,29 +78,29 @@ function buildFavoriteTracks(
 }
 
 /**
- * Combines album stats and review rows into a single community summary.
+ * Combines release-group stats and review rows into a single community summary.
  */
 export function buildAlbumCommunitySummary(
-  album: Album,
+  releaseGroup: Album,
   reviews: ReviewSummaryRow[],
 ): AlbumCommunitySummary {
-  const favoriteTracks = buildFavoriteTracks(album.tracks, reviews);
+  const favoriteTracks = buildFavoriteTracks(releaseGroup.tracks, reviews);
 
   return {
-    averageRating: album.avg_rating,
+    averageRating: releaseGroup.avg_rating,
     availability: "available",
     favoriteTracks,
     ratingHistogram: buildRatingHistogram(reviews),
-    reviewCount: album.review_count ?? reviews.length,
+    reviewCount: releaseGroup.review_count ?? reviews.length,
     standoutTrack: favoriteTracks[0] ?? null,
   };
 }
 
 /**
- * Loads community review aggregates while preserving a graceful fallback when review data is unavailable.
+ * Loads community review aggregates for a release group while preserving a graceful fallback when review data is unavailable.
  */
 export async function getAlbumCommunitySummary(
-  album: Album,
+  releaseGroup: Album,
 ): Promise<AlbumCommunitySummary> {
   const supabase = await createClient();
   const { data: reviews, error } = await startSpan(
@@ -111,16 +111,16 @@ export async function getAlbumCommunitySummary(
     async () =>
       await supabase
         .from("reviews")
-        .select("rating, favorite_track_id")
-        .eq("album_id", album.id),
+        .select("rating, favorite_track")
+        .eq("release_group_id", releaseGroup.id),
   );
 
   if (error || !reviews) {
     if (error) {
       captureException(error, {
         context: {
-          albumId: album.id,
-          path: `/album/${album.slug}`,
+          releaseGroupId: releaseGroup.id,
+          path: `/album/${releaseGroup.slug}`,
         },
         tags: {
           dependency: "supabase",
@@ -132,14 +132,14 @@ export async function getAlbumCommunitySummary(
 
     // Preserve the known album-level stats while making the query failure explicit.
     return {
-      averageRating: album.avg_rating,
+      averageRating: releaseGroup.avg_rating,
       availability: "unavailable",
       favoriteTracks: [],
       ratingHistogram: buildRatingHistogram([]),
-      reviewCount: album.review_count ?? 0,
+      reviewCount: releaseGroup.review_count ?? 0,
       standoutTrack: null,
     };
   }
 
-  return buildAlbumCommunitySummary(album, reviews);
+  return buildAlbumCommunitySummary(releaseGroup, reviews);
 }

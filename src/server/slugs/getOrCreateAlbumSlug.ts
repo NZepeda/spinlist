@@ -156,10 +156,7 @@ export async function getOrCreateAlbumSlug(
   const canonicalArtists: Array<Pick<ArtistRow, "id" | "name">> = [];
 
   for (const [index, artist] of spotifyAlbum.artists.entries()) {
-    const canonicalArtist = await getOrCreateCanonicalArtist(supabase, {
-      id: artist.id,
-      name: artist.name,
-    });
+    const canonicalArtist = await getOrCreateCanonicalArtist(supabase, artist);
 
     canonicalArtists[index] = canonicalArtist;
   }
@@ -167,9 +164,12 @@ export async function getOrCreateAlbumSlug(
   // Generate slug with artist name for uniqueness (e.g., "radiohead-ok-computer")
   const baseSlug = generateSlug(`${primaryArtistName}-${spotifyAlbum.name}`);
   const slug = await findAvailableSlug(supabase, "release_groups", baseSlug);
+
+  // Insert the release group record.
   const { data: releaseGroup, error: releaseGroupError } = await supabase
     .from("release_groups")
     .insert({
+      // We don't have MusicBrainz data at this point, so mbid and original_release_year are null. They'll be backfilled later by a background job.
       mb_group_id: null,
       original_release_year: getOriginalReleaseYear(spotifyAlbum.release_date),
       slug,
@@ -193,6 +193,7 @@ export async function getOrCreateAlbumSlug(
     };
   });
 
+  // Insert the release group artists.
   const { error: releaseGroupArtistsError } = await supabase
     .from("release_group_artists")
     .insert(releaseGroupArtistRows);
@@ -203,6 +204,7 @@ export async function getOrCreateAlbumSlug(
     );
   }
 
+  // Insert the album record.
   const { error: albumError } = await supabase.from("albums").insert({
     release_group_id: releaseGroup.id,
     title: spotifyAlbum.name,
@@ -214,6 +216,7 @@ export async function getOrCreateAlbumSlug(
     throw new Error(`Failed to create album: ${albumError.message}`);
   }
 
+  // Insert the mapping record to link the Spotify album ID to our release group.
   const { error: mappingError } = await supabase.from("mappings").insert({
     provider_id: spotifyAlbum.id,
     provider_name: "spotify",

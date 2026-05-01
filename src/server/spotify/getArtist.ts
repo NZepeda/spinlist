@@ -20,7 +20,7 @@ export async function getArtist(id: string): Promise<Artist> {
   return {
     externalUrl: spotifyArtist.external_urls?.spotify || "",
     id: spotifyArtist.id,
-    image: getImageUrl(spotifyArtist.images, "medium"),
+    imageUrl: getImageUrl(spotifyArtist.images, "medium"),
     name: spotifyArtist.name,
   };
 }

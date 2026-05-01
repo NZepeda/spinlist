@@ -1,6 +1,5 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/server/database";
-import { syncAlbums } from "@/features/artists/server/syncAlbums";
 import { generateSlug } from "./generateSlug";
 import { findAvailableSlug } from "./findAvailableSlug";
 import { getArtist } from "../spotify/getArtist";
@@ -46,9 +45,6 @@ export async function getOrCreateArtistSlug(
   if (artistError) {
     throw new Error(`Failed to upsert artist: ${artistError.message}`);
   }
-
-  // Fire-and-forget: sync the artist's albums in the background
-  void syncAlbums(supabase, artistSpotifyId);
 
   return slug;
 }

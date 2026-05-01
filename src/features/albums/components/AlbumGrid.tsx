@@ -27,7 +27,9 @@ export const AlbumGrid = ({ albums }: AlbumGridProps) => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/slug?spotifyId=${albumId}&type=album`);
+      const response = await fetch(`/api/slug?spotifyId=${albumId}&type=album`, {
+        method: "POST",
+      });
 
       if (!response.ok) {
         throw new Error("Failed to resolve album slug");

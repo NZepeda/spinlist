@@ -26,9 +26,9 @@ export interface UseSearchSelectionResult {
 export async function resolveSearchResultPath(
   item: SearchResultItem,
 ): Promise<string> {
-  const response = await fetch(
-    `/api/slug?spotifyId=${item.id}&type=${item.type}`,
-  );
+  const response = await fetch(`/api/slug?spotifyId=${item.id}&type=${item.type}`, {
+    method: "POST",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to retrieve slug");

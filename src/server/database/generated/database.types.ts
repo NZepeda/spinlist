@@ -7,6 +7,31 @@ export type Json =
   | Json[];
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
       albums: {
@@ -176,11 +201,44 @@ export type Database = {
           },
         ];
       };
+      release_group_artists: {
+        Row: {
+          artist_id: string;
+          position: number;
+          release_group_id: string;
+        };
+        Insert: {
+          artist_id: string;
+          position: number;
+          release_group_id: string;
+        };
+        Update: {
+          artist_id?: string;
+          position?: number;
+          release_group_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "release_group_artists_artist_id_fkey";
+            columns: ["artist_id"];
+            isOneToOne: false;
+            referencedRelation: "artists";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "release_group_artists_release_group_id_fkey";
+            columns: ["release_group_id"];
+            isOneToOne: false;
+            referencedRelation: "release_groups";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       release_groups: {
         Row: {
           artist_id: string;
           id: string;
-          mb_group_id: string;
+          mb_group_id: string | null;
           original_release_year: number | null;
           slug: string;
           title: string;
@@ -189,7 +247,7 @@ export type Database = {
         Insert: {
           artist_id: string;
           id?: string;
-          mb_group_id: string;
+          mb_group_id?: string | null;
           original_release_year?: number | null;
           slug: string;
           title: string;
@@ -198,7 +256,7 @@ export type Database = {
         Update: {
           artist_id?: string;
           id?: string;
-          mb_group_id?: string;
+          mb_group_id?: string | null;
           original_release_year?: number | null;
           slug?: string;
           title?: string;
@@ -420,6 +478,9 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },

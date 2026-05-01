@@ -34,6 +34,10 @@ GRANT ALL ON TABLE "public"."mappings" TO "anon";
 GRANT ALL ON TABLE "public"."mappings" TO "authenticated";
 GRANT ALL ON TABLE "public"."mappings" TO "service_role";
 
+GRANT ALL ON TABLE "public"."release_group_artists" TO "anon";
+GRANT ALL ON TABLE "public"."release_group_artists" TO "authenticated";
+GRANT ALL ON TABLE "public"."release_group_artists" TO "service_role";
+
 GRANT ALL ON TABLE "public"."release_groups" TO "anon";
 GRANT ALL ON TABLE "public"."release_groups" TO "authenticated";
 GRANT ALL ON TABLE "public"."release_groups" TO "service_role";

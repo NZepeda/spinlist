@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS "public"."release_groups" (
     "title" "text" NOT NULL,
     "type" "text" NOT NULL,
     "original_release_year" integer,
-    "mb_group_id" "text" NOT NULL,
+    "mb_group_id" "text",
     "slug" "text" NOT NULL
 );
 

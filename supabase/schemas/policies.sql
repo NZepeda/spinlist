@@ -4,6 +4,7 @@ ALTER TABLE "public"."artists" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."favorites" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."follows" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."mappings" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."release_group_artists" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."release_groups" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."reviews" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
@@ -28,6 +29,10 @@ CREATE POLICY "Anyone can update albums" ON "public"."albums" FOR UPDATE USING (
 CREATE POLICY "Mappings are viewable by everyone" ON "public"."mappings" FOR SELECT USING (true);
 CREATE POLICY "Anyone can create mappings" ON "public"."mappings" FOR INSERT WITH CHECK (true);
 CREATE POLICY "Anyone can update mappings" ON "public"."mappings" FOR UPDATE USING (true) WITH CHECK (true);
+
+CREATE POLICY "Release group artists are viewable by everyone" ON "public"."release_group_artists" FOR SELECT USING (true);
+CREATE POLICY "Anyone can create release group artists" ON "public"."release_group_artists" FOR INSERT WITH CHECK (true);
+CREATE POLICY "Anyone can update release group artists" ON "public"."release_group_artists" FOR UPDATE USING (true) WITH CHECK (true);
 
 -- Reviews policies
 CREATE POLICY "Reviews are viewable by everyone" ON "public"."reviews" FOR SELECT USING (true);

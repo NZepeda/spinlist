@@ -14,7 +14,10 @@ export interface SearchArtistDTO {
 export interface SearchAlbumDTO {
   id: string;
   name: string;
-  artistName: string;
+  artists: {
+    id: string;
+    name: string;
+  }[];
   imageUrl: string | null;
   releaseDate: string;
   type: "album";

@@ -1,11 +1,11 @@
 import { AlbumHeroCard } from "@/features/reviews/components/AlbumHeroCard";
 import { ReviewsFeed } from "@/features/reviews/components/ReviewsFeed";
 import type { AlbumReviewFeedItem } from "@/features/reviews/types";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import { AppPage } from "@/shared/ui/AppPage";
 
 interface AlbumPageShellProps {
-  album: Album;
+  album: AlbumRecord;
   imageUrl: string | null;
   reviewFeed: AlbumReviewFeedItem[];
 }

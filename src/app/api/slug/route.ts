@@ -14,9 +14,9 @@ interface SlugResponseBody {
 }
 
 /**
- * Retrieves the slug for the requested type.
+ * Retrieves the slug for the requested entity (artist | album).
  */
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const spotifyId = searchParams.get("spotifyId");
   const type = searchParams.get("type");

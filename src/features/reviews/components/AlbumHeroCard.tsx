@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import { AlbumReviewFlow } from "./AlbumReviewFlow";
 
 interface AlbumHeroCardProps {
-  album: Album;
+  album: AlbumRecord;
 }
 
 /**

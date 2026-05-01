@@ -236,7 +236,6 @@ export type Database = {
       };
       release_groups: {
         Row: {
-          artist_id: string;
           id: string;
           mb_group_id: string | null;
           original_release_year: number | null;
@@ -245,7 +244,6 @@ export type Database = {
           type: string;
         };
         Insert: {
-          artist_id: string;
           id?: string;
           mb_group_id?: string | null;
           original_release_year?: number | null;
@@ -254,7 +252,6 @@ export type Database = {
           type: string;
         };
         Update: {
-          artist_id?: string;
           id?: string;
           mb_group_id?: string | null;
           original_release_year?: number | null;
@@ -262,15 +259,7 @@ export type Database = {
           title?: string;
           type?: string;
         };
-        Relationships: [
-          {
-            foreignKeyName: "release_groups_artist_id_fkey";
-            columns: ["artist_id"];
-            isOneToOne: false;
-            referencedRelation: "artists";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       reviews: {
         Row: {

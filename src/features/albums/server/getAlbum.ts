@@ -6,9 +6,12 @@ import type { AlbumRecord } from "@/shared/types";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
 
 interface ReleaseGroupArtistRecord {
-  id: string;
-  name: string;
-  slug: string;
+  artists: {
+    id: string;
+    name: string;
+    slug: string;
+  } | null;
+  position: number;
 }
 
 interface ReleaseGroupAlbumRecord {
@@ -20,10 +23,24 @@ interface ReleaseGroupAlbumRecord {
 
 interface ReleaseGroupRecordData {
   albums: ReleaseGroupAlbumRecord[] | null;
-  artists: ReleaseGroupArtistRecord | null;
   id: string;
+  release_group_artists: ReleaseGroupArtistRecord[] | null;
   slug: string;
   title: string;
+}
+
+/**
+ * Orders and unwraps release-group artist credits for page rendering.
+ */
+function mapOrderedArtistCredits(
+  artistCredits: ReleaseGroupArtistRecord[] | null,
+): Array<{ id: string; name: string; slug: string }> {
+  return (artistCredits ?? [])
+    .filter((artistCredit) => artistCredit.artists !== null)
+    .sort((left, right) => left.position - right.position)
+    .map((artistCredit) => {
+      return artistCredit.artists as { id: string; name: string; slug: string };
+    });
 }
 
 /**
@@ -83,10 +100,13 @@ export async function getAlbum(
             id,
             slug,
             title,
-            artists (
-              id,
-              name,
-              slug
+            release_group_artists (
+              position,
+              artists (
+                id,
+                name,
+                slug
+              )
             ),
             albums (
               id,
@@ -116,12 +136,13 @@ export async function getAlbum(
       }
 
       const albums = releaseGroup.albums ?? [];
+      const artists = mapOrderedArtistCredits(
+        releaseGroup.release_group_artists,
+      );
       const selectedAlbum = selectRepresentativeAlbum(albums);
 
       return mapAlbumRowToAlbum({
-        // TODO: Replace this single-artist bridge once the live schema uses
-        // release_group_artists and can return ordered artist credits here.
-        artists: releaseGroup.artists ? [releaseGroup.artists] : [],
+        artists,
         id: releaseGroup.id,
         images: selectedAlbum?.images ?? [],
         slug: releaseGroup.slug,

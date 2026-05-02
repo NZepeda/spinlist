@@ -3,7 +3,7 @@ import type {
   AlbumRecord,
   AlbumRecordTrack,
 } from "@/shared/types/domain/album";
-import type { Image } from "@/shared/types/domain/image";
+import { parseAlbumImages } from "./parseAlbumImages";
 
 interface AlbumArtistRecordData {
   id: string;
@@ -18,41 +18,6 @@ interface AlbumRecordData {
   slug: string;
   title: string;
   tracklist: Json;
-}
-
-/**
- * Extracts valid image records from untyped JSON data.
- */
-function parseAlbumImages(images: Json): Image[] {
-  const rawImages = Array.isArray(images) ? images : [];
-
-  return rawImages.flatMap((image) => {
-    if (image === null || typeof image !== "object") {
-      return [];
-    }
-
-    if (Array.isArray(image)) {
-      return [];
-    }
-
-    const record = image as Record<string, unknown>;
-
-    if (typeof record.url !== "string") {
-      return [];
-    }
-
-    const height =
-      typeof record.height === "number" ? record.height : undefined;
-    const width = typeof record.width === "number" ? record.width : undefined;
-
-    return [
-      {
-        url: record.url,
-        height,
-        width,
-      },
-    ];
-  });
 }
 
 /**

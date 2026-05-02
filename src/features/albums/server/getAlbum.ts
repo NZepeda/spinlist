@@ -4,6 +4,7 @@ import type { Json } from "@/server/database";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import type { AlbumRecord } from "@/shared/types";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
+import { selectRepresentativeAlbum } from "@/features/albums/utils/selectRepresentativeAlbum";
 
 interface ReleaseGroupArtistRecord {
   artists: {
@@ -41,41 +42,6 @@ function mapOrderedArtistCredits(
     .map((artistCredit) => {
       return artistCredit.artists as { id: string; name: string; slug: string };
     });
-}
-
-/**
- * Checks whether a child album has a usable tracklist payload.
- */
-function hasTracklistEntries(album: ReleaseGroupAlbumRecord): boolean {
-  return Array.isArray(album.tracklist) && album.tracklist.length > 0;
-}
-
-/**
- * Checks whether a child album has a usable image payload.
- */
-function hasImageEntries(album: ReleaseGroupAlbumRecord): boolean {
-  return Array.isArray(album.images) && album.images.length > 0;
-}
-
-/**
- * Picks the child album that should supply cover art and tracks for the page.
- */
-function selectRepresentativeAlbum(
-  albums: ReleaseGroupAlbumRecord[],
-): ReleaseGroupAlbumRecord | undefined {
-  const withTracks = albums.find((album) => hasTracklistEntries(album));
-
-  if (withTracks) {
-    return withTracks;
-  }
-
-  const withImages = albums.find((album) => hasImageEntries(album));
-
-  if (withImages) {
-    return withImages;
-  }
-
-  return albums[0];
 }
 
 /**

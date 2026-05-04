@@ -2,7 +2,6 @@ import { createClient } from "@/server/supabase/server";
 import { startSpan } from "@/monitoring/startSpan";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import { parseAlbumImages } from "@/server/database/mappers/parseAlbumImages";
-import { selectRepresentativeAlbum } from "@/features/albums/utils/selectRepresentativeAlbum";
 import type { Json } from "@/server/database";
 import type { AlbumSummaryDTO } from "@/shared/types";
 import type { ArtistDiscography } from "@/features/artists/types";
@@ -10,62 +9,50 @@ import type { ArtistDiscography } from "@/features/artists/types";
 interface DiscographyAlbumRecord {
   id: string;
   images: Json;
+  release_year: number | null;
+  slug: string;
   title: string;
   tracklist: Json;
 }
 
-interface DiscographyReleaseGroupRecord {
-  id: string;
-  title: string;
-  slug: string;
-  original_release_year: number | null;
-  albums: DiscographyAlbumRecord[] | null;
-}
-
-interface DiscographyReleaseGroupArtistRecord {
+interface DiscographyAlbumArtistRecord {
   position: number;
   // Supabase returns the many-to-one side of a foreign key as an object, not an array.
-  release_groups: DiscographyReleaseGroupRecord | null;
+  albums: DiscographyAlbumRecord | null;
 }
 
 interface ArtistDiscographyRecord {
+  album_artists: DiscographyAlbumArtistRecord[] | null;
   id: string;
+  images: Json;
   name: string;
   slug: string;
-  images: Json;
-  release_group_artists: DiscographyReleaseGroupArtistRecord[] | null;
 }
 
 /**
- * Maps a release group row to a lightweight album summary for list displays.
+ * Maps an album row to a lightweight album summary for list displays.
  */
-function mapReleaseGroupToAlbumSummaryDTO(
-  releaseGroup: DiscographyReleaseGroupRecord,
+function mapAlbumToAlbumSummaryDTO(
+  album: DiscographyAlbumRecord,
   artistName: string,
 ): AlbumSummaryDTO {
-  const albums = releaseGroup.albums ?? [];
-  const representative = selectRepresentativeAlbum(albums);
-  const images = parseAlbumImages(representative?.images ?? []);
-  const tracklist = Array.isArray(representative?.tracklist)
-    ? representative.tracklist
-    : [];
+  const images = parseAlbumImages(album.images);
+  const tracklist = Array.isArray(album.tracklist) ? album.tracklist : [];
 
   return {
-    id: releaseGroup.id,
-    name: releaseGroup.title,
+    id: album.id,
+    name: album.title,
     artistName,
     imageUrl: images[0]?.url ?? null,
     images,
-    releaseDate: releaseGroup.original_release_year
-      ? `${releaseGroup.original_release_year}-01-01`
-      : "",
+    releaseDate: album.release_year ? `${album.release_year}-01-01` : "",
     totalTracks: tracklist.length,
     label: "",
   };
 }
 
 /**
- * Returns the artist's profile and their full list of release groups based on the provided slug.
+ * Returns the artist's profile and their full list of albums based on the provided slug.
  * Returns undefined when no artist matches the slug.
  */
 export async function getArtistDiscography(
@@ -87,19 +74,15 @@ export async function getArtistDiscography(
             name,
             slug,
             images,
-            release_group_artists (
+            album_artists (
               position,
-              release_groups (
+              albums (
                 id,
-                title,
+                images,
+                release_year,
                 slug,
-                original_release_year,
-                albums (
-                  id,
-                  images,
-                  title,
-                  tracklist
-                )
+                title,
+                tracklist
               )
             )
           `,
@@ -126,31 +109,49 @@ export async function getArtistDiscography(
       const artistImages = parseAlbumImages(artist.images);
       const imageUrl = artistImages[0]?.url ?? null;
 
-      // Sort the albums by release year.
-      const releaseGroups = (artist.release_group_artists ?? [])
-        .map((rga) => rga.release_groups)
-        .filter((rg): rg is DiscographyReleaseGroupRecord => rg !== null)
+      // Sort the albums by release year and preserve credit order as the tiebreaker.
+      const albums = (artist.album_artists ?? [])
+        .map((albumArtist) => {
+          return {
+            album: albumArtist.albums,
+            position: albumArtist.position,
+          };
+        })
+        .filter(
+          (
+            albumArtist,
+          ): albumArtist is {
+            album: DiscographyAlbumRecord;
+            position: number;
+          } => albumArtist.album !== null,
+        )
         .sort((a, b) => {
-          if (a.original_release_year === null) {
+          if (a.album.release_year === null && b.album.release_year === null) {
+            return a.position - b.position;
+          }
+
+          if (a.album.release_year === null) {
             return 1;
           }
 
-          if (b.original_release_year === null) {
+          if (b.album.release_year === null) {
             return -1;
           }
 
-          return b.original_release_year - a.original_release_year;
-        });
+          if (b.album.release_year !== a.album.release_year) {
+            return b.album.release_year - a.album.release_year;
+          }
 
-      const albums = releaseGroups.map((rg) =>
-        mapReleaseGroupToAlbumSummaryDTO(rg, artist.name),
-      );
+          return a.position - b.position;
+        });
 
       return {
         name: artist.name,
         imageUrl,
         slug: artist.slug,
-        albums,
+        albums: albums.map((albumArtist) =>
+          mapAlbumToAlbumSummaryDTO(albumArtist.album, artist.name),
+        ),
       };
     },
   );

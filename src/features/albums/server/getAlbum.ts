@@ -4,9 +4,8 @@ import type { Json } from "@/server/database";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import type { AlbumRecord } from "@/shared/types";
 import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
-import { selectRepresentativeAlbum } from "@/features/albums/utils/selectRepresentativeAlbum";
 
-interface ReleaseGroupArtistRecord {
+interface AlbumArtistRecord {
   artists: {
     id: string;
     name: string;
@@ -15,26 +14,20 @@ interface ReleaseGroupArtistRecord {
   position: number;
 }
 
-interface ReleaseGroupAlbumRecord {
+interface AlbumRecordData {
+  album_artists: AlbumArtistRecord[] | null;
   id: string;
   images: Json;
+  slug: string;
   title: string;
   tracklist: Json;
 }
 
-interface ReleaseGroupRecordData {
-  albums: ReleaseGroupAlbumRecord[] | null;
-  id: string;
-  release_group_artists: ReleaseGroupArtistRecord[] | null;
-  slug: string;
-  title: string;
-}
-
 /**
- * Orders and unwraps release-group artist credits for page rendering.
+ * Orders and unwraps album artist credits for page rendering.
  */
 function mapOrderedArtistCredits(
-  artistCredits: ReleaseGroupArtistRecord[] | null,
+  artistCredits: AlbumArtistRecord[] | null,
 ): Array<{ id: string; name: string; slug: string }> {
   return (artistCredits ?? [])
     .filter((artistCredit) => artistCredit.artists !== null)
@@ -46,7 +39,7 @@ function mapOrderedArtistCredits(
 
 /**
  * Loads the canonical album record for a public album slug.
- * The album is retrieved by matching the slug to a release group, then selecting a representative child album for tracks and cover art, and finally mapping the assembled data into the shared album model.
+ * The album is retrieved directly from the albums table with its ordered artist credits and then mapped into the shared album model.
  */
 export async function getAlbum(
   slug: string,
@@ -60,25 +53,21 @@ export async function getAlbum(
       const supabase = await createClient();
 
       const { data, error } = await supabase
-        .from("release_groups")
+        .from("albums")
         .select(
           `
             id,
             slug,
             title,
-            release_group_artists (
+            images,
+            tracklist,
+            album_artists (
               position,
               artists (
                 id,
                 name,
                 slug
               )
-            ),
-            albums (
-              id,
-              images,
-              title,
-              tracklist
             )
           `,
         )
@@ -91,29 +80,25 @@ export async function getAlbum(
           code: error.code ?? undefined,
           message: `supabase.album.load failed: ${error.message}`,
           operation: "supabase.album.load",
-          resource: "release_groups",
+          resource: "albums",
         });
       }
 
-      const releaseGroup = data as ReleaseGroupRecordData | null;
+      const album = data as AlbumRecordData | null;
 
-      if (!releaseGroup) {
+      if (!album) {
         return undefined;
       }
 
-      const albums = releaseGroup.albums ?? [];
-      const artists = mapOrderedArtistCredits(
-        releaseGroup.release_group_artists,
-      );
-      const selectedAlbum = selectRepresentativeAlbum(albums);
+      const artists = mapOrderedArtistCredits(album.album_artists);
 
       return mapAlbumRowToAlbum({
         artists,
-        id: releaseGroup.id,
-        images: selectedAlbum?.images ?? [],
-        slug: releaseGroup.slug,
-        title: releaseGroup.title,
-        tracklist: selectedAlbum?.tracklist ?? [],
+        id: album.id,
+        images: album.images,
+        slug: album.slug,
+        title: album.title,
+        tracklist: album.tracklist,
       });
     },
   );

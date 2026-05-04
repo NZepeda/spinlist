@@ -17,7 +17,7 @@ import type { Database } from "@/server/database";
  */
 export async function findAvailableSlug(
   supabase: SupabaseClient<Database>,
-  table: "artists" | "release_groups",
+  table: "albums" | "artists",
   baseSlug: string,
 ): Promise<string> {
   // Get all slugs that start with this base slug

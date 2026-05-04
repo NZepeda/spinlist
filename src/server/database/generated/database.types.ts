@@ -34,27 +34,75 @@ export type Database = {
   };
   public: {
     Tables: {
+      album_artists: {
+        Row: {
+          album_id: string;
+          artist_id: string;
+          position: number;
+        };
+        Insert: {
+          album_id: string;
+          artist_id: string;
+          position: number;
+        };
+        Update: {
+          album_id?: string;
+          artist_id?: string;
+          position?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "album_artists_album_id_fkey";
+            columns: ["album_id"];
+            isOneToOne: false;
+            referencedRelation: "albums";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "album_artists_artist_id_fkey";
+            columns: ["artist_id"];
+            isOneToOne: false;
+            referencedRelation: "artists";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       albums: {
         Row: {
           id: string;
           images: Json;
-          release_group_id: string;
+          release_group_id: string | null;
+          release_year: number | null;
+          slug: string;
+          spotify_id: string;
           title: string;
           tracklist: Json;
+          type: string;
+          upc: string | null;
         };
         Insert: {
           id?: string;
           images?: Json;
-          release_group_id: string;
+          release_group_id?: string | null;
+          release_year?: number | null;
+          slug: string;
+          spotify_id: string;
           title: string;
           tracklist?: Json;
+          type: string;
+          upc?: string | null;
         };
         Update: {
           id?: string;
           images?: Json;
-          release_group_id?: string;
+          release_group_id?: string | null;
+          release_year?: number | null;
+          slug?: string;
+          spotify_id?: string;
           title?: string;
           tracklist?: Json;
+          type?: string;
+          upc?: string | null;
         };
         Relationships: [
           {
@@ -72,18 +120,21 @@ export type Database = {
           images: Json;
           name: string;
           slug: string;
+          spotify_id: string;
         };
         Insert: {
           id?: string;
           images?: Json;
           name: string;
           slug: string;
+          spotify_id: string;
         };
         Update: {
           id?: string;
           images?: Json;
           name?: string;
           slug?: string;
+          spotify_id?: string;
         };
         Relationships: [];
       };

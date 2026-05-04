@@ -9,37 +9,34 @@ import { SupabaseDependencyError } from "../supabase/SupabaseDependencyError";
 /**
  * Gets an existing slug or creates a new one for an artist.
  *
- * When the artist is new, fetches details from Spotify and creates records in both the artists and mappings tables before returning the slug.
+ * When the artist is new, fetches details from Spotify and creates the canonical artist record before returning the slug.
  * Handles slug collisions by appending numbers (e.g., turnstile-2, turnstile-3).
  */
 export async function getOrCreateArtistSlug(
   supabase: SupabaseClient<Database>,
   artistSpotifyId: string,
 ): Promise<string> {
-  // Join the mappings table with the artists table to check for an existing slug for the given artist Spotify ID.
   const { data: existing, error: existingError } = await supabase
-    .from("mappings")
-    .select("artists(slug)")
-    .eq("provider_name", "spotify")
-    .eq("provider_id", artistSpotifyId)
-    .not("artist_id", "is", null)
+    .from("artists")
+    .select("slug")
+    .eq("spotify_id", artistSpotifyId)
     .maybeSingle();
 
   if (existingError) {
     throw new SupabaseDependencyError({
-      message: `Failed to query existing artist mapping: ${existingError.message}`,
+      message: `Failed to query existing artist: ${existingError.message}`,
       operation: "select",
-      resource: "mappings/artists",
+      resource: "artists",
       cause: existingError,
     });
   }
 
-  if (existing?.artists && !Array.isArray(existing.artists)) {
-    return existing.artists.slug;
+  if (existing !== null) {
+    return existing.slug;
   }
 
   // The artist doesn't exist in the database yet.
-  // Fetch from Spotify to get the name and images needed to create canonical records.
+  // Fetch from Spotify to get the name and images needed to create the canonical record.
   const spotifyArtist = await getSpotifyArtist(artistSpotifyId);
 
   if (!spotifyArtist) {
@@ -53,12 +50,13 @@ export async function getOrCreateArtistSlug(
     images: imagesToJson(spotifyArtist.images ?? []),
     name: spotifyArtist.name,
     slug,
+    spotify_id: artistSpotifyId,
   };
 
-  const { data: insertedArtist, error: artistError } = await supabase
+  const { error: artistError } = await supabase
     .from("artists")
     .insert(artistInsert)
-    .select("id")
+    .select("slug")
     .single();
 
   if (artistError) {
@@ -67,21 +65,6 @@ export async function getOrCreateArtistSlug(
       operation: "insert",
       resource: "artists",
       cause: artistError,
-    });
-  }
-
-  const { error: mappingError } = await supabase.from("mappings").insert({
-    artist_id: insertedArtist.id,
-    provider_id: artistSpotifyId,
-    provider_name: "spotify",
-  });
-
-  if (mappingError) {
-    throw new SupabaseDependencyError({
-      message: `Failed to create artist mapping: ${mappingError.message}`,
-      operation: "insert",
-      resource: "mappings",
-      cause: mappingError,
     });
   }
 

@@ -1,17 +1,14 @@
 erDiagram
     users ||--o{ reviews : writes
+    reviews ||--o{ review_revisions : records_history
     users ||--o{ favorites : curates
     users ||--o{ follows : follows
     users ||--o{ follows : "followed by"
     
-    artists ||--o{ mappings : "mapped to"
-    artists ||--o{ release_group_artists : credited_on
-    
-    release_groups ||--o{ albums : contains
-    release_groups ||--o{ reviews : "is reviewed"
-    release_groups ||--o{ favorites : "is favorited"
-    release_groups ||--o{ mappings : "mapped to"
-    release_groups ||--o{ release_group_artists : has_artists
+    artists ||--o{ album_artists : credited_on
+    albums ||--o{ album_artists : has_artists
+    albums ||--o{ reviews : "is reviewed"
+    albums ||--o{ favorites : "is favorited"
 
     users {
         uuid id PK
@@ -23,58 +20,55 @@ erDiagram
     artists {
         uuid id PK
         string name
+        string spotify_id UK
         jsonb images
         string slug UK "URL-friendly identifier, e.g. 'the-beatles'"
-    
-    }
-
-    release_groups {
-        uuid id PK
-        string title
-        enum type "album, ep, single"
-        int original_release_year
-        string mb_group_id UK
-        string slug UK "URL-friendly identifier, e.g. 'the-beatles-abbey-road'"
     }
 
     albums {
         uuid id PK
-        uuid release_group_id FK
-        string title "e.g. Deluxe Edition"
+        string spotify_id UK
+        string slug UK "URL-friendly identifier, e.g. 'the-beatles-abbey-road-2019-remaster'"
+        string title
+        enum type "album, ep, single"
+        int release_year
+        string upc
         jsonb images
         jsonb tracklist
     }
 
-    release_group_artists {
-        uuid release_group_id FK
+    album_artists {
+        uuid album_id FK
         uuid artist_id FK
         int position "Display order, 1 = primary credit"
-    }
-
-    mappings {
-        uuid id PK
-        uuid artist_id FK "Null unless mapping an artist"
-        uuid release_group_id FK "Null unless mapping a release group"
-        string provider_name "e.g. spotify, apple_music"
-        string provider_id "Unique with provider_name"
-        string upc "Null for artists"
     }
 
     reviews {
         uuid id PK
         uuid user_id FK
-        uuid release_group_id FK
+        uuid album_id FK
         decimal rating "0.5 - 5.0"
-        string favorite_track "Provider track ID"
+        string favorite_track "Spotify track ID from the album tracklist"
         text body
-        timestamp created_at "Used for chronological feed ordering"
-        timestamp updated_at
+        timestamp created_at "Original review timestamp used for feed ordering"
+        timestamp updated_at "Most recent saved change to the current review"
+    }
+
+    review_revisions {
+        uuid id PK
+        uuid review_id FK
+        uuid user_id FK
+        uuid album_id FK
+        decimal rating "0.5 - 5.0"
+        string favorite_track "Spotify track ID from the album tracklist"
+        text body
+        timestamp created_at "Immutable snapshot timestamp"
     }
 
     favorites {
         uuid id PK
         uuid user_id FK
-        uuid release_group_id FK
+        uuid album_id FK
         int position "1-10, unique per user"
         timestamp created_at
     }
@@ -85,18 +79,20 @@ erDiagram
         timestamp created_at
     }
 
-    %% mappings constraints:
-    %% - exactly one of artist_id or release_group_id must be set
-    %% - UNIQUE(provider_name, provider_id)
-
     %% reviews constraints:
-    %% - multiple reviews per (user_id, release_group_id) are allowed
-    %% - chronology uses created_at
+    %% - one current review per (user_id, album_id)
+    %% - UNIQUE(user_id, album_id)
+    %% - main feed chronology uses created_at
+    %% - current-state changes update updated_at
+
+    %% review_revisions constraints:
+    %% - immutable snapshot history for reviews
+    %% - each revision belongs to one current review via review_id
 
     %% favorites constraints: 
     %% - UNIQUE(user_id, position)
-    %% - UNIQUE(user_id, release_group_id)
+    %% - UNIQUE(user_id, album_id)
 
-    %% release_group_artists constraints:
-    %% - UNIQUE(release_group_id, artist_id)
-    %% - UNIQUE(release_group_id, position)
+    %% album_artists constraints:
+    %% - UNIQUE(album_id, artist_id)
+    %% - UNIQUE(album_id, position)

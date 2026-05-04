@@ -27,3 +27,40 @@ END;
 $$;
 
 ALTER FUNCTION "public"."update_updated_at_column"() OWNER TO "postgres";
+
+-- Stores an immutable snapshot whenever a review is created or edited
+CREATE OR REPLACE FUNCTION public.record_review_revision()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+BEGIN
+  INSERT INTO public.review_revisions (
+    review_id,
+    user_id,
+    album_id,
+    rating,
+    favorite_track,
+    body,
+    created_at
+  )
+  VALUES (
+    NEW.id,
+    NEW.user_id,
+    NEW.album_id,
+    NEW.rating,
+    NEW.favorite_track,
+    NEW.body,
+    CASE
+      WHEN TG_OP = 'INSERT' THEN NEW.created_at
+      ELSE NEW.updated_at
+    END
+  );
+
+  RETURN NEW;
+END;
+$function$
+;
+
+ALTER FUNCTION public.record_review_revision() OWNER TO "postgres";

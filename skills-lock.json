@@ -1,6 +1,48 @@
 {
   "version": 1,
   "skills": {
+    "design-brief-generator": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "design-brief-generator/SKILL.md",
+      "computedHash": "946b7dcbe7296bcdfbd7a831f39d91f51172918c67845ea9da33650d05514fc9"
+    },
+    "feature-intake": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "feature-intake/SKILL.md",
+      "computedHash": "1df1f5bd05cef19dc5622e7c3971386b90a44bcc226f8336a7323e9538685685"
+    },
+    "feature-owner": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "feature-owner/SKILL.md",
+      "computedHash": "1f2044e3fbc86f4c0025ae55178563e9ebf3cb8c916924a7da03ff3ff4627ed7"
+    },
+    "implementation-planner": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "implementation-planner/SKILL.md",
+      "computedHash": "e1ed23d095cbdb308c11ce91360ae279a9ede2830d17c8d54d9a00e34bec5e1f"
+    },
+    "pr-executor": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "pr-executor/SKILL.md",
+      "computedHash": "f46aa990cdf4cbf25fcdf2a8694370a5533c383d1a1b1799c5a0ebdd77b92168"
+    },
+    "review-guard": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "review-guard/SKILL.md",
+      "computedHash": "4e222f916d10c2f48a0d6162aee5ff5af5a68dac57f26b8618fcd5f59b18fe4a"
+    },
+    "tech-spec-generator": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "tech-spec-generator/SKILL.md",
+      "computedHash": "70a365d3b172e16be05769e3d8ab359b5e055a2f846001024ee11ac14afcf4f0"
+    },
     "write-a-skill": {
       "source": "mattpocock/skills",
       "sourceType": "github",

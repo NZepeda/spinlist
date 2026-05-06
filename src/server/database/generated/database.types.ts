@@ -116,6 +116,7 @@ export type Database = {
       };
       artists: {
         Row: {
+          discography_last_synced_at: string | null;
           id: string;
           images: Json;
           name: string;
@@ -123,6 +124,7 @@ export type Database = {
           spotify_id: string;
         };
         Insert: {
+          discography_last_synced_at?: string | null;
           id?: string;
           images?: Json;
           name: string;
@@ -130,6 +132,7 @@ export type Database = {
           spotify_id: string;
         };
         Update: {
+          discography_last_synced_at?: string | null;
           id?: string;
           images?: Json;
           name?: string;

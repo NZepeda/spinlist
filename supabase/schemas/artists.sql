@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS "public"."artists" (
     "name" "text" NOT NULL,
     "spotify_id" "text" NOT NULL,
     "images" jsonb DEFAULT '[]'::jsonb NOT NULL,
-    "slug" "text" NOT NULL
+    "slug" "text" NOT NULL,
+    "discography_last_synced_at" timestamp with time zone
 );
 
 ALTER TABLE "public"."artists" OWNER TO "postgres";

@@ -23,6 +23,7 @@ erDiagram
         string spotify_id UK
         jsonb images
         string slug UK "URL-friendly identifier, e.g. 'the-beatles'"
+        timestamp discography_last_synced_at "Last successful album discography sync"
     }
 
     albums {

@@ -17,7 +17,7 @@
       "source": "nzepeda/skills",
       "sourceType": "github",
       "skillPath": "feature-owner/SKILL.md",
-      "computedHash": "880208e7daf3a3eac15cadd9eaa4a3fc30685ffc0757b793972e84599bf4ba80"
+      "computedHash": "89485f7d605d4ec5ee12b5549fc80dc9f53ae79729c1615d3e0e2160f55b2dbe"
     },
     "grill-me": {
       "source": "nzepeda/skills",
@@ -47,7 +47,7 @@
       "source": "nzepeda/skills",
       "sourceType": "github",
       "skillPath": "tech-spec-generator/SKILL.md",
-      "computedHash": "70a365d3b172e16be05769e3d8ab359b5e055a2f846001024ee11ac14afcf4f0"
+      "computedHash": "b870bd6b355afbdaacd335754e0f055ce00f2f8c3a95c0d056940d7ee96364f5"
     },
     "write-a-skill": {
       "source": "mattpocock/skills",

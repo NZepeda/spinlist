@@ -18,40 +18,6 @@ export interface AlbumReviewFeedItem {
 }
 
 // ---------------------------------------------------------------------------
-// Community summary
-// ---------------------------------------------------------------------------
-
-/**
- * One rating bucket in the album's rating distribution chart.
- */
-export interface AlbumCommunityRatingBucket {
-  count: number;
-  rating: number;
-}
-
-/**
- * A track nominated as a favorite by listeners, with its share of total picks.
- */
-export interface AlbumCommunityFavoriteTrack {
-  count: number;
-  percentage: number;
-  trackId: string;
-  trackName: string;
-}
-
-/**
- * Aggregated community stats for an album, including rating distribution and favorite tracks.
- */
-export interface AlbumCommunitySummary {
-  averageRating: number | null;
-  availability: "available" | "unavailable";
-  favoriteTracks: AlbumCommunityFavoriteTrack[];
-  ratingHistogram: AlbumCommunityRatingBucket[];
-  reviewCount: number;
-  standoutTrack: AlbumCommunityFavoriteTrack | null;
-}
-
-// ---------------------------------------------------------------------------
 // Reducer
 // ---------------------------------------------------------------------------
 

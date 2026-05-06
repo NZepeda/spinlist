@@ -1,6 +1,7 @@
 export type {
-  Album,
-  AlbumTrack,
+  AlbumRecord,
+  AlbumRecordArtist,
+  AlbumRecordTrack,
 } from "./domain/album";
 export type { Artist } from "./domain/artist";
 export type { Image } from "./domain/image";
@@ -20,3 +21,11 @@ export type {
   ReviewSuccessResponse,
 } from "./api/reviews";
 export type { SearchErrorResponseBody } from "./api/search";
+export type {
+  ArtistSlugFailureCode,
+  ArtistSlugFailureResponse,
+  ArtistSlugSuccessResponse,
+  ArtistSlugSyncStatus,
+  SlugErrorResponseBody,
+  SlugSuccessResponse,
+} from "./api/slug";

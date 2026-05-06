@@ -9,30 +9,46 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."update_album_stats"() TO "anon";
-GRANT ALL ON FUNCTION "public"."update_album_stats"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."update_album_stats"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."record_review_revision"() TO "anon";
+GRANT ALL ON FUNCTION "public"."record_review_revision"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."record_review_revision"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_updated_at_column"() TO "service_role";
 
 -- Table permissions
+GRANT ALL ON TABLE "public"."album_artists" TO "anon";
+GRANT ALL ON TABLE "public"."album_artists" TO "authenticated";
+GRANT ALL ON TABLE "public"."album_artists" TO "service_role";
+
 GRANT ALL ON TABLE "public"."albums" TO "anon";
 GRANT ALL ON TABLE "public"."albums" TO "authenticated";
 GRANT ALL ON TABLE "public"."albums" TO "service_role";
 
-GRANT ALL ON TABLE "public"."profiles" TO "anon";
-GRANT ALL ON TABLE "public"."profiles" TO "authenticated";
-GRANT ALL ON TABLE "public"."profiles" TO "service_role";
+GRANT ALL ON TABLE "public"."artists" TO "anon";
+GRANT ALL ON TABLE "public"."artists" TO "authenticated";
+GRANT ALL ON TABLE "public"."artists" TO "service_role";
+
+GRANT ALL ON TABLE "public"."favorites" TO "anon";
+GRANT ALL ON TABLE "public"."favorites" TO "authenticated";
+GRANT ALL ON TABLE "public"."favorites" TO "service_role";
+
+GRANT ALL ON TABLE "public"."follows" TO "anon";
+GRANT ALL ON TABLE "public"."follows" TO "authenticated";
+GRANT ALL ON TABLE "public"."follows" TO "service_role";
+
+GRANT ALL ON TABLE "public"."review_revisions" TO "anon";
+GRANT ALL ON TABLE "public"."review_revisions" TO "authenticated";
+GRANT ALL ON TABLE "public"."review_revisions" TO "service_role";
 
 GRANT ALL ON TABLE "public"."reviews" TO "anon";
 GRANT ALL ON TABLE "public"."reviews" TO "authenticated";
 GRANT ALL ON TABLE "public"."reviews" TO "service_role";
 
-GRANT ALL ON TABLE "public"."artists" TO "anon";
-GRANT ALL ON TABLE "public"."artists" TO "authenticated";
-GRANT ALL ON TABLE "public"."artists" TO "service_role";
+GRANT ALL ON TABLE "public"."users" TO "anon";
+GRANT ALL ON TABLE "public"."users" TO "authenticated";
+GRANT ALL ON TABLE "public"."users" TO "service_role";
 
 -- Default privileges
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "postgres";

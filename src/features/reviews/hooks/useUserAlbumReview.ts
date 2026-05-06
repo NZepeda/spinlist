@@ -12,31 +12,33 @@ interface UseUserAlbumReviewResult {
 }
 
 /**
- * Hook to fetch the current user's review for a specific album.
- * Returns the review if it exists, or null if the user hasn't reviewed the album.
+ * Hook to fetch the current user's review for a specific release group.
+ * Returns the review if it exists, or null if the user hasn't reviewed the release group.
  * Uses Suspense for loading states - wrap the component in a Suspense boundary.
  */
-export function useUserAlbumReview(albumId: string): UseUserAlbumReviewResult {
+export function useUserAlbumReview(
+  releaseGroupId: string,
+): UseUserAlbumReviewResult {
   const { user } = useAuth();
   const supabase = createClient();
 
   const query = useSuspenseQuery<Review | null>({
-    queryKey: ["userReview", user?.id, albumId],
+    queryKey: ["userReview", user?.id, releaseGroupId],
     queryFn: async () => {
       if (!user?.id) {
         return null;
       }
 
-      // Get the user's review for this album
+      // Get the user's review for this release group
       const { data: review, error: reviewError } = await supabase
         .from("reviews")
         .select("*")
         .eq("user_id", user.id)
-        .eq("album_id", albumId)
+        .eq("release_group_id", releaseGroupId)
         .single();
 
       if (reviewError) {
-        // No review found for this user/album combination
+        // No review found for this user/release-group combination
         if (reviewError.code === "PGRST116") {
           return null;
         }

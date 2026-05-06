@@ -1,11 +1,8 @@
-import { notFound } from "next/navigation";
 import { startSpan } from "@/monitoring/startSpan";
-import { getArtist } from "@/server/spotify/getArtist";
-import { getArtistAlbumsFromSpotify } from "@/server/spotify/getArtistAlbumsFromSpotify";
+import { getArtistDiscography } from "@/features/artists/server/getArtistDiscography";
 import { AlbumGrid } from "@/features/albums/components/AlbumGrid";
-import { createClient } from "@/server/supabase/server";
-import { getSpotifyIdFromSlug } from "@/server/spotify/getSpotifyIdFromSlug";
 import { AppPage } from "@/shared/ui/AppPage";
+import { notFound } from "next/navigation";
 
 /**
  * Displays an artist's discography as a grid of releases.
@@ -23,27 +20,26 @@ export default async function ArtistPage({
     async () => {
       const { slug } = await params;
 
-      const supabase = await createClient();
-      const spotifyId = await getSpotifyIdFromSlug(slug, {
-        supabase,
-        itemType: "artist",
-      });
+      const discography = await getArtistDiscography(slug);
 
-      if (!spotifyId) {
+      if (!discography) {
         notFound();
       }
 
-      const artist = await getArtist(spotifyId);
-      const albums = await getArtistAlbumsFromSpotify(spotifyId);
+      const {
+        name: artistName,
+        imageUrl: artistImageUrl,
+        albums,
+      } = discography;
 
       return (
         <AppPage>
           {/* Artist Header */}
           <div className="mb-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-            {artist.image ? (
+            {artistImageUrl ? (
               <img
-                src={artist.image}
-                alt={artist.name}
+                src={artistImageUrl}
+                alt={artistName}
                 className="h-32 w-32 rounded-full object-cover shadow-lg sm:h-40 sm:w-40 md:h-48 md:w-48"
               />
             ) : (
@@ -52,7 +48,7 @@ export default async function ArtistPage({
               </div>
             )}
             <div className="text-left">
-              <h1 className="text-3xl font-bold sm:text-4xl">{artist.name}</h1>
+              <h1 className="text-3xl font-bold sm:text-4xl">{artistName}</h1>
               <p className="text-muted-foreground mt-2">
                 {albums.length} {albums.length === 1 ? "release" : "releases"}
               </p>

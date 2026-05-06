@@ -99,7 +99,7 @@ export function AuthProvider({
       }
 
       const { data, error } = await supabase
-        .from("profiles")
+        .from("users")
         .select("*")
         .eq("id", state.user.id)
         .single();

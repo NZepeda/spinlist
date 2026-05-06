@@ -1,40 +1,40 @@
 import { createClient } from "@/server/supabase/server";
 import { captureException } from "@/monitoring/captureException";
 import { startSpan } from "@/monitoring/startSpan";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import type { AlbumReviewFeedItem } from "@/features/reviews/types";
 
-interface ReviewFeedProfileRow {
+interface ReviewFeedUserRow {
   username: string;
 }
 
 interface ReviewFeedRow {
+  body: string | null;
   created_at: string;
-  favorite_track_id: string | null;
+  favorite_track: string | null;
   id: string;
-  profiles: ReviewFeedProfileRow | ReviewFeedProfileRow[] | null;
   rating: number;
-  review_text: string | null;
+  users: ReviewFeedUserRow | ReviewFeedUserRow[] | null;
 }
 
 /**
- * Keeps reviewer names readable when joined profile data arrives in different shapes.
+ * Keeps reviewer names readable when joined user data arrives in different shapes.
  */
 function getUsername(
-  profile: ReviewFeedProfileRow | ReviewFeedProfileRow[] | null,
+  user: ReviewFeedUserRow | ReviewFeedUserRow[] | null,
 ): string {
-  if (Array.isArray(profile)) {
-    return profile[0]?.username ?? "Anonymous";
+  if (Array.isArray(user)) {
+    return user[0]?.username ?? "Anonymous";
   }
 
-  return profile?.username ?? "Anonymous";
+  return user?.username ?? "Anonymous";
 }
 
 /**
- * Loads recent written reviews while falling back cleanly if that data is unavailable.
+ * Loads recent written reviews for an album record while falling back cleanly if that data is unavailable.
  */
 export async function getAlbumReviewFeed(
-  album: Album,
+  album: AlbumRecord,
 ): Promise<AlbumReviewFeedItem[]> {
   const supabase = await createClient();
   const trackMap = new Map(album.tracks.map((track) => [track.id, track.name]));
@@ -46,9 +46,9 @@ export async function getAlbumReviewFeed(
     async () =>
       await supabase
         .from("reviews")
-        .select("id, rating, review_text, favorite_track_id, created_at, profiles(username)")
-        .eq("album_id", album.id)
-        .not("review_text", "is", null)
+        .select("id, rating, body, favorite_track, created_at, users(username)")
+        .eq("release_group_id", album.id)
+        .not("body", "is", null)
         .order("created_at", { ascending: false })
         .limit(12),
   );
@@ -57,7 +57,7 @@ export async function getAlbumReviewFeed(
     if (error) {
       captureException(error, {
         context: {
-          albumId: album.id,
+          releaseGroupId: album.id,
           path: `/album/${album.slug}`,
         },
         tags: {
@@ -74,20 +74,20 @@ export async function getAlbumReviewFeed(
   const typedReviews = reviews as ReviewFeedRow[];
 
   return typedReviews.flatMap((review) => {
-    if (!review.review_text) {
+    if (!review.body) {
       return [];
     }
 
     return {
       createdAt: review.created_at,
-      favoriteTrackId: review.favorite_track_id,
-      favoriteTrackName: review.favorite_track_id
-        ? trackMap.get(review.favorite_track_id) ?? null
+      favoriteTrackId: review.favorite_track,
+      favoriteTrackName: review.favorite_track
+        ? trackMap.get(review.favorite_track) ?? null
         : null,
       id: review.id,
       rating: review.rating,
-      reviewText: review.review_text,
-      username: getUsername(review.profiles),
+      reviewText: review.body,
+      username: getUsername(review.users),
     };
   });
 }

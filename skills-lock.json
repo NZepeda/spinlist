@@ -17,7 +17,13 @@
       "source": "nzepeda/skills",
       "sourceType": "github",
       "skillPath": "feature-owner/SKILL.md",
-      "computedHash": "1f2044e3fbc86f4c0025ae55178563e9ebf3cb8c916924a7da03ff3ff4627ed7"
+      "computedHash": "880208e7daf3a3eac15cadd9eaa4a3fc30685ffc0757b793972e84599bf4ba80"
+    },
+    "grill-me": {
+      "source": "nzepeda/skills",
+      "sourceType": "github",
+      "skillPath": "grill-me/SKILL.md",
+      "computedHash": "d08ef399715e9dabf63f3ee85a9578802411a3af878aee17231d1e473647d759"
     },
     "implementation-planner": {
       "source": "nzepeda/skills",

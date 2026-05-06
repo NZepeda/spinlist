@@ -2,8 +2,8 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/server/database";
 
 /**
- * Activates a pending profile.
- * Marks the user's profile as "active".
+ * Activates a pending user record.
+ * Marks the user's account status as "active".
  * Returns true if the user can be considered active.
  */
 export async function activatePendingProfile(
@@ -11,7 +11,7 @@ export async function activatePendingProfile(
   userId: string,
 ): Promise<boolean> {
   const { data: profile, error: profileError } = await supabase
-    .from("profiles")
+    .from("users")
     .select("status")
     .eq("id", userId)
     .maybeSingle();
@@ -25,7 +25,7 @@ export async function activatePendingProfile(
   }
 
   const { error: updateError } = await supabase
-    .from("profiles")
+    .from("users")
     .update({
       status: "active",
     })

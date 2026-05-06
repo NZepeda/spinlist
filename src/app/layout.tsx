@@ -6,6 +6,7 @@ import { AuthProvider } from "@/features/auth/hooks/useAuth";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/features/navigation/components/Navbar";
 import { getInitialAuthState } from "@/features/auth/server/getInitialAuthState";
+import { Toaster } from "sonner";
 
 export { metadata } from "./metadata";
 
@@ -33,6 +34,7 @@ export default async function RootLayout({
           >
             <Navbar />
             {children}
+            <Toaster position="top-center" richColors />
           </AuthProvider>
         </QueryClientProvider>
       </body>

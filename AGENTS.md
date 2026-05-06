@@ -60,33 +60,23 @@ Use this file as a high-priority repository guide for AI agents working in this 
 ## Supabase Expectations
 
 - Always run Supabase CLI commands through `pnpm exec supabase`.
-- Define table shape in `src/lib/db/schema.ts` and treat it as the source of truth for the relational data model.
-- Generate SQL migrations from the Drizzle schema with `pnpm exec drizzle-kit generate`.
+- `/docs/database_schema.mermaid` is the source of truth for the projects data model.
+- `/docs/database_schema.mermaid` should also be updated whenever the data model changes.
 - Keep `supabase/migrations` as the reviewed SQL artifact that Supabase applies.
-- Use custom SQL migrations for database-native behavior that is not modeled cleanly in Drizzle, such as RLS policies, grants, triggers, functions, and views.
-- Never maintain a second hand-written table schema in `supabase/schemas/*.sql`.
 - Never manually edit migration files after they have been pushed to the remote project.
 - Do not make table or column changes directly in Supabase Studio.
+- The table and database schemas live under `/supabase/schema`. 
 
 ## Supabase Database Workflow
 
-This project uses the Drizzle schema in `src/lib/db/schema.ts` as the source of truth for the relational data model.
-
-1. Update `src/lib/db/schema.ts` first.
-2. Generate a migration from the Drizzle schema:
-
-   ```bash
-   pnpm exec drizzle-kit generate
-   ```
-
-3. Review the generated SQL in `supabase/migrations` and add a custom migration when the change requires database-native SQL.
-4. Verify the migration locally:
+1. Review the generated SQL in `supabase/migrations` and add a custom migration when the change requires database-native SQL.
+2. Verify the migration locally:
 
    ```bash
    pnpm exec supabase db reset
    ```
 
-5. Preview the remote push:
+3. Preview the remote push:
 
    ```bash
    pnpm exec supabase db push --dry-run
@@ -117,28 +107,6 @@ This project uses the Drizzle schema in `src/lib/db/schema.ts` as the source of 
 - Before compacting context, spit out the most important information from the conversation into `context.md` for future reference. This should include the problem statement, the proposed solution, and any important details or decisions made during the conversation.
   - Always check for the existence of this file before starting a new conversation. If it exists, read it and use it to inform your understanding of the problem and the proposed solution.
   - After the contents of `context.md` are no longer relevant, delete the file to avoid confusion in future conversations.
-
-## Validation Expectations
-
-- Run the smallest relevant verification for the change you made.
-- Prefer targeted validation first, then broader validation if risk or scope warrants it.
-- Use the project's existing scripts when applicable, including `pnpm lint`, `pnpm test`, and `pnpm test:ci`.
-- If you cannot run verification, or choose not to run it, state that explicitly in your final response.
-
-## Skill Routing
-
-- Use `$grill-me` when the user wants to stress-test a plan or design, get grilled on their thinking, or be pushed through unresolved decision branches.
-- Use `$write-a-prd` when the user asks to write a PRD, create a product requirements document, or shape a new feature definition before implementation work begins.
-- Use `$prd-to-plan` when the user wants to break a PRD into an implementation plan, tracer-bullet rollout, or execution slices saved under `./plans/`.
-- Use `$plan-eng-review` when the user asks for implementation-plan review, architecture review, rollout review, test-plan review, or a pre-coding technical risk review.
-- Use `$plan-ceo-review` when the user asks to challenge the premise, rethink the roadmap, expand scope strategically, reduce scope to the minimum viable version, or review from a founder/product perspective.
-- Use `$creative-director` when the user asks for UI direction, UX critique, branding feedback, visual identity work, desirability improvements, or help making the product feel more distinctive and memorable.
-- If the user needs a PRD before execution planning, use `$write-a-prd` first and then use `$prd-to-plan`.
-- If the user wants their plan challenged aggressively before it is formalized, use `$grill-me` before `$write-a-prd` or `$prd-to-plan`.
-- If the request mixes product/scope shaping with implementation planning, use `$plan-ceo-review` first to settle direction, then use `$plan-eng-review` to lock the execution plan.
-- If the request mixes product strategy with visual/UX direction, use `$plan-ceo-review` first to settle the product bet, then use `$creative-director` to shape how that direction should feel and present.
-- Do not use these skills for routine implementation requests unless the user explicitly asks for a planning or review phase.
-- If the user's intent is ambiguous but sounds close to planning or review, state which skill you are using and why before proceeding.
 
 ## Next.JS Documentation Index
 

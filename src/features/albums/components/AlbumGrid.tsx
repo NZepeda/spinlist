@@ -22,24 +22,12 @@ export const AlbumGrid = ({ albums }: AlbumGridProps) => {
    *
    * @param albumId - The Spotify album identifier from the artist discography payload.
    */
-  const handleAlbumClick = async (albumId: string) => {
-    setLoadingAlbumId(albumId);
+  const handleAlbumClick = (album: AlbumSummaryDTO) => {
+    setLoadingAlbumId(album.id);
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/slug?spotifyId=${albumId}&type=album`);
-
-      if (!response.ok) {
-        throw new Error("Failed to resolve album slug");
-      }
-
-      const data = (await response.json()) as { slug: string };
-
-      if (typeof data.slug !== "string" || data.slug.length === 0) {
-        throw new Error("Album slug response was invalid");
-      }
-
-      router.push(`/album/${data.slug}`);
+      router.push(`/album/${album.slug}`);
     } catch {
       setErrorMessage(
         "We couldn't open that album yet. Please try again in a moment.",
@@ -72,7 +60,7 @@ export const AlbumGrid = ({ albums }: AlbumGridProps) => {
               )}
               disabled={Boolean(loadingAlbumId)}
               onClick={() => {
-                void handleAlbumClick(album.id);
+                handleAlbumClick(album);
               }}
               key={album.id}
             >

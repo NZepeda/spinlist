@@ -11,9 +11,12 @@ The database schema is split into atomic files for better organization. These fi
 schema_paths = [
   "./schemas/extensions.sql",   # Database extensions
   "./schemas/functions.sql",    # All functions
-  "./schemas/profiles.sql",     # Profiles table (parent)
+  "./schemas/users.sql",        # Users table (parent)
+  "./schemas/artists.sql",      # Artists table (parent)
   "./schemas/albums.sql",       # Albums table (parent)
-  "./schemas/reviews.sql",      # Reviews table (child, depends on profiles & albums)
+  "./schemas/album_artists.sql",# Album credits (child, depends on artists & albums)
+  "./schemas/reviews.sql",      # Reviews table (child, depends on users & albums)
+  "./schemas/review_revisions.sql", # Review history (child, depends on reviews)
   "./schemas/policies.sql",     # All RLS policies
   "./schemas/triggers.sql",     # All triggers
   "./schemas/grants.sql",       # All permissions

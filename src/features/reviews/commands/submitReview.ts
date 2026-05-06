@@ -5,7 +5,7 @@ import type {
 } from "@/shared/types/api/reviews";
 
 interface SubmitReviewParams {
-  releaseGroupId: string;
+  albumId: string;
   existingReviewId?: string;
   favoriteTrackId?: string;
   rating: number;
@@ -22,7 +22,7 @@ interface SubmitReviewParams {
  */
 export async function submitReview(params: SubmitReviewParams): Promise<Review> {
   const {
-    releaseGroupId,
+    albumId,
     rating,
     reviewText,
     favoriteTrackId,
@@ -31,7 +31,7 @@ export async function submitReview(params: SubmitReviewParams): Promise<Review> 
 
   const response = await fetch("/api/reviews", {
     body: JSON.stringify({
-      releaseGroupId,
+      albumId,
       existingReviewId,
       favoriteTrackId,
       rating,

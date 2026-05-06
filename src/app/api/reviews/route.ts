@@ -45,7 +45,7 @@ function validateRequestBody(body: unknown): ReviewRequestBody | null {
 
   const candidate = body as Record<string, unknown>;
 
-  if (typeof candidate.releaseGroupId !== "string") {
+  if (typeof candidate.albumId !== "string") {
     return null;
   }
 
@@ -81,7 +81,7 @@ function validateRequestBody(body: unknown): ReviewRequestBody | null {
   }
 
   return {
-    releaseGroupId: candidate.releaseGroupId,
+    albumId: candidate.albumId,
     rating: candidate.rating,
     reviewText:
       typeof candidate.reviewText === "string"
@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
 
   logReviewWorkflow({
     context: {
-      releaseGroupId: parsedBody.releaseGroupId,
+      albumId: parsedBody.albumId,
       existingReviewId: parsedBody.existingReviewId ?? null,
       hasFavoriteTrack: favoriteTrackId !== null,
       hasReviewText: reviewText !== null,
@@ -333,7 +333,7 @@ export async function POST(request: NextRequest) {
     });
     const eventId = captureReviewFailure({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -356,7 +356,7 @@ export async function POST(request: NextRequest) {
   if (user === null) {
     logReviewWorkflow({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -376,12 +376,13 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  // Only activated users can leave reviews
   const activeProfileRequirement = await ensureActiveProfile(supabase, user.id);
 
   if (activeProfileRequirement instanceof SupabaseDependencyError) {
     const eventId = captureReviewFailure({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -405,7 +406,7 @@ export async function POST(request: NextRequest) {
   if (activeProfileRequirement) {
     logReviewWorkflow({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -421,28 +422,28 @@ export async function POST(request: NextRequest) {
     return activeProfileRequirement;
   }
 
-  const { data: releaseGroup, error: releaseGroupError } = await startSpan(
+  const { data: album, error: albumError } = await startSpan(
     {
-      name: "supabase.release_group.read",
+      name: "supabase.album.read",
       op: "db.supabase",
     },
     async () =>
       await supabase
-        .from("release_groups")
+        .from("albums")
         .select("*")
-        .eq("id", parsedBody.releaseGroupId)
-        .single(),
+        .eq("id", parsedBody.albumId)
+        .maybeSingle(),
   );
 
-  if (releaseGroupError) {
+  if (albumError) {
     const dependencyError = createSupabaseDependencyError({
-      error: releaseGroupError,
-      operation: "supabase.release_group.read",
-      resource: "release_groups",
+      error: albumError,
+      operation: "supabase.album.read",
+      resource: "albums",
     });
     const eventId = captureReviewFailure({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -450,7 +451,7 @@ export async function POST(request: NextRequest) {
         userId: user.id,
       },
       error: dependencyError,
-      event: "review_release_group_lookup_failed",
+      event: "review_album_lookup_failed",
       path,
     });
 
@@ -463,10 +464,10 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (releaseGroup === null) {
+  if (album === null) {
     logReviewWorkflow({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -475,26 +476,27 @@ export async function POST(request: NextRequest) {
       },
       event: "review_mutation",
       operation,
-      reason: "release_group_not_found",
+      reason: "album_not_found",
       stage: "rejected",
     });
 
     return createReviewErrorResponse({
-      code: "RELEASE_GROUP_NOT_FOUND",
-      message: "The release group could not be found.",
+      code: "ALBUM_NOT_FOUND",
+      message: "The album could not be found.",
       requestId,
       status: 404,
     });
   }
 
   const reviewPayload = {
-    release_group_id: parsedBody.releaseGroupId,
+    album_id: parsedBody.albumId,
     favorite_track: favoriteTrackId,
     rating: parsedBody.rating,
     body: reviewText,
     user_id: user.id,
   };
 
+  // There is an existing review, update it.
   if (parsedBody.existingReviewId) {
     const { data: updatedReview, error: updateError } = await startSpan(
       {
@@ -532,7 +534,7 @@ export async function POST(request: NextRequest) {
             });
       const eventId = captureReviewFailure({
         context: {
-          releaseGroupId: parsedBody.releaseGroupId,
+          albumId: parsedBody.albumId,
           existingReviewId: parsedBody.existingReviewId,
           method: request.method,
           path,
@@ -560,7 +562,7 @@ export async function POST(request: NextRequest) {
 
     logReviewWorkflow({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         method: request.method,
         path,
         requestId,
@@ -599,7 +601,7 @@ export async function POST(request: NextRequest) {
           });
     const eventId = captureReviewFailure({
       context: {
-        releaseGroupId: parsedBody.releaseGroupId,
+        albumId: parsedBody.albumId,
         method: request.method,
         path,
         requestId,
@@ -626,7 +628,7 @@ export async function POST(request: NextRequest) {
 
   logReviewWorkflow({
     context: {
-      releaseGroupId: parsedBody.releaseGroupId,
+      albumId: parsedBody.albumId,
       method: request.method,
       path,
       requestId,

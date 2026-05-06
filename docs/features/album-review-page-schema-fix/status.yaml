@@ -1,0 +1,28 @@
+feature: "Album review page schema fix"
+slug: "album-review-page-schema-fix"
+state: "done"
+shared_understanding_summary: "Fix the logged-in album review page so it stops querying legacy review columns such as reviews.release_group_id and instead uses the current database schema through the page's supporting data-loading code."
+current_chunk: "Chunk 1: Migrate The Album Review Page Contract To album_id"
+completed_chunks:
+  - "brief.md drafted"
+  - "design.md drafted"
+  - "design approved"
+  - "tech-spec.md drafted"
+  - "technical approach approved"
+  - "plan.md drafted"
+  - "implementation approved"
+  - "album review page contract migrated to album_id"
+  - "database types regenerated"
+open_questions:
+  - "Automated test additions are intentionally deferred for this slice by user decision."
+blockers:
+  - "pnpm exec tsc --noEmit still fails on the pre-existing src/features/auth/hooks/useAuth.test.tsx avatarUrl typing issue."
+  - "pnpm build did not finish returning a final result in this environment."
+artifacts:
+  brief: "./docs/features/album-review-page-schema-fix/brief.md"
+  design: "./docs/features/album-review-page-schema-fix/design.md"
+  tech_spec: "./docs/features/album-review-page-schema-fix/tech-spec.md"
+  plan: "./docs/features/album-review-page-schema-fix/plan.md"
+last_completed_step: "album review page contract migrated to album_id"
+next_step: "No further workflow steps."
+updated_at: "2026-05-06T13:18:00-04:00"

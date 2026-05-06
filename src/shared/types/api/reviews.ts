@@ -7,7 +7,7 @@ export type ReviewErrorCode =
   | "EMAIL_CONFIRMATION_REQUIRED"
   | "INVALID_FAVORITE_TRACK"
   | "INVALID_REQUEST"
-  | "RELEASE_GROUP_NOT_FOUND"
+  | "ALBUM_NOT_FOUND"
   | "SAVE_FAILED"
   | "UNAUTHORIZED";
 
@@ -15,7 +15,7 @@ export type ReviewErrorCode =
  * The shape of the request body sent to the reviews API endpoint.
  */
 export interface ReviewRequestBody {
-  releaseGroupId: string;
+  albumId: string;
   existingReviewId?: string;
   favoriteTrackId?: string;
   rating: number;

@@ -89,7 +89,7 @@ export function useAlbumReviewState({
       const committedReview = reviewRef.current;
       const savedReview = await submitReview({
         userId: user.id,
-        releaseGroupId: album.id,
+        albumId: album.id,
         existingReviewId: committedReview?.id,
         favoriteTrackId: committedReview?.favorite_track ?? "",
         rating: nextRating,
@@ -240,7 +240,7 @@ export function useAlbumReviewState({
       const committedReview = reviewRef.current;
       const savedReview = await submitReview({
         userId: user.id,
-        releaseGroupId: album.id,
+        albumId: album.id,
         existingReviewId: committedReview?.id,
         favoriteTrackId: state.draftFavoriteTrackId,
         rating: state.currentRating,

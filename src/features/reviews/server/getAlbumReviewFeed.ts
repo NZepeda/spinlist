@@ -47,7 +47,7 @@ export async function getAlbumReviewFeed(
       await supabase
         .from("reviews")
         .select("id, rating, body, favorite_track, created_at, users(username)")
-        .eq("release_group_id", album.id)
+        .eq("album_id", album.id)
         .not("body", "is", null)
         .order("created_at", { ascending: false })
         .limit(12),
@@ -57,7 +57,7 @@ export async function getAlbumReviewFeed(
     if (error) {
       captureException(error, {
         context: {
-          releaseGroupId: album.id,
+          albumId: album.id,
           path: `/album/${album.slug}`,
         },
         tags: {

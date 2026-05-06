@@ -71,7 +71,6 @@ export type Database = {
         Row: {
           id: string;
           images: Json;
-          release_group_id: string | null;
           release_year: number | null;
           slug: string;
           spotify_id: string;
@@ -83,7 +82,6 @@ export type Database = {
         Insert: {
           id?: string;
           images?: Json;
-          release_group_id?: string | null;
           release_year?: number | null;
           slug: string;
           spotify_id: string;
@@ -95,7 +93,6 @@ export type Database = {
         Update: {
           id?: string;
           images?: Json;
-          release_group_id?: string | null;
           release_year?: number | null;
           slug?: string;
           spotify_id?: string;
@@ -104,15 +101,7 @@ export type Database = {
           type?: string;
           upc?: string | null;
         };
-        Relationships: [
-          {
-            foreignKeyName: "albums_release_group_id_fkey";
-            columns: ["release_group_id"];
-            isOneToOne: false;
-            referencedRelation: "release_groups";
-            referencedColumns: ["id"];
-          },
-        ];
+        Relationships: [];
       };
       artists: {
         Row: {
@@ -143,32 +132,32 @@ export type Database = {
       };
       favorites: {
         Row: {
+          album_id: string;
           created_at: string;
           id: string;
           position: number;
-          release_group_id: string;
           user_id: string;
         };
         Insert: {
+          album_id: string;
           created_at?: string;
           id?: string;
           position: number;
-          release_group_id: string;
           user_id: string;
         };
         Update: {
+          album_id?: string;
           created_at?: string;
           id?: string;
           position?: number;
-          release_group_id?: string;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "favorites_release_group_id_fkey";
-            columns: ["release_group_id"];
+            foreignKeyName: "favorites_album_id_fkey";
+            columns: ["album_id"];
             isOneToOne: false;
-            referencedRelation: "release_groups";
+            referencedRelation: "albums";
             referencedColumns: ["id"];
           },
           {
@@ -213,145 +202,98 @@ export type Database = {
           },
         ];
       };
-      mappings: {
+      review_revisions: {
         Row: {
-          artist_id: string | null;
-          id: string;
-          provider_id: string;
-          provider_name: string;
-          release_group_id: string | null;
-          upc: string | null;
-        };
-        Insert: {
-          artist_id?: string | null;
-          id?: string;
-          provider_id: string;
-          provider_name: string;
-          release_group_id?: string | null;
-          upc?: string | null;
-        };
-        Update: {
-          artist_id?: string | null;
-          id?: string;
-          provider_id?: string;
-          provider_name?: string;
-          release_group_id?: string | null;
-          upc?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "mappings_artist_id_fkey";
-            columns: ["artist_id"];
-            isOneToOne: false;
-            referencedRelation: "artists";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "mappings_release_group_id_fkey";
-            columns: ["release_group_id"];
-            isOneToOne: false;
-            referencedRelation: "release_groups";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      release_group_artists: {
-        Row: {
-          artist_id: string;
-          position: number;
-          release_group_id: string;
-        };
-        Insert: {
-          artist_id: string;
-          position: number;
-          release_group_id: string;
-        };
-        Update: {
-          artist_id?: string;
-          position?: number;
-          release_group_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "release_group_artists_artist_id_fkey";
-            columns: ["artist_id"];
-            isOneToOne: false;
-            referencedRelation: "artists";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "release_group_artists_release_group_id_fkey";
-            columns: ["release_group_id"];
-            isOneToOne: false;
-            referencedRelation: "release_groups";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      release_groups: {
-        Row: {
-          id: string;
-          mb_group_id: string | null;
-          original_release_year: number | null;
-          slug: string;
-          title: string;
-          type: string;
-        };
-        Insert: {
-          id?: string;
-          mb_group_id?: string | null;
-          original_release_year?: number | null;
-          slug: string;
-          title: string;
-          type: string;
-        };
-        Update: {
-          id?: string;
-          mb_group_id?: string | null;
-          original_release_year?: number | null;
-          slug?: string;
-          title?: string;
-          type?: string;
-        };
-        Relationships: [];
-      };
-      reviews: {
-        Row: {
+          album_id: string;
           body: string | null;
           created_at: string;
           favorite_track: string | null;
           id: string;
           rating: number;
-          release_group_id: string;
-          updated_at: string;
+          review_id: string;
           user_id: string;
         };
         Insert: {
+          album_id: string;
           body?: string | null;
           created_at?: string;
           favorite_track?: string | null;
           id?: string;
           rating: number;
-          release_group_id: string;
-          updated_at?: string;
+          review_id: string;
           user_id: string;
         };
         Update: {
+          album_id?: string;
           body?: string | null;
           created_at?: string;
           favorite_track?: string | null;
           id?: string;
           rating?: number;
-          release_group_id?: string;
+          review_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_revisions_album_id_fkey";
+            columns: ["album_id"];
+            isOneToOne: false;
+            referencedRelation: "albums";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "review_revisions_review_id_fkey";
+            columns: ["review_id"];
+            isOneToOne: false;
+            referencedRelation: "reviews";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "review_revisions_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      reviews: {
+        Row: {
+          album_id: string;
+          body: string | null;
+          created_at: string;
+          favorite_track: string | null;
+          id: string;
+          rating: number;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          album_id: string;
+          body?: string | null;
+          created_at?: string;
+          favorite_track?: string | null;
+          id?: string;
+          rating: number;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          album_id?: string;
+          body?: string | null;
+          created_at?: string;
+          favorite_track?: string | null;
+          id?: string;
+          rating?: number;
           updated_at?: string;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "reviews_release_group_id_fkey";
-            columns: ["release_group_id"];
+            foreignKeyName: "reviews_album_id_fkey";
+            columns: ["album_id"];
             isOneToOne: false;
-            referencedRelation: "release_groups";
+            referencedRelation: "albums";
             referencedColumns: ["id"];
           },
           {

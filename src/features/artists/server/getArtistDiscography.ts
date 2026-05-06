@@ -48,6 +48,7 @@ function mapAlbumToAlbumSummaryDTO(
     releaseDate: album.release_year ? `${album.release_year}-01-01` : "",
     totalTracks: tracklist.length,
     label: "",
+    slug: album.slug,
   };
 }
 

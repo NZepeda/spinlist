@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import type { SearchResultItem } from "@/features/search/types";
+import type { SlugSuccessResponse } from "@/shared/types";
 
+const ARTIST_SELECTION_ERROR_MESSAGE =
+  "We couldn't complete that request. Please try again.";
 const SELECTION_ERROR_MESSAGE =
   "We couldn't open that result. Please try again.";
-
-interface SlugResponse {
-  slug: string;
-}
 
 export interface UseSearchSelectionResult {
   clearSelectionError: () => void;
@@ -26,15 +26,18 @@ export interface UseSearchSelectionResult {
 export async function resolveSearchResultPath(
   item: SearchResultItem,
 ): Promise<string> {
-  const response = await fetch(`/api/slug?spotifyId=${item.id}&type=${item.type}`, {
-    method: "POST",
-  });
+  const response = await fetch(
+    `/api/slug?spotifyId=${item.id}&type=${item.type}`,
+    {
+      method: "POST",
+    },
+  );
 
   if (!response.ok) {
     throw new Error("Failed to retrieve slug");
   }
 
-  const data = (await response.json()) as SlugResponse;
+  const data = (await response.json()) as SlugSuccessResponse;
 
   if (typeof data.slug !== "string" || data.slug.length === 0) {
     throw new Error("Invalid slug response");
@@ -70,6 +73,11 @@ export function useSearchSelection(): UseSearchSelectionResult {
     try {
       return await resolveSearchResultPath(item);
     } catch {
+      if (item.type === "artist") {
+        toast.error(ARTIST_SELECTION_ERROR_MESSAGE);
+        return null;
+      }
+
       setSelectionError(SELECTION_ERROR_MESSAGE);
       return null;
     }

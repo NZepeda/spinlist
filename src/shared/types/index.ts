@@ -21,3 +21,11 @@ export type {
   ReviewSuccessResponse,
 } from "./api/reviews";
 export type { SearchErrorResponseBody } from "./api/search";
+export type {
+  ArtistSlugFailureCode,
+  ArtistSlugFailureResponse,
+  ArtistSlugSuccessResponse,
+  ArtistSlugSyncStatus,
+  SlugErrorResponseBody,
+  SlugSuccessResponse,
+} from "./api/slug";

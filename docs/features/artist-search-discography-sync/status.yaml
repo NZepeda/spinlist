@@ -1,6 +1,6 @@
 feature: Artist Search Discography Sync
 slug: artist-search-discography-sync
-state: awaiting-user-input
+state: done
 shared_understanding_summary: >
   Selecting an artist from search must synchronously create an album-only local discography
   for missing or incomplete artists, treat data as stale after 2 hours, route immediately
@@ -17,7 +17,10 @@ completed_chunks:
   - tech-approved
   - plan-drafted
   - chunk-1-completed
-current_chunk: Chunk 1: Add Artist Discography Sync Persistence
+  - chunk-2-completed
+  - chunk-3-completed
+  - chunk-4-completed
+current_chunk: null
 open_questions: []
 blockers:
   - Review the generated migration because Supabase diff included an unrelated record_review_revision function replacement alongside the new artist sync timestamp column.

@@ -1,17 +1,18 @@
 import { getRequestId } from "@/app/api/getRequestId";
+import { ArtistSyncHardFailureError } from "@/server/artists/errors";
 import { getSpotifyErrorMetadata } from "@/server/spotify/getSpotifyErrorMetadata";
 import { getOrCreateAlbumSlug } from "@/server/slugs/getOrCreateAlbumSlug";
 import { getOrCreateArtistSlug } from "@/server/slugs/getOrCreateArtistSlug";
 import { captureServerException } from "@/monitoring/captureServerException";
 import { logWorkflow } from "@/server/logging/logWorkflow";
 import { createClient } from "@/server/supabase/server";
+import type {
+  ArtistSlugFailureResponse,
+  ArtistSlugSuccessResponse,
+  SlugErrorResponseBody,
+  SlugSuccessResponse,
+} from "@/shared/types";
 import { NextRequest, NextResponse } from "next/server";
-
-interface SlugResponseBody {
-  eventId?: string;
-  requestId: string;
-  slug?: string;
-}
 
 /**
  * Retrieves the slug for the requested entity (artist | album).
@@ -37,14 +38,10 @@ export async function POST(request: NextRequest) {
       workflow: "slug_lookup",
     });
 
-    const responseBody: SlugResponseBody = {
-      requestId,
-    };
-
     return NextResponse.json(
       {
-        ...responseBody,
         error: "Missing parameters",
+        requestId,
       },
       { status: 400 },
     );
@@ -56,21 +53,58 @@ export async function POST(request: NextRequest) {
     if (type === "album") {
       const slug = await getOrCreateAlbumSlug(supabase, spotifyId);
 
-      return NextResponse.json({
+      const responseBody: SlugSuccessResponse = {
         requestId,
         slug,
-      });
+      };
+
+      return NextResponse.json(responseBody);
     }
 
     if (type === "artist") {
-      const slug = await getOrCreateArtistSlug(supabase, spotifyId);
-
-      return NextResponse.json({
+      const artistSlugResult = await getOrCreateArtistSlug(supabase, spotifyId, {
+        path,
         requestId,
-        slug,
       });
+
+      const responseBody: ArtistSlugSuccessResponse = {
+        requestId,
+        slug: artistSlugResult.slug,
+        syncStatus: artistSlugResult.syncStatus,
+      };
+
+      return NextResponse.json(responseBody);
     }
   } catch (error: unknown) {
+    if (type === "artist" && error instanceof ArtistSyncHardFailureError) {
+      const spotifyErrorMetadata = getSpotifyErrorMetadata(error);
+      const eventId = captureServerException({
+        context: {
+          method: request.method,
+          path,
+          requestId,
+          spotifyId,
+          type,
+          ...spotifyErrorMetadata.context,
+        },
+        error,
+        event: "artist_slug_sync_failed",
+        tags: {
+          route: path,
+          ...spotifyErrorMetadata.tags,
+        },
+      });
+
+      const responseBody: ArtistSlugFailureResponse = {
+        code: "ARTIST_SYNC_FAILED",
+        error: "Failed to synchronize artist.",
+        eventId,
+        requestId,
+      };
+
+      return NextResponse.json(responseBody, { status: 500 });
+    }
+
     const spotifyErrorMetadata = getSpotifyErrorMetadata(error);
     const eventId = captureServerException({
       context: {
@@ -94,7 +128,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to retrieve slug",
         eventId,
         requestId,
-      },
+      } satisfies SlugErrorResponseBody,
       { status: 500 },
     );
   }
@@ -117,7 +151,7 @@ export async function POST(request: NextRequest) {
     {
       error: "Invalid type requested",
       requestId,
-    },
+    } satisfies SlugErrorResponseBody,
     { status: 400 },
   );
 }

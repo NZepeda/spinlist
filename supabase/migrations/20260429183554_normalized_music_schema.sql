@@ -156,11 +156,6 @@ drop index if exists "public"."waitlist_email_key";
 
 drop index if exists "public"."waitlist_pkey";
 
-drop table "public"."profiles";
-
-drop table "public"."waitlist";
-
-
   create table "public"."favorites" (
     "id" uuid not null default gen_random_uuid(),
     "user_id" uuid not null,
@@ -220,7 +215,120 @@ alter table "public"."release_groups" enable row level security;
 
 alter table "public"."users" enable row level security;
 
-alter table "public"."albums" drop column "artist";
+insert into "public"."users" ("id", "username", "created_at", "status")
+select
+  "profiles"."id",
+  "profiles"."username",
+  "profiles"."created_at",
+  coalesce("profiles"."status", 'pending'::text)
+from "public"."profiles" as "profiles";
+
+insert into "public"."artists" (
+  "id",
+  "spotify_id",
+  "name",
+  "image_url",
+  "created_at",
+  "last_synced_at",
+  "slug"
+)
+select
+  gen_random_uuid(),
+  'generated:' || substr(md5("album_artists"."artist"), 1, 24),
+  "album_artists"."artist",
+  null,
+  now(),
+  now(),
+  lower(
+    trim(
+      both '-' from regexp_replace(
+        regexp_replace("album_artists"."artist", '[^a-zA-Z0-9]+', '-', 'g'),
+        '-+',
+        '-',
+        'g'
+      )
+    )
+  ) || '-' || substr(md5("album_artists"."artist"), 1, 8)
+from (
+  select distinct "artist"
+  from "public"."albums"
+) as "album_artists"
+left join "public"."artists" as "artists"
+  on lower("artists"."name") = lower("album_artists"."artist")
+where "artists"."id" is null;
+
+insert into "public"."release_groups" (
+  "id",
+  "artist_id",
+  "title",
+  "type",
+  "original_release_year",
+  "mb_group_id",
+  "slug"
+)
+select
+  gen_random_uuid(),
+  "artists"."id",
+  "albums"."title",
+  'album',
+  extract(year from "albums"."release_date")::integer,
+  'generated:' || "albums"."id"::text,
+  "albums"."slug"
+from "public"."albums" as "albums"
+join "public"."artists" as "artists"
+  on lower("artists"."name") = lower("albums"."artist")
+where not exists (
+  select 1
+  from "public"."release_groups" as "release_groups"
+  where "release_groups"."slug" = "albums"."slug"
+);
+
+insert into "public"."mappings" ("artist_id", "provider_name", "provider_id")
+select
+  "artists"."id",
+  'spotify',
+  "artists"."spotify_id"
+from "public"."artists" as "artists"
+where "artists"."spotify_id" is not null
+  and not exists (
+    select 1
+    from "public"."mappings" as "mappings"
+    where "mappings"."provider_name" = 'spotify'
+      and "mappings"."provider_id" = "artists"."spotify_id"
+  );
+
+insert into "public"."mappings" (
+  "release_group_id",
+  "provider_name",
+  "provider_id"
+)
+select
+  "release_groups"."id",
+  'spotify',
+  "albums"."spotify_id"
+from "public"."albums" as "albums"
+join "public"."release_groups" as "release_groups"
+  on "release_groups"."slug" = "albums"."slug"
+where "albums"."spotify_id" is not null
+  and not exists (
+    select 1
+    from "public"."mappings" as "mappings"
+    where "mappings"."provider_name" = 'spotify'
+      and "mappings"."provider_id" = "albums"."spotify_id"
+  );
+
+alter table "public"."albums" add column "release_group_id" uuid;
+
+alter table "public"."albums" add column "tracklist" jsonb not null default '[]'::jsonb;
+
+update "public"."albums" as "albums"
+set
+  "release_group_id" = "release_groups"."id",
+  "tracklist" = coalesce("albums"."tracks", '[]'::jsonb)
+from "public"."release_groups" as "release_groups"
+where "release_groups"."slug" = "albums"."slug";
+
+alter table "public"."albums" alter column "release_group_id" set not null;
 
 alter table "public"."albums" drop column "avg_rating";
 
@@ -240,11 +348,17 @@ alter table "public"."albums" drop column "spotify_id";
 
 alter table "public"."albums" drop column "tracks";
 
-alter table "public"."albums" add column "release_group_id" uuid not null;
-
-alter table "public"."albums" add column "tracklist" jsonb not null default '[]'::jsonb;
+alter table "public"."albums" drop column "artist";
 
 alter table "public"."albums" alter column "images" set not null;
+
+alter table "public"."artists" add column "images" jsonb not null default '[]'::jsonb;
+
+update "public"."artists"
+set "images" = case
+  when "image_url" is null then '[]'::jsonb
+  else jsonb_build_array(jsonb_build_object('url', "image_url"))
+end;
 
 alter table "public"."artists" drop column "created_at";
 
@@ -254,7 +368,23 @@ alter table "public"."artists" drop column "last_synced_at";
 
 alter table "public"."artists" drop column "spotify_id";
 
-alter table "public"."artists" add column "images" jsonb not null default '[]'::jsonb;
+alter table "public"."reviews" add column "body" text;
+
+alter table "public"."reviews" add column "favorite_track" text;
+
+alter table "public"."reviews" add column "release_group_id" uuid;
+
+update "public"."reviews"
+set
+  "body" = "review_text",
+  "favorite_track" = "favorite_track_id";
+
+update "public"."reviews" as "reviews"
+set "release_group_id" = "albums"."release_group_id"
+from "public"."albums" as "albums"
+where "albums"."id" = "reviews"."album_id";
+
+alter table "public"."reviews" alter column "release_group_id" set not null;
 
 alter table "public"."reviews" drop column "album_id";
 
@@ -262,11 +392,9 @@ alter table "public"."reviews" drop column "favorite_track_id";
 
 alter table "public"."reviews" drop column "review_text";
 
-alter table "public"."reviews" add column "body" text;
+drop table "public"."profiles";
 
-alter table "public"."reviews" add column "favorite_track" text;
-
-alter table "public"."reviews" add column "release_group_id" uuid not null;
+drop table "public"."waitlist";
 
 CREATE UNIQUE INDEX artists_slug_key ON public.artists USING btree (slug);
 
@@ -797,6 +925,4 @@ with check (true);
   to public
 using ((auth.uid() = user_id))
 with check ((auth.uid() = user_id));
-
-
 

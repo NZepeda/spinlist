@@ -9,6 +9,23 @@ create table "public"."release_group_artists" (
 
 alter table "public"."release_group_artists" enable row level security;
 
+insert into "public"."release_group_artists" (
+  "release_group_id",
+  "artist_id",
+  "position"
+)
+select
+  "release_groups"."id",
+  "release_groups"."artist_id",
+  1
+from "public"."release_groups" as "release_groups"
+where not exists (
+  select 1
+  from "public"."release_group_artists" as "release_group_artists"
+  where "release_group_artists"."release_group_id" = "release_groups"."id"
+    and "release_group_artists"."artist_id" = "release_groups"."artist_id"
+);
+
 CREATE UNIQUE INDEX release_group_artists_pkey ON public.release_group_artists USING btree (release_group_id, artist_id);
 
 CREATE UNIQUE INDEX release_group_artists_release_group_id_position_key ON public.release_group_artists USING btree (release_group_id, "position");

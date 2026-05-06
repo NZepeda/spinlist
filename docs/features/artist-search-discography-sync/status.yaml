@@ -1,0 +1,23 @@
+feature: Artist Search Discography Sync
+slug: artist-search-discography-sync
+state: awaiting-user-input
+shared_understanding_summary: >
+  Selecting an artist from search must synchronously create an album-only local discography
+  for missing or incomplete artists, treat data as stale after 2 hours, route immediately
+  for existing artists that already have albums, queue stale refresh work with Next.js
+  after hooks, and show a Sonner toast only when a missing or incomplete artist cannot
+  be synced.
+completed_chunks:
+  - shared-understanding-approved
+  - kickoff-approved
+  - brief-drafted
+  - design-drafted
+  - design-approved
+  - tech-spec-drafted
+  - tech-approved
+  - plan-drafted
+  - chunk-1-completed
+current_chunk: Chunk 1: Add Artist Discography Sync Persistence
+open_questions: []
+blockers:
+  - Review the generated migration because Supabase diff included an unrelated record_review_revision function replacement alongside the new artist sync timestamp column.

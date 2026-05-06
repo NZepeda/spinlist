@@ -5,8 +5,7 @@ import { SpotifyDependencyError } from "@/server/spotify/SpotifyDependencyError"
 import type { SpotifySearchResponse } from "@/server/spotify/types";
 
 /**
- * Centralizes Spotify search reads so discovery routes share the same tracing
- * behavior and upstream failures carry stable dependency metadata.
+ * Hits the Spotify Search API to retrieve artists and albums matching the user query.
  *
  * @param query - The user search text forwarded to Spotify.
  * @returns The raw Spotify search response.

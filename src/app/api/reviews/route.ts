@@ -5,12 +5,10 @@ import { getRequestId } from "@/app/api/getRequestId";
 import { captureServerException } from "@/monitoring/captureServerException";
 import { startSpan } from "@/monitoring/startSpan";
 import type { Database } from "@/server/database";
-import { mapAlbumRowToAlbum } from "@/server/database/mappers/mapAlbumRowToAlbum";
 import { logWorkflow } from "@/server/logging/logWorkflow";
 import { getSupabaseErrorMetadata } from "@/server/supabase/getSupabaseErrorMetadata";
 import { SupabaseDependencyError } from "@/server/supabase/SupabaseDependencyError";
 import { createClient } from "@/server/supabase/server";
-import type { AlbumRow } from "@/server/database";
 import type {
   ReviewErrorResponse,
   ReviewRequestBody,
@@ -47,7 +45,7 @@ function validateRequestBody(body: unknown): ReviewRequestBody | null {
 
   const candidate = body as Record<string, unknown>;
 
-  if (typeof candidate.albumId !== "string") {
+  if (typeof candidate.releaseGroupId !== "string") {
     return null;
   }
 
@@ -83,7 +81,7 @@ function validateRequestBody(body: unknown): ReviewRequestBody | null {
   }
 
   return {
-    albumId: candidate.albumId,
+    releaseGroupId: candidate.releaseGroupId,
     rating: candidate.rating,
     reviewText:
       typeof candidate.reviewText === "string"
@@ -98,24 +96,6 @@ function validateRequestBody(body: unknown): ReviewRequestBody | null {
         ? candidate.existingReviewId
         : undefined,
   };
-}
-
-/**
- * Enforces album ownership for favorite tracks so review writes cannot reference unrelated songs.
- */
-function isFavoriteTrackValid(
-  album: AlbumRow,
-  favoriteTrackId: string | null,
-): boolean {
-  if (favoriteTrackId === null) {
-    return true;
-  }
-
-  const validTrackIds = new Set(
-    mapAlbumRowToAlbum(album).tracks.map((track) => track.id),
-  );
-
-  return validTrackIds.has(favoriteTrackId);
 }
 
 /**
@@ -234,12 +214,12 @@ async function ensureActiveProfile(
 ): Promise<Response | SupabaseDependencyError | null> {
   const { data: profile, error: profileError } = await startSpan(
     {
-      name: "supabase.profile.read",
+      name: "supabase.user.read",
       op: "db.supabase",
     },
     async () =>
       await supabase
-        .from("profiles")
+        .from("users")
         .select("status")
         .eq("id", userId)
         .maybeSingle(),
@@ -248,8 +228,8 @@ async function ensureActiveProfile(
   if (profileError) {
     return createSupabaseDependencyError({
       error: profileError,
-      operation: "supabase.profile.read",
-      resource: "profiles",
+      operation: "supabase.user.read",
+      resource: "users",
     });
   }
 
@@ -322,7 +302,7 @@ export async function POST(request: NextRequest) {
 
   logReviewWorkflow({
     context: {
-      albumId: parsedBody.albumId,
+      releaseGroupId: parsedBody.releaseGroupId,
       existingReviewId: parsedBody.existingReviewId ?? null,
       hasFavoriteTrack: favoriteTrackId !== null,
       hasReviewText: reviewText !== null,
@@ -353,7 +333,7 @@ export async function POST(request: NextRequest) {
     });
     const eventId = captureReviewFailure({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -376,7 +356,7 @@ export async function POST(request: NextRequest) {
   if (user === null) {
     logReviewWorkflow({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -401,7 +381,7 @@ export async function POST(request: NextRequest) {
   if (activeProfileRequirement instanceof SupabaseDependencyError) {
     const eventId = captureReviewFailure({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -425,7 +405,7 @@ export async function POST(request: NextRequest) {
   if (activeProfileRequirement) {
     logReviewWorkflow({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -441,28 +421,28 @@ export async function POST(request: NextRequest) {
     return activeProfileRequirement;
   }
 
-  const { data: album, error: albumError } = await startSpan(
+  const { data: releaseGroup, error: releaseGroupError } = await startSpan(
     {
-      name: "supabase.album.read",
+      name: "supabase.release_group.read",
       op: "db.supabase",
     },
     async () =>
       await supabase
-        .from("albums")
+        .from("release_groups")
         .select("*")
-        .eq("id", parsedBody.albumId)
+        .eq("id", parsedBody.releaseGroupId)
         .single(),
   );
 
-  if (albumError) {
+  if (releaseGroupError) {
     const dependencyError = createSupabaseDependencyError({
-      error: albumError,
-      operation: "supabase.album.read",
-      resource: "albums",
+      error: releaseGroupError,
+      operation: "supabase.release_group.read",
+      resource: "release_groups",
     });
     const eventId = captureReviewFailure({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -470,7 +450,7 @@ export async function POST(request: NextRequest) {
         userId: user.id,
       },
       error: dependencyError,
-      event: "review_album_lookup_failed",
+      event: "review_release_group_lookup_failed",
       path,
     });
 
@@ -483,10 +463,10 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (album === null) {
+  if (releaseGroup === null) {
     logReviewWorkflow({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         existingReviewId: parsedBody.existingReviewId ?? null,
         method: request.method,
         path,
@@ -495,47 +475,23 @@ export async function POST(request: NextRequest) {
       },
       event: "review_mutation",
       operation,
-      reason: "album_not_found",
+      reason: "release_group_not_found",
       stage: "rejected",
     });
 
     return createReviewErrorResponse({
-      code: "ALBUM_NOT_FOUND",
-      message: "The album could not be found.",
+      code: "RELEASE_GROUP_NOT_FOUND",
+      message: "The release group could not be found.",
       requestId,
       status: 404,
     });
   }
 
-  if (!isFavoriteTrackValid(album, favoriteTrackId)) {
-    logReviewWorkflow({
-      context: {
-        albumId: parsedBody.albumId,
-        existingReviewId: parsedBody.existingReviewId ?? null,
-        method: request.method,
-        path,
-        requestId,
-        userId: user.id,
-      },
-      event: "review_mutation",
-      operation,
-      reason: "invalid_favorite_track",
-      stage: "rejected",
-    });
-
-    return createReviewErrorResponse({
-      code: "INVALID_FAVORITE_TRACK",
-      message: "The selected favorite song does not belong to this album.",
-      requestId,
-      status: 400,
-    });
-  }
-
   const reviewPayload = {
-    album_id: parsedBody.albumId,
-    favorite_track_id: favoriteTrackId,
+    release_group_id: parsedBody.releaseGroupId,
+    favorite_track: favoriteTrackId,
     rating: parsedBody.rating,
-    review_text: reviewText,
+    body: reviewText,
     user_id: user.id,
   };
 
@@ -549,9 +505,9 @@ export async function POST(request: NextRequest) {
         await supabase
           .from("reviews")
           .update({
-            favorite_track_id: reviewPayload.favorite_track_id,
+            favorite_track: reviewPayload.favorite_track,
             rating: reviewPayload.rating,
-            review_text: reviewPayload.review_text,
+            body: reviewPayload.body,
             updated_at: new Date().toISOString(),
           })
           // The type assertion is safe here because it is checked above.
@@ -576,7 +532,7 @@ export async function POST(request: NextRequest) {
             });
       const eventId = captureReviewFailure({
         context: {
-          albumId: parsedBody.albumId,
+          releaseGroupId: parsedBody.releaseGroupId,
           existingReviewId: parsedBody.existingReviewId,
           method: request.method,
           path,
@@ -604,7 +560,7 @@ export async function POST(request: NextRequest) {
 
     logReviewWorkflow({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         method: request.method,
         path,
         requestId,
@@ -643,7 +599,7 @@ export async function POST(request: NextRequest) {
           });
     const eventId = captureReviewFailure({
       context: {
-        albumId: parsedBody.albumId,
+        releaseGroupId: parsedBody.releaseGroupId,
         method: request.method,
         path,
         requestId,
@@ -670,7 +626,7 @@ export async function POST(request: NextRequest) {
 
   logReviewWorkflow({
     context: {
-      albumId: parsedBody.albumId,
+      releaseGroupId: parsedBody.releaseGroupId,
       method: request.method,
       path,
       requestId,

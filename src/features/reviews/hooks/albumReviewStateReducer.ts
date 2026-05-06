@@ -7,15 +7,15 @@ import type {
 /**
  * Returns the persisted review text used as the baseline for composer draft comparisons.
  */
-function getCommittedReviewText(review: Review | null): string {
-  return review?.review_text ?? "";
+function getReviewText(review: Review | null): string {
+  return review?.body ?? "";
 }
 
 /**
  * Returns the persisted favorite-track id used as the baseline for composer draft comparisons.
  */
-function getCommittedFavoriteTrackId(review: Review | null): string {
-  return review?.favorite_track_id ?? "";
+function getFavoriteTrackId(review: Review | null): string {
+  return review?.favorite_track ?? "";
 }
 
 /**
@@ -27,8 +27,8 @@ export function createAlbumReviewState(
   return {
     committedReview: review,
     currentRating: review?.rating ?? 0,
-    draftFavoriteTrackId: getCommittedFavoriteTrackId(review),
-    draftReviewText: getCommittedReviewText(review),
+    draftFavoriteTrackId: getFavoriteTrackId(review),
+    draftReviewText: getReviewText(review),
     isComposerSaving: false,
     isRatingSaving: false,
     composerError: null,
@@ -59,8 +59,8 @@ export function albumReviewStateReducer(
         ...state,
         committedReview: action.payload,
         currentRating: action.payload.rating,
-        draftFavoriteTrackId: getCommittedFavoriteTrackId(action.payload),
-        draftReviewText: getCommittedReviewText(action.payload),
+        draftFavoriteTrackId: getFavoriteTrackId(action.payload),
+        draftReviewText: getReviewText(action.payload),
         isComposerSaving: false,
         composerError: null,
         ratingError: null,
@@ -107,12 +107,12 @@ export function albumReviewStateReducer(
         currentRating: action.payload?.rating ?? 0,
         draftFavoriteTrackId:
           state.draftFavoriteTrackId ===
-          getCommittedFavoriteTrackId(state.committedReview)
-            ? getCommittedFavoriteTrackId(action.payload)
+          getFavoriteTrackId(state.committedReview)
+            ? getFavoriteTrackId(action.payload)
             : state.draftFavoriteTrackId,
         draftReviewText:
-          state.draftReviewText === getCommittedReviewText(state.committedReview)
-            ? getCommittedReviewText(action.payload)
+          state.draftReviewText === getReviewText(state.committedReview)
+            ? getReviewText(action.payload)
             : state.draftReviewText,
         ratingError: null,
       };

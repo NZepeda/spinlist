@@ -1,0 +1,99 @@
+erDiagram
+    users ||--o{ reviews : writes
+    reviews ||--o{ review_revisions : records_history
+    users ||--o{ favorites : curates
+    users ||--o{ follows : follows
+    users ||--o{ follows : "followed by"
+    
+    artists ||--o{ album_artists : credited_on
+    albums ||--o{ album_artists : has_artists
+    albums ||--o{ reviews : "is reviewed"
+    albums ||--o{ favorites : "is favorited"
+
+    users {
+        uuid id PK
+        string username UK
+        timestamp created_at
+        string status "active, pending (default)"
+    }
+
+    artists {
+        uuid id PK
+        string name
+        string spotify_id UK
+        jsonb images
+        string slug UK "URL-friendly identifier, e.g. 'the-beatles'"
+        timestamp discography_last_synced_at "Last successful album discography sync"
+    }
+
+    albums {
+        uuid id PK
+        string spotify_id UK
+        string slug UK "URL-friendly identifier, e.g. 'the-beatles-abbey-road-2019-remaster'"
+        string title
+        enum type "album, ep, single"
+        int release_year
+        string upc
+        jsonb images
+        jsonb tracklist
+    }
+
+    album_artists {
+        uuid album_id FK
+        uuid artist_id FK
+        int position "Display order, 1 = primary credit"
+    }
+
+    reviews {
+        uuid id PK
+        uuid user_id FK
+        uuid album_id FK
+        decimal rating "0.5 - 5.0"
+        string favorite_track "Spotify track ID from the album tracklist"
+        text body
+        timestamp created_at "Original review timestamp used for feed ordering"
+        timestamp updated_at "Most recent saved change to the current review"
+    }
+
+    review_revisions {
+        uuid id PK
+        uuid review_id FK
+        uuid user_id FK
+        uuid album_id FK
+        decimal rating "0.5 - 5.0"
+        string favorite_track "Spotify track ID from the album tracklist"
+        text body
+        timestamp created_at "Immutable snapshot timestamp"
+    }
+
+    favorites {
+        uuid id PK
+        uuid user_id FK
+        uuid album_id FK
+        int position "1-10, unique per user"
+        timestamp created_at
+    }
+
+    follows {
+        uuid follower_id FK
+        uuid followed_id FK "Composite PK with follower_id, self-follow disallowed"
+        timestamp created_at
+    }
+
+    %% reviews constraints:
+    %% - one current review per (user_id, album_id)
+    %% - UNIQUE(user_id, album_id)
+    %% - main feed chronology uses created_at
+    %% - current-state changes update updated_at
+
+    %% review_revisions constraints:
+    %% - immutable snapshot history for reviews
+    %% - each revision belongs to one current review via review_id
+
+    %% favorites constraints: 
+    %% - UNIQUE(user_id, position)
+    %% - UNIQUE(user_id, album_id)
+
+    %% album_artists constraints:
+    %% - UNIQUE(album_id, artist_id)
+    %% - UNIQUE(album_id, position)

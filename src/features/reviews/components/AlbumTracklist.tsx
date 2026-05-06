@@ -1,9 +1,9 @@
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/utils/cn";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 
 interface AlbumTracklistProps {
-  album: Album;
+  album: AlbumRecord;
   favoriteTrackId?: string;
   onFavoriteTrackChange?: (trackId: string) => void;
 }
@@ -19,8 +19,7 @@ function formatDuration(durationMs: number): string {
 }
 
 /**
- * Renders the album tracklist and optionally allows the user to mark a track
- * as their favorite by clicking the row.
+ * Renders the album tracklist and optionally allows the user to mark a track as a favorite.
  */
 export function AlbumTracklist({
   album,

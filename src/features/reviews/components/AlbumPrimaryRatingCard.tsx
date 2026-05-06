@@ -2,11 +2,11 @@
 
 import { Button } from "@/shared/ui/button";
 import { StarRating } from "@/shared/ui/StarRating";
-import type { Album } from "@/shared/types";
+import type { AlbumRecord } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface AlbumPrimaryRatingCardProps {
-  album: Album;
+  album: AlbumRecord;
   onOpenComposer: () => void;
   reviewState: UseAlbumReviewStateResult;
 }
@@ -15,7 +15,7 @@ interface AlbumPrimaryRatingCardProps {
  * Returns the saved favorite-song label when the review already has one.
  */
 function getSavedFavoriteTrackName(
-  album: Album,
+  album: AlbumRecord,
   reviewState: UseAlbumReviewStateResult,
 ): string | null {
   if (!reviewState.hasSavedFavoriteTrack) {

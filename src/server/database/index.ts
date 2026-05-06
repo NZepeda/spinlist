@@ -20,18 +20,27 @@ export type {
 
 export type AlbumRow = Tables<"albums">;
 export type ArtistRow = Tables<"artists">;
-export type ProfileRow = Tables<"profiles">;
+export type FavoriteRow = Tables<"favorites">;
+export type FollowRow = Tables<"follows">;
+export type MappingRow = Tables<"mappings">;
+export type ReleaseGroupRow = Tables<"release_groups">;
 export type ReviewRow = Tables<"reviews">;
-export type WaitlistRow = Tables<"waitlist">;
+export type UserRow = Tables<"users">;
 
 export type AlbumInsert = TablesInsert<"albums">;
 export type ArtistInsert = TablesInsert<"artists">;
-export type ProfileInsert = TablesInsert<"profiles">;
+export type FavoriteInsert = TablesInsert<"favorites">;
+export type FollowInsert = TablesInsert<"follows">;
+export type MappingInsert = TablesInsert<"mappings">;
+export type ReleaseGroupInsert = TablesInsert<"release_groups">;
 export type ReviewInsert = TablesInsert<"reviews">;
-export type WaitlistInsert = TablesInsert<"waitlist">;
+export type UserInsert = TablesInsert<"users">;
 
 export type AlbumUpdate = TablesUpdate<"albums">;
 export type ArtistUpdate = TablesUpdate<"artists">;
-export type ProfileUpdate = TablesUpdate<"profiles">;
+export type FavoriteUpdate = TablesUpdate<"favorites">;
+export type FollowUpdate = TablesUpdate<"follows">;
+export type MappingUpdate = TablesUpdate<"mappings">;
+export type ReleaseGroupUpdate = TablesUpdate<"release_groups">;
 export type ReviewUpdate = TablesUpdate<"reviews">;
-export type WaitlistUpdate = TablesUpdate<"waitlist">;
+export type UserUpdate = TablesUpdate<"users">;

@@ -1,41 +1,32 @@
-import type { AlbumRow } from "@/server/database";
-import type { Album, AlbumTrack } from "@/shared/types/domain/album";
-import type { Image } from "@/shared/types/domain/image";
+import type { Json } from "@/server/database";
+import type {
+  AlbumRecord,
+  AlbumRecordTrack,
+} from "@/shared/types/domain/album";
+import { parseAlbumImages } from "./parseAlbumImages";
+
+interface AlbumArtistRecordData {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+interface AlbumRecordData {
+  artists: AlbumArtistRecordData[];
+  id: string;
+  images: Json;
+  slug: string;
+  title: string;
+  tracklist: Json;
+}
 
 /**
- * Maps a database album row into the canonical album model.
+ * Extracts valid track records from untyped JSON data.
  */
-export function mapAlbumRowToAlbum(album: AlbumRow): Album {
-  const rawImages = Array.isArray(album.images) ? album.images : [];
-  const images: Image[] = rawImages.flatMap((image) => {
-    if (image === null || typeof image !== "object") {
-      return [];
-    }
+function parseAlbumTracks(tracklist: Json): AlbumRecordTrack[] {
+  const rawTracks = Array.isArray(tracklist) ? tracklist : [];
 
-    if (Array.isArray(image)) {
-      return [];
-    }
-
-    const record = image as Record<string, unknown>;
-
-    if (typeof record.url !== "string") {
-      return [];
-    }
-
-    const height = typeof record.height === "number" ? record.height : undefined;
-    const width = typeof record.width === "number" ? record.width : undefined;
-
-    return [
-      {
-        url: record.url,
-        height,
-        width,
-      },
-    ];
-  });
-
-  const rawTracks = Array.isArray(album.tracks) ? album.tracks : [];
-  const tracks: AlbumTrack[] = rawTracks.flatMap((track) => {
+  return rawTracks.flatMap((track) => {
     if (track === null || typeof track !== "object") {
       return [];
     }
@@ -71,17 +62,25 @@ export function mapAlbumRowToAlbum(album: AlbumRow): Album {
       },
     ];
   });
+}
+
+/**
+ * Maps assembled album data into the canonical album model.
+ */
+export function mapAlbumRowToAlbum(album: AlbumRecordData): AlbumRecord {
+  const artists = album.artists.map((artist) => ({
+    id: artist.id,
+    name: artist.name,
+    slug: artist.slug,
+  }));
+  const images = parseAlbumImages(album.images);
+  const tracks = parseAlbumTracks(album.tracklist);
 
   return {
     id: album.id,
-    spotify_id: album.spotify_id,
-    title: album.title,
-    artist: album.artist,
-    label: album.label,
+    artists,
     slug: album.slug,
-    release_date: album.release_date,
-    avg_rating: album.avg_rating,
-    review_count: album.review_count,
+    title: album.title,
     images,
     tracks,
   };

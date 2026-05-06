@@ -4,7 +4,6 @@ import { startSpan } from "@/monitoring/startSpan";
 import { getImageUrl } from "@/server/spotify/getImageUrl";
 import { getAlbum } from "@/features/albums/server/getAlbum";
 import { AlbumPageShell } from "@/features/reviews/components/AlbumPageShell";
-import { getAlbumCommunitySummary } from "@/features/reviews/server/getAlbumCommunitySummary";
 import { getAlbumReviewFeed } from "@/features/reviews/server/getAlbumReviewFeed";
 
 /**
@@ -30,15 +29,11 @@ export default async function AlbumPage({
       }
 
       const imageUrl = getImageUrl(album.images, "large");
-      const [communitySummary, reviewFeed] = await Promise.all([
-        getAlbumCommunitySummary(album),
-        getAlbumReviewFeed(album),
-      ]);
+      const reviewFeed = await getAlbumReviewFeed(album);
 
       return (
         <AlbumPageShell
           album={album}
-          communitySummary={communitySummary}
           imageUrl={imageUrl}
           reviewFeed={reviewFeed}
         />

@@ -15,23 +15,21 @@ export function mapSpotifySearchResponseToSearchResponseDTO(
     artists: artists.map((artist) => ({
       id: artist.id,
       name: artist.name,
+      // We use the "small" image size for search results to optimize payload size and loading times.
       imageUrl: getImageUrl(artist.images, "small"),
       type: "artist",
     })),
     albums: albums
       .filter((album) => album.album_type !== "single")
       .map((album) => {
-        const artistNames = album.artists
-          .map((artist) => artist.name)
-          .filter((name) => name.length > 0);
-
-        const artistName =
-          artistNames.length > 0 ? artistNames.join(", ") : "Unknown Artist";
-
         return {
           id: album.id,
           name: album.name,
-          artistName,
+          artists: album.artists.map((artist) => ({
+            id: artist.id,
+            name: artist.name,
+          })),
+          // We use the "small" image size for search results to optimize payload size and loading times.
           imageUrl: getImageUrl(album.images, "small"),
           releaseDate: album.release_date,
           type: "album",

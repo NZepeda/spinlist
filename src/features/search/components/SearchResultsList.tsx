@@ -14,6 +14,19 @@ interface SearchResultsListProps {
 }
 
 /**
+ * Formats album artist credits for compact search-result display.
+ */
+function formatAlbumArtists(
+  artists: Array<{ id: string; name: string }>,
+): string {
+  if (artists.length === 0) {
+    return "Unknown Artist";
+  }
+
+  return artists.map((artist) => artist.name).join(", ");
+}
+
+/**
  * Displays a non-interactive status row inside the search results list.
  *
  * @param props - The message to show for the current search state.
@@ -96,7 +109,7 @@ export function SearchResultsList(props: SearchResultsListProps) {
                     </p>
                   </div>
                   <p className="truncate text-sm text-muted-foreground">
-                    {album.artistName} •{" "}
+                    {formatAlbumArtists(album.artists)} •{" "}
                     {new Date(album.releaseDate).getFullYear()}
                   </p>
                 </div>

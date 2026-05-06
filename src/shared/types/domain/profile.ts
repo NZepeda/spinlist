@@ -1,13 +1,10 @@
+import type { UserRow } from "@/server/database";
+
 export type ProfileStatus = "active" | "pending";
 
 /**
- * Canonical user profile model used across the app.
+ * Canonical user record model used across the app.
  */
-export interface Profile {
-  id: string;
-  username: string;
+export type Profile = Omit<UserRow, "status"> & {
   status: ProfileStatus;
-  avatarUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+};

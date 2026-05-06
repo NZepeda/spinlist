@@ -44,8 +44,8 @@ export async function getInitialAuthState(): Promise<InitialAuthState> {
   }
 
   const { data: profileRow, error: profileError } = await supabase
-    .from("profiles")
-    .select("id, username, status, avatar_url, created_at, updated_at")
+    .from("users")
+    .select("id, username, status, created_at")
     .eq("id", user.id)
     .maybeSingle();
 

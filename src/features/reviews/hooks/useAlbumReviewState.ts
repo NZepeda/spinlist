@@ -8,11 +8,11 @@ import {
   albumReviewStateReducer,
   createAlbumReviewState,
 } from "@/features/reviews/hooks/albumReviewStateReducer";
-import type { Album, Review } from "@/shared/types";
+import type { AlbumRecord, Review } from "@/shared/types";
 import type { UseAlbumReviewStateResult } from "@/features/reviews/types";
 
 interface UseAlbumReviewStateOptions {
-  album: Album;
+  album: AlbumRecord;
   review: Review | null;
 }
 
@@ -89,11 +89,11 @@ export function useAlbumReviewState({
       const committedReview = reviewRef.current;
       const savedReview = await submitReview({
         userId: user.id,
-        albumId: album.id,
+        releaseGroupId: album.id,
         existingReviewId: committedReview?.id,
-        favoriteTrackId: committedReview?.favorite_track_id ?? "",
+        favoriteTrackId: committedReview?.favorite_track ?? "",
         rating: nextRating,
-        reviewText: committedReview?.review_text ?? "",
+        reviewText: committedReview?.body ?? "",
       });
 
       reviewRef.current = savedReview;
@@ -240,7 +240,7 @@ export function useAlbumReviewState({
       const committedReview = reviewRef.current;
       const savedReview = await submitReview({
         userId: user.id,
-        albumId: album.id,
+        releaseGroupId: album.id,
         existingReviewId: committedReview?.id,
         favoriteTrackId: state.draftFavoriteTrackId,
         rating: state.currentRating,
@@ -267,8 +267,8 @@ export function useAlbumReviewState({
     }
   }
 
-  const savedReviewText = state.committedReview?.review_text ?? "";
-  const savedFavoriteTrackId = state.committedReview?.favorite_track_id ?? "";
+  const savedReviewText = state.committedReview?.body ?? "";
+  const savedFavoriteTrackId = state.committedReview?.favorite_track ?? "";
 
   return {
     favoriteTrackId: state.draftFavoriteTrackId,

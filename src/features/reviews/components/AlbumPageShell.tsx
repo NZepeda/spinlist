@@ -1,17 +1,11 @@
 import { AlbumHeroCard } from "@/features/reviews/components/AlbumHeroCard";
-import { AlbumCommunitySummary } from "@/features/reviews/components/AlbumCommunitySummary";
-import { AlbumReadOnlyMetadata } from "@/features/reviews/components/AlbumReadOnlyMetadata";
 import { ReviewsFeed } from "@/features/reviews/components/ReviewsFeed";
-import type {
-  AlbumCommunitySummary as AlbumCommunitySummaryData,
-  AlbumReviewFeedItem,
-} from "@/features/reviews/types";
-import type { Album } from "@/shared/types";
+import type { AlbumReviewFeedItem } from "@/features/reviews/types";
+import type { AlbumRecord } from "@/shared/types";
 import { AppPage } from "@/shared/ui/AppPage";
 
 interface AlbumPageShellProps {
-  album: Album;
-  communitySummary: AlbumCommunitySummaryData;
+  album: AlbumRecord;
   imageUrl: string | null;
   reviewFeed: AlbumReviewFeedItem[];
 }
@@ -21,7 +15,6 @@ interface AlbumPageShellProps {
  */
 export function AlbumPageShell({
   album,
-  communitySummary,
   imageUrl,
   reviewFeed,
 }: AlbumPageShellProps) {
@@ -53,12 +46,10 @@ export function AlbumPageShell({
               </div>
             </div>
 
-            <AlbumHeroCard album={album} communitySummary={communitySummary} />
+            <AlbumHeroCard album={album} />
           </section>
 
-          <AlbumCommunitySummary summary={communitySummary} />
           <ReviewsFeed reviews={reviewFeed} />
-          <AlbumReadOnlyMetadata album={album} />
         </div>
       </AppPage>
     </main>

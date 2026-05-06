@@ -4,6 +4,6 @@
 export interface Artist {
   id: string;
   name: string;
-  image: string | null;
+  imageUrl: string | null;
   externalUrl: string;
 }

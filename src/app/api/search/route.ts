@@ -52,17 +52,18 @@ export async function GET(request: NextRequest) {
       workflow: "search",
     });
 
-    const searchData = await searchSpotify(query);
-    const responseDTO = mapSpotifySearchResponseToSearchResponseDTO(searchData);
+    const spotifySearchResponse = await searchSpotify(query);
+    const responseDTO = mapSpotifySearchResponseToSearchResponseDTO(
+      spotifySearchResponse,
+    );
 
     logWorkflow({
       context: {
-        albumCount: responseDTO.albums.length,
-        artistCount: responseDTO.artists.length,
         method: request.method,
         path,
         queryLength: query.length,
         requestId,
+        query,
       },
       event: "search_request",
       stage: "succeeded",

@@ -6,7 +6,7 @@ import type { Database } from "@/server/database";
  * If "turnstile" is taken, tries "turnstile-2", "turnstile-3", etc.
  *
  * @param supabase - The Supabase client instance
- * @param table - The table to check ("artists" or "albums")
+ * @param table - The table to check for slug collisions
  * @param baseSlug - The initial slug to check
  * @returns An available slug string
  *
@@ -17,7 +17,7 @@ import type { Database } from "@/server/database";
  */
 export async function findAvailableSlug(
   supabase: SupabaseClient<Database>,
-  table: "artists" | "albums",
+  table: "albums" | "artists",
   baseSlug: string,
 ): Promise<string> {
   // Get all slugs that start with this base slug

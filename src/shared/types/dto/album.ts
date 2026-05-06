@@ -12,4 +12,5 @@ export interface AlbumSummaryDTO {
   releaseDate: string;
   totalTracks: number;
   label: string;
+  slug: string;
 }
